@@ -26,6 +26,10 @@ public class RobotPlayer {
 			
 			robot = new Barracks(robotController);
 			
+		} else if (robotController.getType() == SupplyDepot.type()) {
+			
+			robot = new SupplyDepot(robotController);
+			
 		}
 		
 		// run the robot

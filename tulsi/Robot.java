@@ -43,6 +43,32 @@ public class Robot {
 		
 	}
 	
+	// MARK: Locations
+	
+	public MapLocation[] towerLocations() {
+		
+		return this.robotController.senseTowerLocations();
+		
+	}
+	
+	public MapLocation[] enemyTowerLocations() {
+		
+		return this.robotController.senseEnemyTowerLocations();
+		
+	}
+	
+	public MapLocation HQLocation() {
+		
+		return this.robotController.senseHQLocation();
+		
+	}
+	
+	public MapLocation enemyHQLocation() {
+		
+		return this.robotController.senseEnemyHQLocation();
+		
+	}
+	
 	// MARK: Movement
 	
 	public void moveTo(Direction direction) throws GameActionException {
