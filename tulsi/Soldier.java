@@ -18,31 +18,7 @@ public class Soldier extends BattleRobot {
 		
 		try {
 			
-			RobotInfo[] enemies = this.robotController.senseNearbyRobots(this.robotController.getType().attackRadiusSquared, this.robotController.getTeam().opponent());
-			if (enemies.length > 0) {
-								
-				RobotInfo chosenEnemy = null;
-				for (RobotInfo enemy : enemies) {
-					
-					if (chosenEnemy == null) {
-						
-						chosenEnemy = enemy;
-						
-					} else {
-						
-						if (chosenEnemy.health > enemy.health) {
-							
-							chosenEnemy = enemy;
-							
-						}
-						
-					}
-					
-				}
-				this.robotController.attackLocation(chosenEnemy.location);
-				
-			}
-			
+			attack();
 			this.moveTo(this.randomDirection());
 			
 		} catch (GameActionException exception) {

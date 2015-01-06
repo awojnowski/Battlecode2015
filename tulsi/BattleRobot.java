@@ -12,8 +12,57 @@ public class BattleRobot extends Robot {
 		
 	}
 	
-	// MARK: Actions
+	// MARK: Attacking
 	
-	
+	public void attack() throws GameActionException {
+		
+		if (!this.robotController.isWeaponReady()) return;
+		
+		RobotInfo weakestEnemy = this.weakestEnemy();
+		if (weakestEnemy != null) {
+			
+			this.robotController.attackLocation(weakestEnemy.location);
+			
+		}
+		
+	}
 
+	// MARK: Enemy Helpers
+	
+	public RobotInfo[] enemies() {
+		
+		return this.robotController.senseNearbyRobots(this.robotController.getType().attackRadiusSquared, this.robotController.getTeam().opponent());
+		
+	}
+	
+	public RobotInfo weakestEnemy() {
+		
+		RobotInfo[] enemies = this.enemies();
+		if (enemies.length > 0) {
+							
+			RobotInfo chosenEnemy = null;
+			for (RobotInfo enemy : enemies) {
+				
+				if (chosenEnemy == null) {
+					
+					chosenEnemy = enemy;
+					
+				} else {
+					
+					if (chosenEnemy.health > enemy.health) {
+						
+						chosenEnemy = enemy;
+						
+					}
+					
+				}
+				
+			}
+			return chosenEnemy;
+			
+		}
+		return null;
+		
+	}
+	
 }
