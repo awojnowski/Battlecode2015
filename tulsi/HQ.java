@@ -8,7 +8,7 @@ public class HQ extends BattleRobot {
 		
 		super(robotController);
 
-		this.canBeMobalized = false;
+		this.canBeMobilized = false;
 		
 	}
 

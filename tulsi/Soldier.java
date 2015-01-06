@@ -18,15 +18,21 @@ public class Soldier extends BattleRobot {
 		
 		try {
 			
-			attack();
-			
-			if (!this.shouldMobalize()) {
+			if (attack()) {
 				
-				this.moveTo(this.randomDirection());
+				// just chill if we attacked
 				
-			}  else {
+			} else {
 				
-				this.mobalize();
+				if (!this.shouldMobalize()) {
+					
+					this.moveTo(this.randomDirection());
+					
+				}  else {
+					
+					this.mobalize();
+					
+				}
 				
 			}
 			

@@ -10,22 +10,24 @@ public class BattleRobot extends Robot {
 		
 		super(robotController);
 		
-		this.canBeMobalized = true;
+		this.canBeMobilized = true;
 		
 	}
 	
 	// MARK: Attacking
 	
-	public void attack() throws GameActionException {
+	public Boolean attack() throws GameActionException {
 		
-		if (!this.robotController.isWeaponReady()) return;
+		if (!this.robotController.isWeaponReady()) return false;
 		
 		RobotInfo desiredEnemy = this.desiredEnemy(this.enemies());
 		if (desiredEnemy != null) {
 			
 			this.robotController.attackLocation(desiredEnemy.location);
+			return true;
 			
 		}
+		return false;
 		
 	}
 

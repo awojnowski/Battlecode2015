@@ -8,7 +8,7 @@ public class Beaver extends BattleRobot {
 		
 		super(robotController);
 
-		this.canBeMobalized = false;
+		this.canBeMobilized = false;
 		
 	}
 
