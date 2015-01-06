@@ -14,6 +14,10 @@ public class RobotPlayer {
 
 			robot = new HQ(robotController);
 			
+		} else if (robotController.getType() == SupplyDepot.type()) {
+			
+			robot = new SupplyDepot(robotController);
+			
 		} else if (robotController.getType() == Beaver.type()) {
 
 			robot = new Beaver(robotController);
@@ -26,9 +30,9 @@ public class RobotPlayer {
 			
 			robot = new Barracks(robotController);
 			
-		} else if (robotController.getType() == SupplyDepot.type()) {
+		} else if (robotController.getType() == Tower.type()) {
 			
-			robot = new SupplyDepot(robotController);
+			robot = new Tower(robotController);
 			
 		}
 		

@@ -2,9 +2,9 @@ package tulsi;
 
 import battlecode.common.*;
 
-public class HQ extends BattleRobot {
+public class Tower extends BattleRobot {
 
-	public HQ(RobotController robotController) {
+	public Tower(RobotController robotController) {
 		
 		super(robotController);
 
@@ -18,12 +18,7 @@ public class HQ extends BattleRobot {
 
 		try {
 			
-			double oreCount = this.robotController.getTeamOre();
-			if (robotController.isCoreReady() && oreCount > 100) {
-			
-				robotController.spawn(this.randomDirection(), RobotType.BEAVER);
-			
-			}
+			attack();
 			
 		} catch (GameActionException e) {
 		}
@@ -39,7 +34,7 @@ public class HQ extends BattleRobot {
 	}
 		
 	public static RobotType type() {
-		return RobotType.HQ;
+		return RobotType.TOWER;
 	}
 
 }
