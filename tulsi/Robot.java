@@ -43,6 +43,29 @@ public class Robot {
 		
 	}
 	
+	public int directionToInt(Direction d) {
+		switch(d) {
+			case NORTH:
+				return 0;
+			case NORTH_EAST:
+				return 1;
+			case EAST:
+				return 2;
+			case SOUTH_EAST:
+				return 3;
+			case SOUTH:
+				return 4;
+			case SOUTH_WEST:
+				return 5;
+			case WEST:
+				return 6;
+			case NORTH_WEST:
+				return 7;
+			default:
+				return -1;
+		}
+	}
+	
 	// MARK: Locations
 	
 	public MapLocation[] towerLocations() {
@@ -71,13 +94,30 @@ public class Robot {
 	
 	// MARK: Movement
 	
-	public void moveTo(Direction direction) throws GameActionException {
+	public void moveToward(MapLocation location) throws GameActionException {
+		
+		Direction direction = this.robotController.getLocation().directionTo(location);
+		int directionInteger = this.directionToInt(direction);
+		
+		int[] offsets = {0,1,-1,2,-2};
+		for (int offset : offsets) {
+			
+			direction = directions[(directionInteger + offset + 8) % 8];
+			if (this.moveTo(direction)) return;
+			
+		}
+		
+	}
+	
+	public Boolean moveTo(Direction direction) throws GameActionException {
 		
 		if (this.robotController.canMove(direction)) {
 			
 			this.robotController.move(direction);
+			return true;
 			
 		}
+		return false;
 		
 	}
 	
