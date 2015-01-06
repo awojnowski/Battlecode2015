@@ -31,5 +31,15 @@ public class HQ extends Robot {
 		this.robotController.yield();
 		
 	}
+	
+	// MARK: Static Helpers
+	
+	public static int cost() {
+		return 0;
+	}
+		
+	public static RobotType type() {
+		return RobotType.HQ;
+	}
 
 }

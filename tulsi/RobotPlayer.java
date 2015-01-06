@@ -10,13 +10,21 @@ public class RobotPlayer {
 		
 		// parse the current robot
 		
-		if (robotController.getType() == RobotType.HQ) {
+		if (robotController.getType() == HQ.type()) {
 
 			robot = new HQ(robotController);
 			
-		} else if (robotController.getType() == RobotType.BEAVER) {
+		} else if (robotController.getType() == Beaver.type()) {
 
 			robot = new Beaver(robotController);
+			
+		} else if (robotController.getType() == Soldier.type()) {
+			
+			robot = new Soldier(robotController);
+			
+		} else if (robotController.getType() == Barracks.type()) {
+			
+			robot = new Barracks(robotController);
 			
 		}
 		

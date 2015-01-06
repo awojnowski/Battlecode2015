@@ -2,7 +2,7 @@ package tulsi;
 
 import battlecode.common.*;
 
-public class Beaver extends Robot {
+public class Beaver extends BattleRobot {
 
 	public Beaver(RobotController robotController) {
 		
@@ -21,7 +21,7 @@ public class Beaver extends Robot {
 			if (this.robotController.isCoreReady()) {
 				
 				int random = this.random.nextInt(2);
-				if (random == 0) {
+				if (random < 1) {
 					
 					if (this.robotController.canMine()) {
 						
@@ -33,6 +33,26 @@ public class Beaver extends Robot {
 
 					this.moveTo(this.randomDirection());
 					
+					if (this.broadcaster.readBroadcast(69) == 0) {
+						
+						if (this.robotController.getTeamOre() > Barracks.cost()) {
+							
+							if (this.robotController.hasBuildRequirements(Barracks.type())) {
+								
+								Direction direction = this.randomDirection();
+								if (this.robotController.canBuild(direction, Barracks.type())) {
+									
+									this.robotController.build(direction, Barracks.type());
+									this.broadcaster.broadcast(69, 1);
+									
+								}
+								
+							}
+							
+						}
+						
+					}
+					
 				}
 				
 			}
@@ -42,6 +62,16 @@ public class Beaver extends Robot {
 		
 		this.robotController.yield();
 		
+	}
+	
+	// MARK: Static Helpers
+	
+	public static int cost() {
+		return 100;
+	}
+		
+	public static RobotType type() {
+		return RobotType.BEAVER;
 	}
 
 }

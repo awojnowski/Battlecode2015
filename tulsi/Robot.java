@@ -20,9 +20,11 @@ public class Robot {
 	
 	public Robot(RobotController robotController) {
 		
-		this.broadcaster = new RobotBroadcaster();
 		this.robotController = robotController;
 		this.random = new Random(robotController.getID());
+		
+		this.broadcaster = new RobotBroadcaster();
+		this.broadcaster.robotController = this.robotController;
 		
 	}
 	
@@ -51,6 +53,16 @@ public class Robot {
 			
 		}
 		
+	}
+	
+	// MARK: Static Helpers
+	
+	public static int cost() {
+		return 0;
+	}
+	
+	public static RobotType type() {
+		return RobotType.HQ;
 	}
 
 }
