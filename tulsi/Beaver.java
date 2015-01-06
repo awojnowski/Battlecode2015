@@ -8,7 +8,7 @@ public class Beaver extends BattleRobot {
 		
 		super(robotController);
 
-		
+		this.canBeMobalized = false;
 		
 	}
 
@@ -35,19 +35,9 @@ public class Beaver extends BattleRobot {
 					
 					if (this.broadcaster.readBroadcast(69) == 0) {
 						
-						if (this.robotController.getTeamOre() > Barracks.cost()) {
-							
-							if (this.robotController.hasBuildRequirements(Barracks.type())) {
-								
-								Direction direction = this.randomDirection();
-								if (this.robotController.canBuild(direction, Barracks.type())) {
-									
-									this.robotController.build(direction, Barracks.type());
-									this.broadcaster.broadcast(69, 1);
-									
-								}
-								
-							}
+						if (this.tryBuild(this.randomDirection(), Barracks.type())) {
+
+							this.broadcaster.broadcast(69, 1);
 							
 						}
 						

@@ -4,11 +4,13 @@ import battlecode.common.*;
 
 public class BattleRobot extends Robot {
 
+	public Boolean canBeMobalized;
+	
 	public BattleRobot(RobotController robotController) {
 		
 		super(robotController);
 		
-		
+		this.canBeMobalized = true;
 		
 	}
 	
@@ -18,10 +20,10 @@ public class BattleRobot extends Robot {
 		
 		if (!this.robotController.isWeaponReady()) return;
 		
-		RobotInfo weakestEnemy = this.weakestEnemy();
-		if (weakestEnemy != null) {
+		RobotInfo desiredEnemy = this.desiredEnemy(this.enemies());
+		if (desiredEnemy != null) {
 			
-			this.robotController.attackLocation(weakestEnemy.location);
+			this.robotController.attackLocation(desiredEnemy.location);
 			
 		}
 		
@@ -35,9 +37,24 @@ public class BattleRobot extends Robot {
 		
 	}
 	
-	public RobotInfo weakestEnemy() {
+	public RobotInfo desiredEnemy(RobotInfo[] enemies) {
 		
-		RobotInfo[] enemies = this.enemies();
+		// prioritize towers
+		
+		for (RobotInfo enemy : enemies) {
+			
+			if (enemy.type == RobotType.TOWER) return enemy;
+			
+		}
+		
+		// otherwise just the weakest enemy
+		
+		return weakestEnemy(enemies);
+		
+	}
+	
+	public RobotInfo weakestEnemy(RobotInfo[] enemies) {
+		
 		if (enemies.length > 0) {
 							
 			RobotInfo chosenEnemy = null;
@@ -62,6 +79,23 @@ public class BattleRobot extends Robot {
 			
 		}
 		return null;
+		
+	}
+	
+	// MARK: Mobilization
+	
+	public Boolean shouldMobalize() {
+		
+		if (!this.canBeMobalized) return false;
+		return Clock.getRoundNum() > 500;
+		
+	}
+	
+	public void mobalize() throws GameActionException {
+		
+		if (!this.canBeMobalized) return;
+		
+		this.moveToward(this.closestEnemyTower());
 		
 	}
 	

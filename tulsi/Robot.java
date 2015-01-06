@@ -46,6 +46,41 @@ public class Robot {
 		
 	}
 	
+	// MARK: Building
+	
+	public Boolean canBuild(Direction direction, RobotType type) {
+		
+		if (this.robotController.hasBuildRequirements(type)) {
+			
+			if (this.robotController.canBuild(direction, type)) {
+
+				return true;
+				
+			}
+			
+		}
+		return false;
+		
+	}
+	
+	public Boolean tryBuild(Direction direction, RobotType type) throws GameActionException {
+		
+		if (this.canBuild(direction, type)) {
+			
+			this.build(direction, type);
+			return true;
+			
+		}
+		return false;
+		
+	}
+	
+	public void build(Direction direction, RobotType type) throws GameActionException {
+		
+		this.robotController.build(direction, type);
+		
+	}
+	
 	// MARK: Directions
 	
 	public Direction randomDirection() {
@@ -78,6 +113,14 @@ public class Robot {
 		}
 	}
 	
+	// MARK: Distance
+	
+	public int distanceTo(MapLocation location) {
+		
+		return this.robotController.getLocation().distanceSquaredTo(location);
+		
+	}
+	
 	// MARK: Locations
 	
 	public MapLocation[] towerLocations() {
@@ -86,15 +129,38 @@ public class Robot {
 		
 	}
 	
+	public MapLocation HQLocation() {
+		
+		return this.robotController.senseHQLocation();
+		
+	}
+	
+	// MARK: Locations (Enemy)
+
 	public MapLocation[] enemyTowerLocations() {
 		
 		return this.robotController.senseEnemyTowerLocations();
 		
 	}
 	
-	public MapLocation HQLocation() {
+	public MapLocation closestEnemyTower() { 
 		
-		return this.robotController.senseHQLocation();
+		MapLocation closestTower = null;
+		int closestDistance = Integer.MAX_VALUE;
+		
+		MapLocation[] towers = this.enemyTowerLocations();
+		for (MapLocation tower : towers) {
+			
+			int distance = this.distanceTo(tower);
+			if (distance < closestDistance) {
+				
+				closestTower = tower;
+				closestDistance = distance;
+				
+			}
+			
+		}
+		return closestTower;
 		
 	}
 	

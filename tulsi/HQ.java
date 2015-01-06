@@ -8,7 +8,7 @@ public class HQ extends BattleRobot {
 		
 		super(robotController);
 
-		
+		this.canBeMobalized = false;
 		
 	}
 
@@ -17,6 +17,8 @@ public class HQ extends BattleRobot {
 		super.run();
 
 		try {
+			
+			attack();
 			
 			double oreCount = this.robotController.getTeamOre();
 			if (robotController.isCoreReady() && oreCount > 100) {

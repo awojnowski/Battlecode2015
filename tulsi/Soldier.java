@@ -20,13 +20,13 @@ public class Soldier extends BattleRobot {
 			
 			attack();
 			
-			if (Clock.getRoundNum() < 500) {
+			if (!this.shouldMobalize()) {
 				
 				this.moveTo(this.randomDirection());
 				
-			} else {
+			}  else {
 				
-				this.moveToward(this.enemyHQLocation());
+				this.mobalize();
 				
 			}
 			

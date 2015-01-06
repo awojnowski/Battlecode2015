@@ -8,7 +8,7 @@ public class Tower extends BattleRobot {
 		
 		super(robotController);
 
-		
+		this.canBeMobalized = false;
 		
 	}
 
