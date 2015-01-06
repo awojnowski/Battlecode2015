@@ -12,19 +12,31 @@ public class Robot {
 
 	// MARK: Instance Variables
 	
+	// controllers
 	public RobotBroadcaster broadcaster;
 	public RobotController robotController;
 	public Random random;
+	
+	// helpers
+	public Team team;
+	public RobotType type;
 	
 	// MARK: Main Methods
 	
 	public Robot(RobotController robotController) {
 		
+		this.broadcaster = new RobotBroadcaster();
 		this.robotController = robotController;
 		this.random = new Random(robotController.getID());
 		
-		this.broadcaster = new RobotBroadcaster();
+		// update the controllers
+		
 		this.broadcaster.robotController = this.robotController;
+		
+		// setup the helpers
+		
+		this.team = this.robotController.getTeam();
+		this.type = this.robotController.getType();
 		
 	}
 	

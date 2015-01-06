@@ -31,7 +31,7 @@ public class BattleRobot extends Robot {
 	
 	public RobotInfo[] enemies() {
 		
-		return this.robotController.senseNearbyRobots(this.robotController.getType().attackRadiusSquared, this.robotController.getTeam().opponent());
+		return this.robotController.senseNearbyRobots(this.type.attackRadiusSquared, this.team.opponent());
 		
 	}
 	
