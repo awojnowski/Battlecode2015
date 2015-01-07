@@ -2,7 +2,7 @@ package tulsi;
 
 import battlecode.common.*;
 
-public enum BattleRobotAttackStyle {
+enum BattleRobotAttackStyle {
 	STOP_ON_ATTACK,
 	STRAFE_ON_ATTACK
 }
