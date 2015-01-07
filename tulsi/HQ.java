@@ -12,7 +12,7 @@ public class HQ extends BattleRobot {
 		this.canBeMobilized = false;
 
 		try {
-			this.broadcaster.setCurrentPlaystyle(TurtlePlaystyle.identifier());
+			this.broadcaster.setCurrentPlaystyle(AggressivePlaystyle.identifierS());
 		} catch (GameActionException e) {}
 		
 	}
@@ -25,9 +25,13 @@ public class HQ extends BattleRobot {
 			
 			attack();
 			
-			if (this.currentPlaystyle().shouldSpawnBeaver()) {
+			if (this.robotController.isCoreReady()) {
 				
-				this.trySpawn(this.randomDirection(), Beaver.type());
+				if (this.currentPlaystyle().shouldSpawnBeaver()) {
+					
+					this.trySpawn(this.randomDirection(), Beaver.type());
+					
+				}
 				
 			}
 			
@@ -39,10 +43,6 @@ public class HQ extends BattleRobot {
 	}
 	
 	// MARK: Static Helpers
-	
-	public static int cost() {
-		return 0;
-	}
 		
 	public static RobotType type() {
 		return RobotType.HQ;

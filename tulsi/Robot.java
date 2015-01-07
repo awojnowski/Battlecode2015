@@ -6,6 +6,8 @@ import tulsi.playstyles.*;
 
 public abstract class Robot {
 	
+	private static final int MAX_BUILD_TILES = 100;
+	
 	// MARK: Static Variables
 	
 	private static Direction[] directions = {Direction.NORTH, Direction.NORTH_EAST, Direction.EAST, Direction.SOUTH_EAST, Direction.SOUTH, Direction.SOUTH_WEST, Direction.WEST, Direction.NORTH_WEST};
@@ -23,6 +25,9 @@ public abstract class Robot {
 	
 	// movement
 	public int stopTurns;
+	
+	// playstyles
+	private Playstyle playstyle;
 	
 	// MARK: Main Methods
 	
@@ -54,6 +59,7 @@ public abstract class Robot {
 	
 	public Boolean canBuild(Direction direction, RobotType type) {
 		
+		if (this.distanceTo(this.HQLocation()) > MAX_BUILD_TILES) return false;
 		if (this.robotController.hasBuildRequirements(type)) {
 			
 			if (this.robotController.canBuild(direction, type)) {
@@ -147,23 +153,24 @@ public abstract class Robot {
 		
 	}
 	
-	public MapLocation closestEnemyTower() { 
+	public MapLocation bestObjective() { 
 		
 		MapLocation closestTower = null;
-		int closestDistance = Integer.MAX_VALUE;
+		int closestTowerDistance = Integer.MAX_VALUE;
 		
 		MapLocation[] towers = this.enemyTowerLocations();
 		for (MapLocation tower : towers) {
 			
-			int distance = this.distanceTo(tower);
-			if (distance < closestDistance) {
+			int distance = this.enemyHQLocation().distanceSquaredTo(tower);
+			if (distance < closestTowerDistance) {
 				
 				closestTower = tower;
-				closestDistance = distance;
+				closestTowerDistance = distance;
 				
 			}
 			
 		}
+		
 		return closestTower;
 		
 	}
@@ -223,10 +230,26 @@ public abstract class Robot {
 	
 	public Playstyle currentPlaystyle() throws GameActionException {
 		
+		Playstyle playstyle = null;
 		int playstyleIdentifier = this.broadcaster.currentPlaystyle();
-		if (playstyleIdentifier == AggressivePlaystyle.identifier()) return new AggressivePlaystyle();
-		if (playstyleIdentifier == TurtlePlaystyle.identifier()) return new TurtlePlaystyle();
-		return null;
+		if (playstyleIdentifier == AggressivePlaystyle.identifierS()) playstyle = new AggressivePlaystyle();
+		if (playstyleIdentifier == TurtlePlaystyle.identifierS()) playstyle = new TurtlePlaystyle();
+		
+		if (playstyle != null) {
+			
+			if (this.playstyle != null) {
+				
+				if (playstyle.identifierI() == this.playstyle.identifierI()) return this.playstyle;
+				
+			}
+			this.playstyle = playstyle;
+			return playstyle;
+			
+		} else {
+			
+			return null;
+			
+		}
 		
 	}
 	
@@ -266,10 +289,6 @@ public abstract class Robot {
 	}
 	
 	// MARK: Static Helpers
-	
-	public static int cost() {
-		return 0;
-	}
 	
 	public static RobotType type() {
 		return RobotType.HQ;

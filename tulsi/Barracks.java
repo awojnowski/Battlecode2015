@@ -18,9 +18,13 @@ public class Barracks extends Robot {
 				
 		try {
 			
-			if (this.currentPlaystyle().shouldSpawnSoldier()) {
+			if (this.robotController.isCoreReady()) {
 				
-				this.trySpawn(this.randomDirection(), Soldier.type());
+				if (this.currentPlaystyle().shouldSpawnSoldier()) {
+					
+					this.trySpawn(this.randomDirection(), Soldier.type());
+					
+				}
 				
 			}
 							
@@ -32,10 +36,6 @@ public class Barracks extends Robot {
 	}
 	
 	// MARK: Static Helpers
-	
-	public static int cost() {
-		return 300;	
-	}
 	
 	public static RobotType type() {
 		return RobotType.BARRACKS;

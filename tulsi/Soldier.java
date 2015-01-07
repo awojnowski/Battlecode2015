@@ -22,13 +22,17 @@ public class Soldier extends BattleRobot {
 			Boolean shouldMove = !attacked || this.attackStyle == BattleRobotAttackStyle.STRAFE_ON_ATTACK;
 			if (shouldMove) {
 				
-				if (!this.shouldMobalize()) {
+				if (this.robotController.isCoreReady()) {
 					
-					this.moveTo(this.randomDirection());
-					
-				}  else {
-					
-					this.mobalize();
+					if (!this.shouldMobilize()) {
+						
+						this.moveTo(this.randomDirection());
+						
+					}  else {
+						
+						this.mobilize();
+						
+					}
 					
 				}
 				
@@ -42,10 +46,6 @@ public class Soldier extends BattleRobot {
 	}
 	
 	// MARK: Static Helpers
-	
-	public static int cost() {
-		return 60;
-	}
 	
 	public static RobotType type() {
 		return RobotType.SOLDIER;

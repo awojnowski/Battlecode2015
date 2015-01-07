@@ -3,12 +3,16 @@ package tulsi;
 import battlecode.common.*;
 
 public class Beaver extends BattleRobot {
+	
+	public Direction facing;
 
 	public Beaver(RobotController robotController) {
 		
 		super(robotController);
 
+		this.attackStyle = BattleRobotAttackStyle.STRAFE_ON_ATTACK;
 		this.canBeMobilized = false;
+		this.facing = this.randomDirection();
 		
 	}
 
@@ -18,10 +22,12 @@ public class Beaver extends BattleRobot {
 		
 		try {
 			
+			this.attack();
+			
 			if (this.robotController.isCoreReady()) {
 				
-				int random = this.random.nextInt(2);
-				if (random < 1) {
+				if (this.robotController.senseOre(this.robotController.getLocation()) > 0 &&
+					this.distanceTo(this.HQLocation()) > 2) { // on ore
 					
 					if (this.robotController.canMine()) {
 						
@@ -29,15 +35,26 @@ public class Beaver extends BattleRobot {
 						
 					}
 					
-				} else {
+				} else { // no ore underneath
 
-					this.moveTo(this.randomDirection());
-					
-					if (this.currentPlaystyle().shouldSpawnBarracks()) {
+					Boolean built = false; 
+					if (!built && this.currentPlaystyle().shouldSpawnMinerFactory()) {
 						
-						this.tryBuild(this.randomDirection(), Barracks.type());
+						built = this.tryBuild(this.randomDirection(), MinerFactory.type());
 						
 					}
+					if (!built && this.currentPlaystyle().shouldSpawnBarracks()) {
+						
+						built = this.tryBuild(this.randomDirection(), Barracks.type());
+						
+					}
+					
+					while (!this.robotController.canMove(facing)) {
+						
+						this.facing = this.randomDirection();
+						
+					}
+					this.moveTo(facing);
 					
 				}
 				
@@ -51,10 +68,6 @@ public class Beaver extends BattleRobot {
 	}
 	
 	// MARK: Static Helpers
-	
-	public static int cost() {
-		return 100;
-	}
 		
 	public static RobotType type() {
 		return RobotType.BEAVER;

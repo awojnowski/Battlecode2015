@@ -59,6 +59,12 @@ public class BattleRobot extends Robot {
 		
 		for (RobotInfo enemy : enemies) {
 			
+			if (enemy.type == RobotType.HQ) return enemy;
+			
+		}
+		
+		for (RobotInfo enemy : enemies) {
+			
 			if (enemy.type == RobotType.TOWER) return enemy;
 			
 		}
@@ -100,19 +106,28 @@ public class BattleRobot extends Robot {
 	
 	// MARK: Mobilization
 	
-	public Boolean shouldMobalize() {
+	public Boolean shouldMobilize() {
 		
 		if (!this.canBeMobilized) return false;
 		if (!this.shouldMove()) return false;
-		return Clock.getRoundNum() > 500;
+
+		int roundNum = Clock.getRoundNum();
+		if ((roundNum > 500 && roundNum < 800) ||
+			(roundNum > 1100 && roundNum < 1400) ||
+			(roundNum > 1700 && roundNum < 2000)) {
+			
+			return true;
+			
+		}
+		return false;
 		
 	}
 	
-	public void mobalize() throws GameActionException {
+	public void mobilize() throws GameActionException {
 		
 		if (!this.canBeMobilized) return;
 		
-		this.moveToward(this.closestEnemyTower());
+		this.moveToward(this.bestObjective());
 		
 	}
 	

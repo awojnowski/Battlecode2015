@@ -4,7 +4,8 @@ import java.util.Random;
 
 public abstract class Playstyle {
 	
-	public Random random;
+	private Random random;
+	
 	public Playstyle() {
 		
 		this.random = new Random();
@@ -14,10 +15,12 @@ public abstract class Playstyle {
 	// MARK: Building Spawning
 	
 	public Boolean shouldSpawnBarracks() { return this.shouldSpawn(0.5); }
+	public Boolean shouldSpawnMinerFactory() { return this.shouldSpawn(0.5); }
 	
 	// MARK: Unit Spawning
 	
 	public Boolean shouldSpawnBeaver() { return this.shouldSpawn(0.5); }
+	public Boolean shouldSpawnMiner() { return this.shouldSpawn(0.5); }
 	public Boolean shouldSpawnSoldier() { return this.shouldSpawn(0.5); }
 	
 	// MARK: Randomization
@@ -32,10 +35,7 @@ public abstract class Playstyle {
 	
 	// MARK: Static Helpers
 
-	public static int identifier() {
-		
-		return 0;
-		
-	}
+	public int identifierI() { return -1; }
+	public static int identifierS() { return -1; }
 
 }
