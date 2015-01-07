@@ -2,9 +2,9 @@ package team170;
 
 import battlecode.common.*;
 
-public class TankFactory extends Robot {
+public class Launcher extends Robot {
 
-	public TankFactory(RobotController robotController) {
+	public Launcher(RobotController robotController) {
 		
 		super(robotController);
 		
@@ -13,19 +13,16 @@ public class TankFactory extends Robot {
 	public void run() {
 		
 		super.run();
-				
+		
 		try {
 			
 			if (this.robotController.isCoreReady()) {
 				
-				if (this.broadcaster.robotCountFor(Tank.type()) < 50) {
-					
-					this.trySpawn(this.randomDirection(), Tank.type());
-					
-				}
+				
 				
 			}
-							
+			this.transferSupplyIfPossible();
+			
 		} catch (GameActionException exception) {
 		}
 		
@@ -34,9 +31,9 @@ public class TankFactory extends Robot {
 	}
 	
 	// MARK: Static Helpers
-		
+	
 	public static RobotType type() {
-		return RobotType.TANKFACTORY;
+		return RobotType.LAUNCHER;
 	}
 
 }

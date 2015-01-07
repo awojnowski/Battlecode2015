@@ -42,6 +42,14 @@ public class RobotPlayer {
 			
 			robot = new Miner(robotController);
 			
+		} else if (robotController.getType() == Helipad.type()) {
+			
+			robot = new Helipad(robotController);
+			
+		} else if (robotController.getType() == Drone.type()) {
+			
+			robot = new Drone(robotController);
+			
 		} else if (robotController.getType() == TankFactory.type()) {
 			
 			robot = new TankFactory(robotController);
@@ -49,6 +57,18 @@ public class RobotPlayer {
 		} else if (robotController.getType() == Tank.type()) {
 			
 			robot = new Tank(robotController);
+			
+		} else if (robotController.getType() == Launcher.type()) {
+			
+			robot = new Launcher(robotController);
+			
+		} else if (robotController.getType() == Missile.type()) {
+			
+			robot = new Missile(robotController);
+			
+		} else if (robotController.getType() == AerospaceLab.type()) {
+			
+			robot = new AerospaceLab(robotController);
 			
 		}
 		
