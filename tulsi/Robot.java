@@ -1,10 +1,10 @@
 package tulsi;
 
 import battlecode.common.*;
-
 import java.util.Random;
+import tulsi.playstyles.*;
 
-public class Robot {
+public abstract class Robot {
 	
 	// MARK: Static Variables
 	
@@ -216,6 +216,17 @@ public class Robot {
 	public void stopFor(int turns) {
 		
 		this.stopTurns = turns;
+		
+	}
+	
+	// MARK: Playstyles
+	
+	public Playstyle currentPlaystyle() throws GameActionException {
+		
+		int playstyleIdentifier = this.broadcaster.currentPlaystyle();
+		if (playstyleIdentifier == AggressivePlaystyle.identifier()) return new AggressivePlaystyle();
+		if (playstyleIdentifier == TurtlePlaystyle.identifier()) return new TurtlePlaystyle();
+		return null;
 		
 	}
 	
