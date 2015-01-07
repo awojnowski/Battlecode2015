@@ -70,6 +70,10 @@ public class Beaver extends BattleRobot {
 	}
 	
 	// MARK: Static Helpers
+
+	public RobotType getType() {
+		return type();
+	}
 		
 	public static RobotType type() {
 		return RobotType.BEAVER;

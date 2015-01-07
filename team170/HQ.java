@@ -19,6 +19,11 @@ public class HQ extends BattleRobot {
 
 	public void run() {
 		
+		try {
+			this.broadcaster.resetRobotCounts();
+		}
+		catch (GameActionException e) {}
+		
 		super.run();
 		
 		try {
@@ -45,13 +50,13 @@ public class HQ extends BattleRobot {
 	}
 	
 	// MARK: Static Helpers
+
+	public RobotType getType() {
+		return type();
+	}
 		
 	public static RobotType type() {
 		return RobotType.HQ;
-	}
-	
-	public static int identifierInteger() {
-		return 1;
 	}
 
 }

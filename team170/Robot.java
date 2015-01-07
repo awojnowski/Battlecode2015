@@ -50,6 +50,10 @@ public abstract class Robot {
 	
 	public void run() {
 
+		try {
+			this.broadcaster.incrementRobotCount(this.getType());
+		}
+		catch (GameActionException e){}
 		this.stopTurns = Math.max(this.stopTurns - 1, 0);
 		
 	}
@@ -332,13 +336,13 @@ public abstract class Robot {
 	}
 	
 	// MARK: Static Helpers
-	
-	public static RobotType type() {
+
+	public RobotType getType() {
 		return RobotType.HQ;
 	}
-	
-	public static int identifierInteger() {
-		return 0;
+
+	public static RobotType type() {
+		return RobotType.HQ;
 	}
 
 }
