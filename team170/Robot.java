@@ -51,10 +51,10 @@ public abstract class Robot {
 	public void run() {
 
 		try {
-			this.broadcaster.incrementRobotCount(this.getType());
+			this.broadcaster.incrementTalliedRobotCountFor(this.getType());
+			this.stopTurns = Math.max(this.stopTurns - 1, 0);
 		}
 		catch (GameActionException e){}
-		this.stopTurns = Math.max(this.stopTurns - 1, 0);
 		
 	}
 	
@@ -91,6 +91,7 @@ public abstract class Robot {
 	public void build(Direction direction, RobotType type) throws GameActionException {
 		
 		this.robotController.build(direction, type);
+		this.broadcaster.decrementCurrentCivicBudget(type.oreCost);
 		
 	}
 	
@@ -271,15 +272,30 @@ public abstract class Robot {
 		
 	}
 	
+	// MARK: Randomness
+	
+	public Boolean should(int probability) {
+		
+		probability = Math.max(0, probability);
+		probability = Math.min(100, probability);
+		int random = this.random.nextInt(100);
+		return (random < probability);
+		
+	}
+	
 	// MARK: Spawning
 	
-	public Boolean canSpawn(Direction direction, RobotType type) {
+	public Boolean canSpawn(Direction direction, RobotType type) throws GameActionException {
 		
-		if (this.robotController.hasSpawnRequirements(type)) {
+		if (type.oreCost < this.robotController.getTeamOre() - this.broadcaster.currentCivicBudget()) {
 			
-			if (this.robotController.canSpawn(direction, type)) {
+			if (this.robotController.hasSpawnRequirements(type)) {
+				
+				if (this.robotController.canSpawn(direction, type)) {
 
-				return true;
+					return true;
+					
+				}
 				
 			}
 			
@@ -303,6 +319,7 @@ public abstract class Robot {
 	public void spawn(Direction direction, RobotType type) throws GameActionException {
 		
 		this.robotController.spawn(direction, type);
+		this.broadcaster.incrementRobotCountFor(type);
 		
 	}
 	

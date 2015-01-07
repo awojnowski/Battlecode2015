@@ -36,10 +36,45 @@ public class Beaver extends BattleRobot {
 					}
 					
 				} else { // no ore underneath
-
-					if (this.broadcaster.robotCountFor(Barracks.type()) < 5) {
+					
+					int barracks = this.broadcaster.robotCountFor(Barracks.type());
+					int minerFactories = this.broadcaster.robotCountFor(MinerFactory.type());
+										
+					int barracksProbability = (5 - barracks) * 10 + 50;
+					if (barracks >= 5) barracksProbability = 0;
+					
+					int minerFactoryProbability = (2 - minerFactories) * 25 + 50;
+					if (minerFactories >= 2) minerFactoryProbability = 0;
+					
+					if (barracksProbability > 0 || minerFactoryProbability > 0) {
 						
-						this.tryBuild(this.randomDirection(), Barracks.type());
+						RobotType[] robotTypes = new RobotType[2];
+						int[] probabilities = new int[2];
+						
+						if (barracksProbability > minerFactoryProbability) {
+							robotTypes[0] = Barracks.type();
+							robotTypes[1] = MinerFactory.type();
+							probabilities[0] = barracksProbability;
+							probabilities[1] = minerFactoryProbability;
+						} else {
+							robotTypes[1] = Barracks.type();
+							robotTypes[0] = MinerFactory.type();
+							probabilities[1] = barracksProbability;
+							probabilities[0] = minerFactoryProbability;
+						}
+						
+						for (int i = 0; i < probabilities.length; i++) {
+							
+							int probability = probabilities[i];
+							if (this.should(probability)) {
+
+								RobotType type = robotTypes[i];
+								this.tryBuild(this.randomDirection(), type);
+								break;
+								
+							}
+							
+						}
 						
 					}
 					

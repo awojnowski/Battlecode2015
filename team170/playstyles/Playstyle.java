@@ -3,7 +3,7 @@ package team170.playstyles;
 import java.util.Random;
 
 public abstract class Playstyle {
-	
+		
 	private Random random;
 	
 	public Playstyle() {

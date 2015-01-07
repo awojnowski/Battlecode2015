@@ -20,7 +20,7 @@ public class Barracks extends Robot {
 			
 			if (this.robotController.isCoreReady()) {
 				
-				if (this.broadcaster.robotCountFor(Soldier.type()) < 100) {
+				if (this.broadcaster.robotCountFor(Soldier.type()) < 200) {
 					
 					this.trySpawn(this.randomDirection(), Soldier.type());
 					

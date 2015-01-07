@@ -21,6 +21,7 @@ public class HQ extends BattleRobot {
 		
 		try {
 			this.broadcaster.resetRobotCounts();
+			this.broadcaster.incrementCurrentCivicBudget(2);
 		}
 		catch (GameActionException e) {}
 		

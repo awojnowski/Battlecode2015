@@ -34,6 +34,14 @@ public class RobotPlayer {
 			
 			robot = new Tower(robotController);
 			
+		} else if (robotController.getType() == MinerFactory.type()) {
+			
+			robot = new MinerFactory(robotController);
+			
+		} else if (robotController.getType() == Miner.type()) {
+			
+			robot = new Miner(robotController);
+			
 		}
 		
 		// run the robot
