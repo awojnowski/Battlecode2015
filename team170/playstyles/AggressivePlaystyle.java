@@ -7,6 +7,8 @@ public class AggressivePlaystyle extends Playstyle {
 		this.barracksSpawnOrder = new int[] {1, 4, 5, 8, 9};
 		this.minerFactorySpawnOrder = new int[] {2, 3};
 		this.tankFactorySpawnOrder = new int[] {6, 7, 10, 11};
+		this.helipadSpawnOrder = new int[] {};
+		this.aerospaceLabSpawnOrder = new int[] {};
 		
 	}
 	

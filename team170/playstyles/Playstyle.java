@@ -10,12 +10,16 @@ public abstract class Playstyle {
 	public int[] barracksSpawnOrder;
 	public int[] minerFactorySpawnOrder;
 	public int[] tankFactorySpawnOrder;
+	public int[] helipadSpawnOrder;
+	public int[] aerospaceLabSpawnOrder;
 		
 	public Playstyle() {
 				
 		this.barracksSpawnOrder = new int[] {};
 		this.minerFactorySpawnOrder = new int[] {};
 		this.tankFactorySpawnOrder = new int[] {};
+		this.helipadSpawnOrder = new int[] {};
+		this.aerospaceLabSpawnOrder = new int[] {};
 		
 	}
 	
@@ -47,6 +51,22 @@ public abstract class Playstyle {
 			
 			lowestNumber = this.tankFactorySpawnOrder[totalTankFactories];
 			type = TankFactory.type();
+			
+		}
+
+		int totalHelipads = this.broadcaster.robotCountFor(Helipad.type());
+		if (this.isBuildOrderLowest(totalHelipads, lowestNumber, this.helipadSpawnOrder)) {
+			
+			lowestNumber = this.helipadSpawnOrder[totalHelipads];
+			type = Helipad.type();
+			
+		}
+
+		int totalAerospaceLabs = this.broadcaster.robotCountFor(AerospaceLab.type());
+		if (this.isBuildOrderLowest(totalAerospaceLabs, lowestNumber, this.aerospaceLabSpawnOrder)) {
+			
+			lowestNumber = this.aerospaceLabSpawnOrder[totalAerospaceLabs];
+			type = AerospaceLab.type();
 			
 		}
 				
