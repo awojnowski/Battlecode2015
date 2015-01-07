@@ -20,7 +20,7 @@ public class Barracks extends Robot {
 			
 			if (this.robotController.isCoreReady()) {
 				
-				if (this.currentPlaystyle().shouldSpawnSoldier()) {
+				if (this.broadcaster.robotCountFor(Soldier.type()) < 100) {
 					
 					this.trySpawn(this.randomDirection(), Soldier.type());
 					
@@ -43,10 +43,6 @@ public class Barracks extends Robot {
 	
 	public static RobotType type() {
 		return RobotType.BARRACKS;
-	}
-	
-	public static int identifierInteger() {
-		return 3;
 	}
 
 }

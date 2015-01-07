@@ -7,8 +7,6 @@ public class Soldier extends BattleRobot {
 	public Soldier(RobotController robotController) {
 		
 		super(robotController);
-
-		
 		
 	}
 
@@ -26,10 +24,18 @@ public class Soldier extends BattleRobot {
 					
 					if (!this.shouldMobilize()) {
 						
-						this.moveTo(this.randomDirection());
+						if (this.distanceTo(this.HQLocation()) > 100) {
+
+							this.moveToward(this.HQLocation());
+							
+						} else {
+							
+							this.moveTo(this.randomDirection());
+							
+						}
 						
-					}  else {
-						
+					} else {
+
 						this.mobilize();
 						
 					}
@@ -54,10 +60,6 @@ public class Soldier extends BattleRobot {
 	
 	public static RobotType type() {
 		return RobotType.SOLDIER;
-	}
-	
-	public static int identifierInteger() {
-		return 4;
 	}
 
 }

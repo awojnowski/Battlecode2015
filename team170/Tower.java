@@ -36,9 +36,5 @@ public class Tower extends BattleRobot {
 	public static RobotType type() {
 		return RobotType.TOWER;
 	}
-	
-	public static int identifierInteger() {
-		return 5;
-	}
 
 }

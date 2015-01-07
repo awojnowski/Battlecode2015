@@ -61,9 +61,5 @@ public class Miner extends Robot {
 	public static RobotType type() {
 		return RobotType.MINER;
 	}
-	
-	public static int identifierInteger() {
-		return 7;
-	}
 
 }

@@ -37,15 +37,9 @@ public class Beaver extends BattleRobot {
 					
 				} else { // no ore underneath
 
-					Boolean built = false; 
-					if (!built && this.currentPlaystyle().shouldSpawnMinerFactory()) {
+					if (this.broadcaster.robotCountFor(Barracks.type()) < 5) {
 						
-						built = this.tryBuild(this.randomDirection(), MinerFactory.type());
-						
-					}
-					if (!built && this.currentPlaystyle().shouldSpawnBarracks()) {
-						
-						built = this.tryBuild(this.randomDirection(), Barracks.type());
+						this.tryBuild(this.randomDirection(), Barracks.type());
 						
 					}
 					
@@ -77,10 +71,6 @@ public class Beaver extends BattleRobot {
 		
 	public static RobotType type() {
 		return RobotType.BEAVER;
-	}
-	
-	public static int identifierInteger() {
-		return 2;
 	}
 
 }

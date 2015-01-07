@@ -32,7 +32,7 @@ public class HQ extends BattleRobot {
 			
 			if (this.robotController.isCoreReady()) {
 				
-				if (this.currentPlaystyle().shouldSpawnBeaver()) {
+				if (this.broadcaster.robotCountFor(Beaver.type()) < 15) {
 					
 					this.trySpawn(this.randomDirection(), Beaver.type());
 					

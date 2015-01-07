@@ -6,7 +6,7 @@ import team170.playstyles.*;
 
 public abstract class Robot {
 	
-	private static final int MAX_BUILD_TILES = 1000;
+	private static final int MAX_BUILD_TILES = 10000;
 	
 	// MARK: Static Variables
 	
