@@ -1,13 +1,13 @@
-package tulsi;
+package team170;
 
 import battlecode.common.*;
 
-public class MinerFactory extends Robot {
+public class Barracks extends Robot {
 
-	public MinerFactory(RobotController robotController) {
+	public Barracks(RobotController robotController) {
 		
 		super(robotController);
-		
+
 		
 		
 	}
@@ -20,14 +20,14 @@ public class MinerFactory extends Robot {
 			
 			if (this.robotController.isCoreReady()) {
 				
-				if (this.currentPlaystyle().shouldSpawnMiner()) {
+				if (this.currentPlaystyle().shouldSpawnSoldier()) {
 					
-					this.trySpawn(this.randomDirection(), Miner.type());
+					this.trySpawn(this.randomDirection(), Soldier.type());
 					
 				}
-								
+				
 			}
-							
+										
 		} catch (GameActionException exception) {
 		}
 		
@@ -36,13 +36,13 @@ public class MinerFactory extends Robot {
 	}
 	
 	// MARK: Static Helpers
-		
+	
 	public static RobotType type() {
-		return RobotType.MINERFACTORY;
+		return RobotType.BARRACKS;
 	}
 	
 	public static int identifierInteger() {
-		return 8;
+		return 3;
 	}
 
 }

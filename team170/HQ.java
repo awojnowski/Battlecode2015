@@ -1,7 +1,7 @@
-package tulsi;
+package team170;
 
 import battlecode.common.*;
-import tulsi.playstyles.*;
+import team170.playstyles.*;
 
 public class HQ extends BattleRobot {
 

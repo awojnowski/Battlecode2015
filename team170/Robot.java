@@ -1,8 +1,8 @@
-package tulsi;
+package team170;
 
 import battlecode.common.*;
 import java.util.Random;
-import tulsi.playstyles.*;
+import team170.playstyles.*;
 
 public abstract class Robot {
 	
