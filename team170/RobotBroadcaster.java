@@ -10,6 +10,7 @@ public class RobotBroadcaster {
 	
 	private static final int ROBOTS_STARTING_INDEX = 100;
 	private static final int ROBOTS_COPY_INDEX = 200;
+	private static final int ROBOTS_BUILDING_INDEX = 300;
 	
 	// required properties
 	public RobotController robotController;
@@ -68,7 +69,21 @@ public class RobotBroadcaster {
 	
 	// MARK: Robots
 	
-	public void resetRobotCounts() throws GameActionException {
+	public int robotCountFor(RobotType type) throws GameActionException {
+		
+		return this.livingRobotCountFor(type) + this.buildingRobotCountFor(type);
+		
+	}
+	
+	private int incrementForRobot(RobotType type) {
+		
+		return type.ordinal();
+		
+	}
+	
+	// MARK: Robots (Living)
+	
+	public void resetLivingRobotCounts() throws GameActionException {
 		
 		for (int i = 0; i < 25; i++) {
 			
@@ -79,29 +94,45 @@ public class RobotBroadcaster {
 		
 	}
 	
-	public void incrementTalliedRobotCountFor(RobotType type) throws GameActionException {
+	public void incrementLivingTalliedRobotCountFor(RobotType type) throws GameActionException {
 		
 		int channel = ROBOTS_STARTING_INDEX + this.incrementForRobot(type);
 		this.broadcast(channel, this.readBroadcast(channel) + 1);
 		
 	}
 	
-	public void incrementRobotCountFor(RobotType type) throws GameActionException {
+	public void incrementLivingRobotCountFor(RobotType type) throws GameActionException {
 
 		int channel = ROBOTS_COPY_INDEX + this.incrementForRobot(type);
 		this.broadcast(channel, this.readBroadcast(channel) + 1);
 		
 	}
 	
-	public int robotCountFor(RobotType type) throws GameActionException {
+	public int livingRobotCountFor(RobotType type) throws GameActionException {
 		
 		return this.readBroadcast(ROBOTS_COPY_INDEX + this.incrementForRobot(type));
 		
 	}
 	
-	private int incrementForRobot(RobotType type) {
+	// MARK: Robots (Building)
+	
+	public void incrementBuildingRobotCountFor(RobotType type) throws GameActionException {
+
+		int channel = ROBOTS_BUILDING_INDEX + this.incrementForRobot(type);
+		this.broadcast(channel, this.readBroadcast(channel) + 1);
 		
-		return type.ordinal();
+	}
+	
+	public void decrementBuildingRobotCountFor(RobotType type) throws GameActionException {
+
+		int channel = ROBOTS_BUILDING_INDEX + this.incrementForRobot(type);
+		this.broadcast(channel, Math.max(0, this.readBroadcast(channel) - 1));
+		
+	}
+	
+	public int buildingRobotCountFor(RobotType type) throws GameActionException {
+		
+		return this.readBroadcast(ROBOTS_BUILDING_INDEX + this.incrementForRobot(type));
 		
 	}
 

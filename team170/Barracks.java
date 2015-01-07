@@ -7,8 +7,6 @@ public class Barracks extends Robot {
 	public Barracks(RobotController robotController) {
 		
 		super(robotController);
-
-		
 		
 	}
 
@@ -20,7 +18,8 @@ public class Barracks extends Robot {
 			
 			if (this.robotController.isCoreReady()) {
 				
-				if (this.broadcaster.robotCountFor(Soldier.type()) < 200) {
+				if (((this.broadcaster.robotCountFor(Soldier.type()) < 200) && Clock.getRoundNum() < 1000) ||
+					((this.broadcaster.robotCountFor(Soldier.type()) < 20) && Clock.getRoundNum() >= 1000)) {
 					
 					this.trySpawn(this.randomDirection(), Soldier.type());
 					
@@ -36,10 +35,6 @@ public class Barracks extends Robot {
 	}
 	
 	// MARK: Static Helpers
-
-	public RobotType getType() {
-		return type();
-	}
 	
 	public static RobotType type() {
 		return RobotType.BARRACKS;

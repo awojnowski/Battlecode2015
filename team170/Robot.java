@@ -29,6 +29,9 @@ public abstract class Robot {
 	// playstyles
 	private Playstyle playstyle;
 	
+	// turns
+	private int turns;
+	
 	// MARK: Main Methods
 	
 	public Robot(RobotController robotController) {
@@ -51,8 +54,16 @@ public abstract class Robot {
 	public void run() {
 
 		try {
-			this.broadcaster.incrementTalliedRobotCountFor(this.getType());
+			this.broadcaster.incrementLivingTalliedRobotCountFor(this.type);
 			this.stopTurns = Math.max(this.stopTurns - 1, 0);
+			this.turns ++;
+			
+			// bug in that we have to decrement the building robot count on the second turn (not the first turn)
+			if (this.turns == 2) {
+
+				this.broadcaster.decrementBuildingRobotCountFor(this.type);
+				
+			}
 		}
 		catch (GameActionException e){}
 		
@@ -86,7 +97,8 @@ public abstract class Robot {
 		
 		this.robotController.build(direction, type);
 		this.broadcaster.decrementCurrentCivicBudget(type.oreCost);
-		
+		this.broadcaster.incrementBuildingRobotCountFor(type);
+				
 	}
 	
 	// MARK: Directions
@@ -246,7 +258,6 @@ public abstract class Robot {
 		Playstyle playstyle = null;
 		int playstyleIdentifier = this.broadcaster.currentPlaystyle();
 		if (playstyleIdentifier == AggressivePlaystyle.identifierS()) playstyle = new AggressivePlaystyle();
-		if (playstyleIdentifier == TurtlePlaystyle.identifierS()) playstyle = new TurtlePlaystyle();
 		
 		if (playstyle != null) {
 			
@@ -255,6 +266,8 @@ public abstract class Robot {
 				if (playstyle.identifierI() == this.playstyle.identifierI()) return this.playstyle;
 				
 			}
+			
+			playstyle.broadcaster = this.broadcaster;
 			this.playstyle = playstyle;
 			return playstyle;
 			
@@ -303,7 +316,7 @@ public abstract class Robot {
 	public void spawn(Direction direction, RobotType type) throws GameActionException {
 		
 		this.robotController.spawn(direction, type);
-		this.broadcaster.incrementRobotCountFor(type);
+		this.broadcaster.incrementBuildingRobotCountFor(type);
 		
 	}
 	
@@ -337,10 +350,6 @@ public abstract class Robot {
 	}
 	
 	// MARK: Static Helpers
-
-	public RobotType getType() {
-		return RobotType.HQ;
-	}
 
 	public static RobotType type() {
 		return RobotType.HQ;

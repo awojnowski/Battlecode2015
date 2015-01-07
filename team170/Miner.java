@@ -2,15 +2,13 @@ package team170;
 
 import battlecode.common.*;
 
-public class Miner extends Robot {
+public class Miner extends BattleRobot {
 	
 	public Direction facing;
 
 	public Miner(RobotController robotController) {
 		
 		super(robotController);
-		
-		
 		
 	}
 
@@ -19,6 +17,8 @@ public class Miner extends Robot {
 		super.run();
 				
 		try {
+			
+			this.attack();
 			
 			if (this.robotController.isCoreReady()) {
 				
@@ -53,10 +53,6 @@ public class Miner extends Robot {
 	}
 	
 	// MARK: Static Helpers
-
-	public RobotType getType() {
-		return type();
-	}
 		
 	public static RobotType type() {
 		return RobotType.MINER;

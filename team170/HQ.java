@@ -20,11 +20,12 @@ public class HQ extends BattleRobot {
 	public void run() {
 		
 		try {
-			this.broadcaster.resetRobotCounts();
+			this.broadcaster.resetLivingRobotCounts();
 			
 			int budget = 3;
 			budget += (int)Math.max(0, this.robotController.getTeamOre() - this.broadcaster.currentCivicBudget() - 800) / 70; // account for lots of ore
 			budget += Math.max(0, 500 - Clock.getRoundNum()) / 100;
+			if (this.currentPlaystyle().nextBuildingType() == null) budget = 0;
 			this.broadcaster.incrementCurrentCivicBudget(budget);
 			
 			this.robotController.setIndicatorString(1, "Civic budget: " + this.broadcaster.currentCivicBudget());
@@ -57,10 +58,6 @@ public class HQ extends BattleRobot {
 	}
 	
 	// MARK: Static Helpers
-
-	public RobotType getType() {
-		return type();
-	}
 		
 	public static RobotType type() {
 		return RobotType.HQ;

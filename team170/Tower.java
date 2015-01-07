@@ -28,10 +28,6 @@ public class Tower extends BattleRobot {
 	}
 	
 	// MARK: Static Helpers
-
-	public RobotType getType() {
-		return type();
-	}
 		
 	public static RobotType type() {
 		return RobotType.TOWER;

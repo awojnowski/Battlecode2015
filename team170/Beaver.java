@@ -26,6 +26,13 @@ public class Beaver extends BattleRobot {
 			
 			if (this.robotController.isCoreReady()) {
 				
+				RobotType buildType = this.currentPlaystyle().nextBuildingType();
+				if (buildType != null) {
+					
+					this.tryBuild(this.randomDirection(), buildType);
+					
+				}
+				
 				if (this.robotController.senseOre(this.robotController.getLocation()) > 0 &&
 					this.distanceTo(this.HQLocation()) > 2) { // on ore
 					
@@ -36,25 +43,6 @@ public class Beaver extends BattleRobot {
 					}
 					
 				} else { // no ore underneath
-					
-					int barracks = this.broadcaster.robotCountFor(Barracks.type());
-					int minerFactories = this.broadcaster.robotCountFor(MinerFactory.type());
-										
-					int barracksProbability = (5 - barracks) * 10 + 50;
-					if (barracks >= 5) barracksProbability = 0;
-					
-					int minerFactoryProbability = (2 - minerFactories) * 10 + 80;
-					if (minerFactories >= 2) minerFactoryProbability = 0;
-					
-					if (barracksProbability > 0 || minerFactoryProbability > 0) {
-						
-						if (barracksProbability > minerFactoryProbability) {
-							this.tryBuild(this.randomDirection(), Barracks.type());
-						} else {
-							this.tryBuild(this.randomDirection(), MinerFactory.type());
-						}
-						
-					}
 					
 					while (!this.robotController.canMove(facing)) {
 						
@@ -77,10 +65,6 @@ public class Beaver extends BattleRobot {
 	}
 	
 	// MARK: Static Helpers
-
-	public RobotType getType() {
-		return type();
-	}
 		
 	public static RobotType type() {
 		return RobotType.BEAVER;

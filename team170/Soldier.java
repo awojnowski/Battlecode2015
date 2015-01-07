@@ -53,10 +53,6 @@ public class Soldier extends BattleRobot {
 	}
 	
 	// MARK: Static Helpers
-
-	public RobotType getType() {
-		return type();
-	}
 	
 	public static RobotType type() {
 		return RobotType.SOLDIER;

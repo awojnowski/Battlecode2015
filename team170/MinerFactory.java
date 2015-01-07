@@ -8,8 +8,6 @@ public class MinerFactory extends Robot {
 		
 		super(robotController);
 		
-		
-		
 	}
 
 	public void run() {
@@ -36,10 +34,6 @@ public class MinerFactory extends Robot {
 	}
 	
 	// MARK: Static Helpers
-
-	public RobotType getType() {
-		return type();
-	}
 		
 	public static RobotType type() {
 		return RobotType.MINERFACTORY;
