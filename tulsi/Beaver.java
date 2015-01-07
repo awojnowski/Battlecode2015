@@ -3,12 +3,15 @@ package tulsi;
 import battlecode.common.*;
 
 public class Beaver extends BattleRobot {
+	
+	Direction facing;
 
 	public Beaver(RobotController robotController) {
 		
 		super(robotController);
 
 		this.canBeMobilized = false;
+		this.facing = this.randomDirection();
 		
 	}
 
@@ -20,8 +23,9 @@ public class Beaver extends BattleRobot {
 			
 			if (this.robotController.isCoreReady()) {
 				
-				int random = this.random.nextInt(2);
-				if (random < 1) {
+				this.attack();
+				
+				if (this.robotController.senseOre(this.robotController.getLocation()) > 0) { // on ore
 					
 					if (this.robotController.canMine()) {
 						
@@ -29,11 +33,9 @@ public class Beaver extends BattleRobot {
 						
 					}
 					
-				} else {
+				} else { // no ore underneath
 
-					this.moveTo(this.randomDirection());
-					
-					if (this.broadcaster.readBroadcast(69) == 0) {
+					if (this.broadcaster.readBroadcast(69) == 0 && this.distanceTo(this.HQLocation()) < 25) {
 						
 						if (this.tryBuild(this.randomDirection(), Barracks.type())) {
 
@@ -42,6 +44,11 @@ public class Beaver extends BattleRobot {
 						}
 						
 					}
+					
+					while (!this.robotController.canMove(facing))
+						this.facing = this.randomDirection();
+					
+					this.moveTo(facing);
 					
 				}
 				
