@@ -33,13 +33,9 @@ public class Beaver extends BattleRobot {
 
 					this.moveTo(this.randomDirection());
 					
-					if (this.broadcaster.readBroadcast(69) == 0) {
+					if (this.currentPlaystyle().shouldSpawnBarracks()) {
 						
-						if (this.tryBuild(this.randomDirection(), Barracks.type())) {
-
-							this.broadcaster.broadcast(69, 1);
-							
-						}
+						this.tryBuild(this.randomDirection(), Barracks.type());
 						
 					}
 					

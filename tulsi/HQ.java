@@ -25,11 +25,10 @@ public class HQ extends BattleRobot {
 			
 			attack();
 			
-			double oreCount = this.robotController.getTeamOre();
-			if (robotController.isCoreReady() && oreCount > 100) {
-			
-				robotController.spawn(this.randomDirection(), RobotType.BEAVER);
-			
+			if (this.currentPlaystyle().shouldSpawnBeaver()) {
+				
+				this.trySpawn(this.randomDirection(), Beaver.type());
+				
 			}
 			
 		} catch (GameActionException e) {
