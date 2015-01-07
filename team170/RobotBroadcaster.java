@@ -7,6 +7,7 @@ public class RobotBroadcaster {
 	// definitions
 	private static final int PLAYSTYLE_CHANNEL = 1;
 	private static final int ROBOTS_STARTING_INDEX = 100;
+	private static final int ROBOTS_COPY_INDEX = 200;
 	
 	// required properties
 	public RobotController robotController;
@@ -43,6 +44,7 @@ public class RobotBroadcaster {
 		
 		for (int i = 0; i < 25; i++) {
 			
+			this.broadcast(ROBOTS_COPY_INDEX + i, this.readBroadcast(ROBOTS_STARTING_INDEX + i));
 			this.broadcast(ROBOTS_STARTING_INDEX + i, 0);
 			
 		}
@@ -58,36 +60,13 @@ public class RobotBroadcaster {
 	
 	public int robotCountFor(RobotType type) throws GameActionException {
 		
-		return this.readBroadcast(ROBOTS_STARTING_INDEX + this.incrementForRobot(type));
+		return this.readBroadcast(ROBOTS_COPY_INDEX + this.incrementForRobot(type));
 		
 	}
 	
 	public int incrementForRobot(RobotType type) {
 		
-		switch (type) {
-			case AEROSPACELAB: return 1;
-			case BARRACKS: return 2;
-			case BASHER: return 3;
-			case BEAVER: return 4;
-			case COMMANDER: return 5;
-			case COMPUTER: return 6;
-			case DRONE: return 7;
-			case HANDWASHSTATION: return 8;
-			case HELIPAD: return 9;
-			case HQ: return 10;
-			case LAUNCHER: return 11;
-			case MINER: return 12;
-			case MINERFACTORY: return 13;
-			case MISSILE: return 14;
-			case SOLDIER: return 15;
-			case SUPPLYDEPOT: return 16;
-			case TANK: return 17;
-			case TANKFACTORY: return 18;
-			case TECHNOLOGYINSTITUTE: return 19;
-			case TOWER: return 20;
-			case TRAININGFIELD: return 21;
-		}
-		return 0;
+		return type.ordinal();
 		
 	}
 
