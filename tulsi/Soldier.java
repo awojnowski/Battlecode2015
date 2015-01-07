@@ -18,11 +18,9 @@ public class Soldier extends BattleRobot {
 		
 		try {
 			
-			if (attack()) {
-				
-				// just chill if we attacked
-				
-			} else {
+			Boolean attacked = attack();
+			Boolean shouldMove = !attacked || this.attackStyle == BattleRobotAttackStyle.STRAFE_ON_ATTACK;
+			if (shouldMove) {
 				
 				if (!this.shouldMobalize()) {
 					

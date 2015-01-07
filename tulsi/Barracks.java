@@ -18,16 +18,7 @@ public class Barracks extends Robot {
 				
 		try {
 							
-			if (this.robotController.hasSpawnRequirements(Soldier.type())) {
-				
-				Direction direction = this.randomDirection();
-				if (this.robotController.canSpawn(direction, Soldier.type())) {
-					
-					this.robotController.spawn(direction, Soldier.type());
-					
-				}
-					
-			}
+			this.trySpawn(this.randomDirection(), Soldier.type());
 							
 		} catch (GameActionException exception) {
 		}

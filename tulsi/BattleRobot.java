@@ -2,14 +2,21 @@ package tulsi;
 
 import battlecode.common.*;
 
+public enum BattleRobotAttackStyle {
+	STOP_ON_ATTACK,
+	STRAFE_ON_ATTACK
+}
+
 public class BattleRobot extends Robot {
 
-	public Boolean canBeMobalized;
+	public BattleRobotAttackStyle attackStyle;
+	public Boolean canBeMobilized;
 	
 	public BattleRobot(RobotController robotController) {
 		
 		super(robotController);
 		
+		this.attackStyle = BattleRobotAttackStyle.STOP_ON_ATTACK;
 		this.canBeMobilized = true;
 		
 	}
@@ -24,6 +31,13 @@ public class BattleRobot extends Robot {
 		if (desiredEnemy != null) {
 			
 			this.robotController.attackLocation(desiredEnemy.location);
+			
+			if (this.attackStyle == BattleRobotAttackStyle.STOP_ON_ATTACK) {
+				
+				this.stopFor(this.type.attackDelay);
+				
+			}
+			
 			return true;
 			
 		}
@@ -88,14 +102,15 @@ public class BattleRobot extends Robot {
 	
 	public Boolean shouldMobalize() {
 		
-		if (!this.canBeMobalized) return false;
+		if (!this.canBeMobilized) return false;
+		if (!this.shouldMove()) return false;
 		return Clock.getRoundNum() > 500;
 		
 	}
 	
 	public void mobalize() throws GameActionException {
 		
-		if (!this.canBeMobalized) return;
+		if (!this.canBeMobilized) return;
 		
 		this.moveToward(this.closestEnemyTower());
 		

@@ -15,7 +15,7 @@ public class HQ extends BattleRobot {
 	public void run() {
 		
 		super.run();
-
+		
 		try {
 			
 			attack();

@@ -21,6 +21,9 @@ public class Robot {
 	public Team team;
 	public RobotType type;
 	
+	// movement
+	public int stopTurns;
+	
 	// MARK: Main Methods
 	
 	public Robot(RobotController robotController) {
@@ -42,7 +45,8 @@ public class Robot {
 	
 	public void run() {
 		
-		;
+		this.stopTurns = Math.max(this.stopTurns - 1, 0);
+		this.robotController.setIndicatorString(1, "Stopping for " + this.stopTurns + " turns.");
 		
 	}
 	
@@ -172,7 +176,15 @@ public class Robot {
 	
 	// MARK: Movement
 	
+	public Boolean shouldMove() {
+		
+		return this.stopTurns == 0;
+		
+	}
+	
 	public void moveToward(MapLocation location) throws GameActionException {
+		
+		if (!this.shouldMove()) return;
 		
 		Direction direction = this.robotController.getLocation().directionTo(location);
 		int directionInteger = this.directionToInt(direction);
@@ -189,6 +201,8 @@ public class Robot {
 	
 	public Boolean moveTo(Direction direction) throws GameActionException {
 		
+		if (!this.shouldMove()) return false;
+		
 		if (this.robotController.canMove(direction)) {
 			
 			this.robotController.move(direction);
@@ -196,6 +210,47 @@ public class Robot {
 			
 		}
 		return false;
+		
+	}
+	
+	public void stopFor(int turns) {
+		
+		this.stopTurns = turns;
+		
+	}
+	
+	// MARK: Spawning
+	
+	public Boolean canSpawn(Direction direction, RobotType type) {
+		
+		if (this.robotController.hasSpawnRequirements(type)) {
+			
+			if (this.robotController.canSpawn(direction, type)) {
+
+				return true;
+				
+			}
+			
+		}
+		return false;
+		
+	}
+	
+	public Boolean trySpawn(Direction direction, RobotType type) throws GameActionException {
+		
+		if (this.canSpawn(direction, type)) {
+			
+			this.spawn(direction, type);
+			return true;
+			
+		}
+		return false;
+		
+	}
+	
+	public void spawn(Direction direction, RobotType type) throws GameActionException {
+		
+		this.robotController.spawn(direction, type);
 		
 	}
 	
