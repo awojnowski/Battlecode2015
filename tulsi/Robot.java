@@ -6,7 +6,7 @@ import tulsi.playstyles.*;
 
 public abstract class Robot {
 	
-	private static final int MAX_BUILD_TILES = 100;
+	private static final int MAX_BUILD_TILES = 1000;
 	
 	// MARK: Static Variables
 	
@@ -49,9 +49,8 @@ public abstract class Robot {
 	}
 	
 	public void run() {
-		
+
 		this.stopTurns = Math.max(this.stopTurns - 1, 0);
-		this.robotController.setIndicatorString(1, "Stopping for " + this.stopTurns + " turns.");
 		
 	}
 	
@@ -153,9 +152,9 @@ public abstract class Robot {
 		
 	}
 	
-	public MapLocation bestObjective() { 
+	public MapLocation bestObjective() {
 		
-		MapLocation closestTower = null;
+		MapLocation bestLocation = null;
 		int closestTowerDistance = Integer.MAX_VALUE;
 		
 		MapLocation[] towers = this.enemyTowerLocations();
@@ -164,14 +163,20 @@ public abstract class Robot {
 			int distance = this.enemyHQLocation().distanceSquaredTo(tower);
 			if (distance < closestTowerDistance) {
 				
-				closestTower = tower;
+				bestLocation = tower;
 				closestTowerDistance = distance;
 				
 			}
 			
 		}
 		
-		return closestTower;
+		if (bestLocation == null) {
+			
+			bestLocation = this.enemyHQLocation();
+			
+		}
+		
+		return bestLocation;
 		
 	}
 	
@@ -191,6 +196,7 @@ public abstract class Robot {
 	
 	public void moveToward(MapLocation location) throws GameActionException {
 		
+		if (location == null) return; 
 		if (!this.shouldMove()) return;
 		
 		Direction direction = this.robotController.getLocation().directionTo(location);
@@ -223,6 +229,14 @@ public abstract class Robot {
 	public void stopFor(int turns) {
 		
 		this.stopTurns = turns;
+		
+	}
+	
+	// MARK: Nearby
+	
+	public RobotInfo[] nearbyAllies() throws GameActionException {
+		
+		return this.robotController.senseNearbyRobots(GameConstants.SUPPLY_TRANSFER_RADIUS_SQUARED, this.team);
 		
 	}
 	
@@ -288,10 +302,43 @@ public abstract class Robot {
 		
 	}
 	
+	// MARK: Supply
+	
+	public void transferSupplyIfPossible() throws GameActionException {
+		
+		RobotInfo[] allies = this.nearbyAllies();
+		double lowestSupply = this.robotController.getSupplyLevel();
+		double transferAmount = 0;
+		
+		MapLocation targetLocation = null;
+		for (RobotInfo ally : allies) {
+			
+			if (ally.supplyLevel < lowestSupply) {
+				
+				lowestSupply = ally.supplyLevel;
+				transferAmount = (this.robotController.getSupplyLevel() - ally.supplyLevel) / 2;
+				targetLocation = ally.location;
+				
+			}
+			
+		}
+		
+		if (targetLocation != null) {
+			
+			this.robotController.transferSupplies((int)transferAmount, targetLocation);
+			
+		}
+		
+	}
+	
 	// MARK: Static Helpers
 	
 	public static RobotType type() {
 		return RobotType.HQ;
+	}
+	
+	public static int identifierInteger() {
+		return 0;
 	}
 
 }

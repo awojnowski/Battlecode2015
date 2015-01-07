@@ -19,10 +19,10 @@ public class Soldier extends BattleRobot {
 		try {
 			
 			Boolean attacked = attack();
-			Boolean shouldMove = !attacked || this.attackStyle == BattleRobotAttackStyle.STRAFE_ON_ATTACK;
-			if (shouldMove) {
+			if (this.robotController.isCoreReady()) {
 				
-				if (this.robotController.isCoreReady()) {
+				Boolean shouldMove = !attacked || this.attackStyle == BattleRobotAttackStyle.STRAFE_ON_ATTACK;
+				if (shouldMove) {
 					
 					if (!this.shouldMobilize()) {
 						
@@ -37,6 +37,7 @@ public class Soldier extends BattleRobot {
 				}
 				
 			}
+			this.transferSupplyIfPossible();
 			
 		} catch (GameActionException exception) {
 		}
@@ -49,6 +50,10 @@ public class Soldier extends BattleRobot {
 	
 	public static RobotType type() {
 		return RobotType.SOLDIER;
+	}
+	
+	public static int identifierInteger() {
+		return 4;
 	}
 
 }

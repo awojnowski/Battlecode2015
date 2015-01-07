@@ -127,7 +127,12 @@ public class BattleRobot extends Robot {
 		
 		if (!this.canBeMobilized) return;
 		
-		this.moveToward(this.bestObjective());
+		MapLocation objective = this.bestObjective();
+		if (objective != null) {
+
+			this.moveToward(objective);
+			
+		}
 		
 	}
 	

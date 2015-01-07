@@ -60,6 +60,8 @@ public class Beaver extends BattleRobot {
 				
 			}
 			
+			this.transferSupplyIfPossible();
+			
 		} catch (GameActionException e) {
 		}
 		
@@ -71,6 +73,10 @@ public class Beaver extends BattleRobot {
 		
 	public static RobotType type() {
 		return RobotType.BEAVER;
+	}
+	
+	public static int identifierInteger() {
+		return 2;
 	}
 
 }

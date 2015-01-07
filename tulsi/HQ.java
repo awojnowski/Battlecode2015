@@ -35,6 +35,8 @@ public class HQ extends BattleRobot {
 				
 			}
 			
+			this.transferSupplyIfPossible();
+			
 		} catch (GameActionException e) {
 		}
 		
@@ -46,6 +48,10 @@ public class HQ extends BattleRobot {
 		
 	public static RobotType type() {
 		return RobotType.HQ;
+	}
+	
+	public static int identifierInteger() {
+		return 1;
 	}
 
 }

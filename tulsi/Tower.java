@@ -18,7 +18,7 @@ public class Tower extends BattleRobot {
 
 		try {
 			
-			attack();
+			this.attack();
 			
 		} catch (GameActionException e) {
 		}
@@ -31,6 +31,10 @@ public class Tower extends BattleRobot {
 		
 	public static RobotType type() {
 		return RobotType.TOWER;
+	}
+	
+	public static int identifierInteger() {
+		return 5;
 	}
 
 }
