@@ -37,22 +37,7 @@ public class HQ extends BattleRobot {
 			
 			// update the budgets
 			
-			int remainingOre = oreMined;
-			
-			int budget = (int)(remainingOre * 0.35);
-			this.broadcaster.incrementCivicBudget(budget);
-			remainingOre -= budget;
-						
-			int totalBeavers = this.broadcaster.robotCountFor(Beaver.type());
-			if (totalBeavers < 10) {
-				
-				budget = (int)(remainingOre * ((10 - totalBeavers) / 10.0));
-				this.broadcaster.incrementBudget(Beaver.type(), budget);
-				remainingOre -= budget;
-								
-			}
-			
-			this.broadcaster.incrementBudget(Miner.type(), remainingOre);
+			this.currentPlaystyle().updateBudgeting(oreMined);
 			
 		}
 		catch (GameActionException e) {}

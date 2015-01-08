@@ -5,6 +5,7 @@ import battlecode.common.*;
 public class Miner extends BattleRobot {
 	
 	public Direction facing;
+	private int mineTime;
 
 	public Miner(RobotController robotController) {
 		
@@ -22,14 +23,22 @@ public class Miner extends BattleRobot {
 			
 			if (this.robotController.isCoreReady()) {
 
-				if (!this.tryMine(true)) { // no ore underneath
+				Boolean shouldMine = (this.mineTime < 6);
+				if (shouldMine && this.tryMine(false)) {
 					
-					while (!this.robotController.canMove(facing)) {
+					this.mineTime ++;
+					this.robotController.setIndicatorString(1, "MT: " + this.mineTime);
+					
+				} else { // no ore underneath
+					
+					while (!this.robotController.canMove(this.facing)) {
 						
 						this.facing = this.randomDirection();
 						
 					}
 					this.moveTo(facing);
+					this.mineTime = 0;
+					this.robotController.setIndicatorString(1, "MT: " + this.mineTime);
 					
 				}
 				

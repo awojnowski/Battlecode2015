@@ -23,6 +23,14 @@ public abstract class Playstyle {
 		
 	}
 	
+	// MARK: Budgeting
+	
+	public void updateBudgeting(int oreMined) throws GameActionException {
+		
+		;
+		
+	}
+	
 	// MARK: Buildings
 	
 	public RobotType nextBuildingType() throws GameActionException {

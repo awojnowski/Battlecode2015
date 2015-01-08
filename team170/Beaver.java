@@ -5,6 +5,7 @@ import battlecode.common.*;
 public class Beaver extends BattleRobot {
 	
 	public Direction facing;
+	public int mineTime;
 
 	public Beaver(RobotController robotController) {
 		
@@ -33,13 +34,13 @@ public class Beaver extends BattleRobot {
 					
 				}
 				
-				if (this.tryMine(false)) {
+				Boolean shouldMine = (this.mineTime < 6);
+				if (shouldMine && this.tryMine(false)) {
 					
-					// we mined
+					this.mineTime ++;
+					this.robotController.setIndicatorString(1, "MT: " + this.mineTime);
 					
-				} else { 
-					
-					// no ore underneath
+				} else { // no ore underneath
 					
 					while (!this.robotController.canMove(this.facing)) {
 						
@@ -47,6 +48,8 @@ public class Beaver extends BattleRobot {
 						
 					}
 					this.moveTo(facing);
+					this.mineTime = 0;
+					this.robotController.setIndicatorString(1, "MT: " + this.mineTime);
 					
 				}
 				
