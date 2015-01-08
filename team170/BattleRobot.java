@@ -112,8 +112,7 @@ public class BattleRobot extends Robot {
 		if (!this.shouldMove()) return false;
 
 		int roundNum = Clock.getRoundNum();
-		if ((roundNum > 500 && roundNum < 800) ||
-			(roundNum > 1100 && roundNum < 1400) ||
+		if ((roundNum > 900 && roundNum < 1400) ||
 			(roundNum > 1700 && roundNum < 2000)) {
 			
 			return true;

@@ -18,7 +18,7 @@ public class TankFactory extends Robot {
 			
 			if (this.robotController.isCoreReady()) {
 				
-				if (this.broadcaster.robotCountFor(Tank.type()) < 50) {
+				if (this.broadcaster.robotCountFor(Tank.type()) < 100) {
 					
 					this.trySpawn(this.randomDirection(), Tank.type());
 					
