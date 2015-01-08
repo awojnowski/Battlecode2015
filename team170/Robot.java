@@ -2,6 +2,8 @@ package team170;
 
 import battlecode.common.*;
 import java.util.Random;
+
+import team170.movement.MovementController;
 import team170.playstyles.*;
 
 public abstract class Robot {
@@ -10,11 +12,12 @@ public abstract class Robot {
 	
 	// MARK: Static Variables
 	
-	private static Direction[] directions = {Direction.NORTH, Direction.NORTH_EAST, Direction.EAST, Direction.SOUTH_EAST, Direction.SOUTH, Direction.SOUTH_WEST, Direction.WEST, Direction.NORTH_WEST};
+	public final Direction[] DIRECTIONS = {Direction.NORTH, Direction.NORTH_EAST, Direction.EAST, Direction.SOUTH_EAST, Direction.SOUTH, Direction.SOUTH_WEST, Direction.WEST, Direction.NORTH_WEST};
 
 	// MARK: Instance Variables
 	
 	// controllers
+	public MovementController movementController;
 	public RobotBroadcaster broadcaster;
 	public RobotController robotController;
 	public Random random;
@@ -23,26 +26,22 @@ public abstract class Robot {
 	public Team team;
 	public RobotType type;
 	
-	// movement
-	public int stopTurns;
-	
 	// playstyles
 	private Playstyle playstyle;
-	
-	// turns
-	private int turns;
 	
 	// MARK: Main Methods
 	
 	public Robot(RobotController robotController) {
 		
 		this.broadcaster = new RobotBroadcaster();
+		this.movementController = new MovementController();
 		this.robotController = robotController;
 		this.random = new Random(robotController.getID());
 		
 		// update the controllers
 		
 		this.broadcaster.robotController = this.robotController;
+		this.movementController.robot = this;
 		
 		// setup the helpers
 		
@@ -55,15 +54,7 @@ public abstract class Robot {
 
 		try {
 			this.broadcaster.incrementLivingTalliedRobotCountFor(this.type);
-			this.stopTurns = Math.max(this.stopTurns - 1, 0);
-			this.turns ++;
-			
-			// bug in that we have to decrement the building robot count on the second turn (not the first turn)
-			if (this.turns == 2) {
-
-				this.broadcaster.decrementBuildingRobotCountFor(this.type);
-				
-			}
+			this.movementController.decrementMoveTurns();
 		}
 		catch (GameActionException e){}
 		
@@ -97,41 +88,18 @@ public abstract class Robot {
 		
 		this.robotController.build(direction, type);
 		this.broadcaster.decrementBudget(type, type.oreCost);
-		this.broadcaster.incrementBuildingRobotCountFor(type);
+		this.broadcaster.incrementCivicBuildingRobotCountFor(type);
 		this.broadcaster.incrementSpentOre(type.oreCost);
-		
+				
 	}
 	
 	// MARK: Directions
 	
 	public Direction randomDirection() {
 		
-		int rand = this.random.nextInt(directions.length);
-		return directions[rand];
+		int rand = this.random.nextInt(DIRECTIONS.length);
+		return DIRECTIONS[rand];
 		
-	}
-	
-	public int directionToInt(Direction d) {
-		switch(d) {
-			case NORTH:
-				return 0;
-			case NORTH_EAST:
-				return 1;
-			case EAST:
-				return 2;
-			case SOUTH_EAST:
-				return 3;
-			case SOUTH:
-				return 4;
-			case SOUTH_WEST:
-				return 5;
-			case WEST:
-				return 6;
-			case NORTH_WEST:
-				return 7;
-			default:
-				return -1;
-		}
 	}
 	
 	// MARK: Distance
@@ -215,52 +183,6 @@ public abstract class Robot {
 		
 	}
 	
-	// MARK: Movement
-	
-	public Boolean shouldMove() {
-		
-		return this.stopTurns == 0;
-		
-	}
-	
-	public void moveToward(MapLocation location) throws GameActionException {
-		
-		if (location == null) return; 
-		if (!this.shouldMove()) return;
-		
-		Direction direction = this.robotController.getLocation().directionTo(location);
-		int directionInteger = this.directionToInt(direction);
-		
-		int[] offsets = {0,1,-1,2,-2};
-		for (int offset : offsets) {
-			
-			direction = directions[(directionInteger + offset + 8) % 8];
-			if (this.moveTo(direction)) return;
-			
-		}
-		
-	}
-	
-	public Boolean moveTo(Direction direction) throws GameActionException {
-		
-		if (!this.shouldMove()) return false;
-		
-		if (this.robotController.canMove(direction)) {
-			
-			this.robotController.move(direction);
-			return true;
-			
-		}
-		return false;
-		
-	}
-	
-	public void stopFor(int turns) {
-		
-		this.stopTurns = turns;
-		
-	}
-	
 	// MARK: Nearby
 	
 	public RobotInfo[] nearbyAllies() throws GameActionException {
@@ -335,9 +257,8 @@ public abstract class Robot {
 		
 		this.robotController.spawn(direction, type);
 		this.broadcaster.decrementBudget(type, type.oreCost);
-		this.broadcaster.incrementBuildingRobotCountFor(type);
 		this.broadcaster.incrementSpentOre(type.oreCost);
-		
+				
 	}
 	
 	// MARK: Supply

@@ -28,11 +28,11 @@ public class Drone extends BattleRobot {
 						
 						if (this.distanceTo(this.HQLocation()) > 100) {
 
-							this.moveToward(this.HQLocation());
+							this.movementController.moveToward(this.HQLocation());
 							
 						} else {
 							
-							this.moveTo(this.randomDirection());
+							this.movementController.moveTo(this.randomDirection());
 							
 						}
 						

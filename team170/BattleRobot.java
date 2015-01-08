@@ -34,7 +34,7 @@ public class BattleRobot extends Robot {
 			
 			if (this.attackStyle == BattleRobotAttackStyle.STOP_ON_ATTACK) {
 				
-				this.stopFor(this.type.attackDelay);
+				this.movementController.stopFor(this.type.attackDelay);
 				
 			}
 			
@@ -109,7 +109,7 @@ public class BattleRobot extends Robot {
 	public Boolean shouldMobilize() {
 		
 		if (!this.canBeMobilized) return false;
-		if (!this.shouldMove()) return false;
+		if (!this.movementController.shouldMove()) return false;
 
 		int roundNum = Clock.getRoundNum();
 		if ((roundNum > 900 && roundNum < 1400) ||
@@ -129,7 +129,7 @@ public class BattleRobot extends Robot {
 		MapLocation objective = this.bestObjective();
 		if (objective != null) {
 
-			this.moveToward(objective);
+			this.movementController.moveToward(objective);
 			
 		}
 		

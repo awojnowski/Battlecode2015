@@ -14,13 +14,13 @@ public class Beaver extends BattleRobot {
 		this.attackStyle = BattleRobotAttackStyle.STRAFE_ON_ATTACK;
 		this.canBeMobilized = false;
 		this.facing = this.randomDirection();
-		
+				
 	}
 
 	public void run() {
 		
 		super.run();
-		
+				
 		try {
 			
 			this.attack();
@@ -47,7 +47,7 @@ public class Beaver extends BattleRobot {
 						this.facing = this.randomDirection();
 						
 					}
-					this.moveTo(facing);
+					this.movementController.moveTo(facing);
 					this.mineTime = 0;
 					this.robotController.setIndicatorString(1, "MT: " + this.mineTime);
 					

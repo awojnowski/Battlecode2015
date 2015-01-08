@@ -2,7 +2,7 @@ package team170;
 
 import battlecode.common.*;
 
-public class AerospaceLab extends Robot {
+public class AerospaceLab extends CivicRobot {
 
 	public AerospaceLab(RobotController robotController) {
 		

@@ -2,7 +2,7 @@ package team170;
 
 import battlecode.common.*;
 
-public class SupplyDepot extends Robot {
+public class SupplyDepot extends CivicRobot {
 
 	public SupplyDepot(RobotController robotController) {
 		

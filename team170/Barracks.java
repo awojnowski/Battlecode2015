@@ -2,7 +2,7 @@ package team170;
 
 import battlecode.common.*;
 
-public class Barracks extends Robot {
+public class Barracks extends CivicRobot {
 
 	public Barracks(RobotController robotController) {
 		
@@ -13,7 +13,7 @@ public class Barracks extends Robot {
 	public void run() {
 		
 		super.run();
-				
+			
 		try {
 			
 			if (this.robotController.isCoreReady()) {

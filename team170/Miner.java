@@ -36,7 +36,7 @@ public class Miner extends BattleRobot {
 						this.facing = this.randomDirection();
 						
 					}
-					this.moveTo(facing);
+					this.movementController.moveTo(facing);
 					this.mineTime = 0;
 					this.robotController.setIndicatorString(1, "MT: " + this.mineTime);
 					

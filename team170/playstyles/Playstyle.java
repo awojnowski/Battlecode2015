@@ -48,8 +48,24 @@ public abstract class Playstyle {
 	}
 	
 	public void updateBudgetingForBuildOrderProgress(int oreMined, int progress) throws GameActionException {
+				
+		int remainingOre = oreMined;
 		
-		; // subclass override this
+		double civicRatio = this.civicRatios[progress];
+		
+		int totalSpawned = this.broadcaster.totalSpawnedRobotCount();
+		double beaverRatio = this.civicRatios[progress];
+		double minerRatio = this.civicRatios[progress];
+		double soldierRatio = this.civicRatios[progress];
+		double tankRatio = this.civicRatios[progress];
+		
+		int budget = (int)(remainingOre * civicRatio);
+		this.broadcaster.incrementCivicBudget(budget);
+		remainingOre -= budget;
+		
+		// now update the remaining ore
+		
+		this.broadcaster.incrementBudget(Beaver.type(), remainingOre);
 		
 	}
 	

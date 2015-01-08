@@ -5,16 +5,16 @@ import battlecode.common.*;
 public class RobotBroadcaster {
 	
 	// definitions
-	private static final int PLAYSTYLE_CHANNEL = 1;
-	private static final int ORE_SPENT_INDEX = 4;
-	private static final int ORE_SPENT_COPY_INDEX = 5;
-	private static final int ROBOTS_SPAWNED_INDEX = 6;
-	private static final int ROBOTS_SPAWNED_COPY_INDEX = 7;
+	private static final int PLAYSTYLE_CHANNEL = 1; // channel denotes the current playstyle
+	private static final int ORE_SPENT_INDEX = 4; // amount of ore spent this turn (tally)
+	private static final int ORE_SPENT_COPY_INDEX = 5; // amount of ore spent last turn
+	private static final int ROBOTS_SPAWNED_TALLY_INDEX = 6; // amount of robots SPAWNED (not built) (tally)
+	private static final int ROBOTS_SPAWNED_INDEX = 7; // amount of robots SPAWNED (spawned_index + building_index)
 	
-	private static final int ROBOTS_STARTING_INDEX = 100;
-	private static final int ROBOTS_COPY_INDEX = 200;
-	private static final int ROBOTS_BUILDING_INDEX = 300;
-	private static final int ROBOTS_BUDGET_INDEX = 400;
+	private static final int ROBOTS_STARTING_INDEX = 100; // amount of robots reported this turn (tally)
+	private static final int ROBOTS_COPY_INDEX = 200; // robot types reported last turn
+	private static final int ROBOTS_CIVIC_BUILDING_INDEX = 300; // civic robot types reported as building
+	private static final int ROBOTS_BUDGET_INDEX = 400; // robot budgets
 	
 	// required properties
 	public RobotController robotController;
@@ -119,13 +119,15 @@ public class RobotBroadcaster {
 	
 	public int robotCountFor(RobotType type) throws GameActionException {
 		
-		return this.livingRobotCountFor(type) + this.buildingRobotCountFor(type);
+		int count = this.livingRobotCountFor(type);
+		if (this.isRobotTypeCivic(type)) count += this.buildingCivicRobotCountFor(type);
+		return count;
 		
 	}
 	
 	public int totalSpawnedRobotCount() throws GameActionException {
 		
-		return this.readBroadcast(ROBOTS_SPAWNED_COPY_INDEX);
+		return this.readBroadcast(ROBOTS_SPAWNED_INDEX);
 		
 	}
 	
@@ -158,7 +160,7 @@ public class RobotBroadcaster {
 
 		if (!this.isRobotTypeCivic(type)) {
 			
-			this.broadcast(ROBOTS_SPAWNED_INDEX, this.readBroadcast(ROBOTS_SPAWNED_INDEX) + 1);
+			this.broadcast(ROBOTS_SPAWNED_TALLY_INDEX, this.readBroadcast(ROBOTS_SPAWNED_TALLY_INDEX) + 1);
 			
 		}
 		
@@ -170,25 +172,30 @@ public class RobotBroadcaster {
 		
 	}
 	
-	// MARK: Robots (Building)
+	// MARK: Robots (Civic Building)
 	
-	public void incrementBuildingRobotCountFor(RobotType type) throws GameActionException {
+	public void incrementCivicBuildingRobotCountFor(RobotType type) throws GameActionException {
+		
+		if (!this.isRobotTypeCivic(type)) return;
 
-		int channel = ROBOTS_BUILDING_INDEX + this.incrementForRobot(type);
+		int channel = ROBOTS_CIVIC_BUILDING_INDEX + this.incrementForRobot(type);
 		this.broadcast(channel, this.readBroadcast(channel) + 1);
 		
 	}
 	
-	public void decrementBuildingRobotCountFor(RobotType type) throws GameActionException {
+	public void decrementCivicBuildingRobotCountFor(RobotType type) throws GameActionException {
+		
+		if (!this.isRobotTypeCivic(type)) return;
 
-		int channel = ROBOTS_BUILDING_INDEX + this.incrementForRobot(type);
+		int channel = ROBOTS_CIVIC_BUILDING_INDEX + this.incrementForRobot(type);
 		this.broadcast(channel, Math.max(0, this.readBroadcast(channel) - 1));
 		
 	}
 	
-	public int buildingRobotCountFor(RobotType type) throws GameActionException {
+	public int buildingCivicRobotCountFor(RobotType type) throws GameActionException {
 		
-		return this.readBroadcast(ROBOTS_BUILDING_INDEX + this.incrementForRobot(type));
+		if (!this.isRobotTypeCivic(type)) return 0;
+		return this.readBroadcast(ROBOTS_CIVIC_BUILDING_INDEX + this.incrementForRobot(type));
 		
 	}
 	
@@ -204,9 +211,9 @@ public class RobotBroadcaster {
 			
 		}
 
-		this.broadcast(ROBOTS_SPAWNED_COPY_INDEX, this.readBroadcast(ROBOTS_SPAWNED_INDEX));
-		this.broadcast(ROBOTS_SPAWNED_INDEX, 0);
-				
+		this.broadcast(ROBOTS_SPAWNED_INDEX, this.readBroadcast(ROBOTS_SPAWNED_TALLY_INDEX));
+		this.broadcast(ROBOTS_SPAWNED_TALLY_INDEX, 0);
+		
 		// copy the ore spent
 		this.broadcast(ORE_SPENT_COPY_INDEX, this.readBroadcast(ORE_SPENT_INDEX));
 		this.broadcast(ORE_SPENT_INDEX, 0);

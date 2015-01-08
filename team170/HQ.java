@@ -7,12 +7,17 @@ public class HQ extends BattleRobot {
 	
 	private int previousOreTotal;
 	private int currentOreTotal;
-
+	
+	private int oreMined;
+	private int oreMinedTurns;
+	private static final int ORE_MINED_HOLD_TURNS = 4; // tally ore for this many turns before budgeting it
+	
 	public HQ(RobotController robotController) {
 		
 		super(robotController);
 		
 		this.canBeMobilized = false;
+		this.oreMinedTurns = ORE_MINED_HOLD_TURNS;
 
 		try {
 			this.broadcaster.setCurrentPlaystyle(AggressivePlaystyle.identifierS());
@@ -24,7 +29,7 @@ public class HQ extends BattleRobot {
 		
 		try {
 			this.broadcaster.newTurn();
-			
+					
 			// update the new ore totals
 			
 			this.previousOreTotal = this.currentOreTotal;
@@ -35,9 +40,18 @@ public class HQ extends BattleRobot {
 			
 			int oreMined = currentOre - this.previousOreTotal;
 			
-			// update the budgets
+			this.oreMined += oreMined;
+			this.oreMinedTurns += 1;
 			
-			this.currentPlaystyle().updateBudgeting(oreMined);
+			// update the budgets if necessary
+			if (this.oreMinedTurns > ORE_MINED_HOLD_TURNS) {
+				
+				this.currentPlaystyle().updateBudgeting(this.oreMined);
+				
+				this.oreMined = 0;
+				this.oreMinedTurns = 0;
+				
+			}
 						
 		}
 		catch (GameActionException e) {}
