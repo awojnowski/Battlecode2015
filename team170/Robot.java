@@ -98,7 +98,8 @@ public abstract class Robot {
 		this.robotController.build(direction, type);
 		this.broadcaster.decrementBudget(type, type.oreCost);
 		this.broadcaster.incrementBuildingRobotCountFor(type);
-				
+		this.broadcaster.incrementSpentOre(type.oreCost);
+		
 	}
 	
 	// MARK: Directions
@@ -194,6 +195,22 @@ public abstract class Robot {
 	public MapLocation enemyHQLocation() {
 		
 		return this.robotController.senseEnemyHQLocation();
+		
+	}
+	
+	// MARK: Mining
+	
+	public boolean tryMine(Boolean mineClose) throws GameActionException {
+		
+		if (!this.robotController.isCoreReady()) return false;
+		if (this.type != RobotType.BEAVER && this.type != RobotType.MINER) return false;
+		if (this.robotController.senseOre(this.robotController.getLocation()) > 0) return false;
+		if (this.distanceTo(this.HQLocation()) <= 2 && !mineClose) return false;
+		if (!this.robotController.canMine()) return false;
+		
+		this.robotController.mine();
+		
+		return true;
 		
 	}
 	
@@ -318,6 +335,7 @@ public abstract class Robot {
 		this.robotController.spawn(direction, type);
 		this.broadcaster.decrementBudget(type, type.oreCost);
 		this.broadcaster.incrementBuildingRobotCountFor(type);
+		this.broadcaster.incrementSpentOre(type.oreCost);
 		
 	}
 	

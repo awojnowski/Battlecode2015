@@ -33,16 +33,7 @@ public class Beaver extends BattleRobot {
 					
 				}
 				
-				if (this.robotController.senseOre(this.robotController.getLocation()) > 0 &&
-					this.distanceTo(this.HQLocation()) > 2) { // on ore
-					
-					if (this.robotController.canMine()) {
-						
-						this.robotController.mine();
-						
-					}
-					
-				} else { // no ore underneath
+				if (!this.tryMine(false)) { // no ore underneath
 					
 					while (!this.robotController.canMove(facing)) {
 						

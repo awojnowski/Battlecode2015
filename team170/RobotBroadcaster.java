@@ -1,13 +1,13 @@
 package team170;
 
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
-
 import battlecode.common.*;
 
 public class RobotBroadcaster {
 	
 	// definitions
 	private static final int PLAYSTYLE_CHANNEL = 1;
+	private static final int ORE_SPENT_INDEX = 2;
+	private static final int ORE_SPENT_COPY_INDEX = 3;
 	
 	private static final int ROBOTS_STARTING_INDEX = 100;
 	private static final int ROBOTS_COPY_INDEX = 200;
@@ -127,18 +127,21 @@ public class RobotBroadcaster {
 		
 	}
 	
-	// MARK: Robots (Living)
+	// MARK: Ore
 	
-	public void resetLivingRobotCounts() throws GameActionException {
-		
-		for (int i = 0; i < 25; i++) {
-			
-			this.broadcast(ROBOTS_COPY_INDEX + i, this.readBroadcast(ROBOTS_STARTING_INDEX + i));
-			this.broadcast(ROBOTS_STARTING_INDEX + i, 0);
-			
-		}
+	public void incrementSpentOre(int increment) throws GameActionException {
+
+		this.broadcast(ORE_SPENT_INDEX, this.readBroadcast(ORE_SPENT_INDEX) + increment);
 		
 	}
+	
+	public int oreSpentLastTurn() throws GameActionException {
+		
+		return this.readBroadcast(ORE_SPENT_COPY_INDEX);
+		
+	}
+	
+	// MARK: Robots (Living)
 	
 	public void incrementLivingTalliedRobotCountFor(RobotType type) throws GameActionException {
 		
@@ -180,6 +183,24 @@ public class RobotBroadcaster {
 		
 		return this.readBroadcast(ROBOTS_BUILDING_INDEX + this.incrementForRobot(type));
 		
+	}
+	
+	// MARK: Turns
+	
+	public void newTurn() throws GameActionException {
+
+		// copy the robot counts
+		for (int i = 0; i < 25; i++) {
+			
+			this.broadcast(ROBOTS_COPY_INDEX + i, this.readBroadcast(ROBOTS_STARTING_INDEX + i));
+			this.broadcast(ROBOTS_STARTING_INDEX + i, 0);
+			
+		}
+				
+		// copy the ore spent
+		this.broadcast(ORE_SPENT_COPY_INDEX, this.readBroadcast(ORE_SPENT_INDEX));
+		this.broadcast(ORE_SPENT_INDEX, 0);
+				
 	}
 
 }

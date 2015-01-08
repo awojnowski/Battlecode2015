@@ -21,16 +21,8 @@ public class Miner extends BattleRobot {
 			this.attack();
 			
 			if (this.robotController.isCoreReady()) {
-				
-				if (this.robotController.senseOre(this.robotController.getLocation()) > 0) { // on ore
-					
-					if (this.robotController.canMine()) {
-						
-						this.robotController.mine();
-						
-					}
-					
-				} else { // no ore underneath
+
+				if (!this.tryMine(true)) { // no ore underneath
 					
 					while (!this.robotController.canMove(facing)) {
 						

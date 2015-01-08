@@ -20,7 +20,7 @@ public class HQ extends BattleRobot {
 	public void run() {
 		
 		try {
-			this.broadcaster.resetLivingRobotCounts();
+			this.broadcaster.newTurn();
 			
 			int budget = 3;
 			budget += (int)Math.max(0, this.robotController.getTeamOre() - this.broadcaster.civicBudget() - 800) / 70; // account for lots of ore
