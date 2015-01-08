@@ -1,16 +1,18 @@
 package team170;
 
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
+
 import battlecode.common.*;
 
 public class RobotBroadcaster {
 	
 	// definitions
 	private static final int PLAYSTYLE_CHANNEL = 1;
-	private static final int CIVIC_BUDGET_CHANNEL = 2;
 	
 	private static final int ROBOTS_STARTING_INDEX = 100;
 	private static final int ROBOTS_COPY_INDEX = 200;
 	private static final int ROBOTS_BUILDING_INDEX = 300;
+	private static final int ROBOTS_BUDGET_INDEX = 400;
 	
 	// required properties
 	public RobotController robotController;
@@ -41,29 +43,73 @@ public class RobotBroadcaster {
 		
 	}
 	
-	// MARK: Civic Budget
+	// MARK: Budgeting
 	
-	public int currentCivicBudget() throws GameActionException {
+	public Boolean isRobotTypeCivic(RobotType type) {
 		
-		return this.readBroadcast(CIVIC_BUDGET_CHANNEL);
+		switch (type) {
+			case HQ:
+			case BARRACKS:
+			case TOWER:
+			case MINERFACTORY:
+			case HELIPAD:
+			case TANKFACTORY:
+			case SUPPLYDEPOT:
+			case AEROSPACELAB:
+				return true;
+			default: return false;
+		}
 		
 	}
 	
-	public void setCurrentCivicBudget(int budget) throws GameActionException {
-
-		this.broadcast(CIVIC_BUDGET_CHANNEL, budget);
+	public int budgetIndexForRobotType(RobotType type) {
+		
+		if (isRobotTypeCivic(type)) return 50;
+		return incrementForRobot(type);
 		
 	}
 	
-	public void incrementCurrentCivicBudget(int increment) throws GameActionException {
-
-		this.setCurrentCivicBudget(this.readBroadcast(CIVIC_BUDGET_CHANNEL) + increment);
+	public int budgetForType(RobotType type) throws GameActionException {
+		
+		return this.readBroadcast(ROBOTS_BUDGET_INDEX + budgetIndexForRobotType(type));
 		
 	}
 	
-	public void decrementCurrentCivicBudget(int decrement) throws GameActionException {
+	public void setBudget(RobotType type, int budget) throws GameActionException {
 
-		this.setCurrentCivicBudget(this.readBroadcast(CIVIC_BUDGET_CHANNEL) - decrement);
+		this.broadcast(ROBOTS_BUDGET_INDEX + budgetIndexForRobotType(type), Math.max(0, budget));
+		
+	}
+	
+	public void incrementBudget(RobotType type, int increment) throws GameActionException {
+
+		this.setBudget(type, this.readBroadcast(ROBOTS_BUDGET_INDEX + budgetIndexForRobotType(type)) + increment);
+		
+	}
+	
+	public void decrementBudget(RobotType type, int decrement) throws GameActionException {
+
+		this.setBudget(type, this.readBroadcast(ROBOTS_BUDGET_INDEX + budgetIndexForRobotType(type)) - decrement);
+		
+	}
+	
+	// MARK: Budget (Civic)
+	
+	public int civicBudget() throws GameActionException {
+		
+		return budgetForType(RobotType.HQ);
+		
+	}
+	
+	public void incrementCivicBudget(int increment) throws GameActionException {
+		
+		this.incrementBudget(RobotType.HQ, increment);
+		
+	}
+	
+	public void decrementCivicBudget(int decrement) throws GameActionException {
+		
+		this.decrementBudget(RobotType.HQ, decrement);
 		
 	}
 	

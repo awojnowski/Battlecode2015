@@ -17,12 +17,8 @@ public class Helipad extends Robot {
 		try {
 			
 			if (this.robotController.isCoreReady()) {
-				
-				if (this.broadcaster.robotCountFor(Drone.type()) < 50) {
-					
-					this.trySpawn(this.randomDirection(), Drone.type());
-					
-				}
+
+				this.trySpawn(this.randomDirection(), Drone.type());
 				
 			}
 							

@@ -17,12 +17,8 @@ public class MinerFactory extends Robot {
 		try {
 			
 			if (this.robotController.isCoreReady()) {
-				
-				if (this.broadcaster.robotCountFor(Miner.type()) < 35) {
-					
-					this.trySpawn(this.randomDirection(), Miner.type());
-					
-				}
+
+				this.trySpawn(this.randomDirection(), Miner.type());
 				
 			}
 							

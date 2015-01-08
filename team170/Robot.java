@@ -74,7 +74,7 @@ public abstract class Robot {
 	public Boolean canBuild(Direction direction, RobotType type) throws GameActionException {
 		
 		if (this.distanceTo(this.HQLocation()) > MAX_BUILD_TILES) return false;
-		if (type.oreCost > this.broadcaster.currentCivicBudget()) return false;
+		if (type.oreCost > this.broadcaster.budgetForType(type)) return false;
 		if (!this.robotController.hasBuildRequirements(type)) return false;
 		if (!this.robotController.canBuild(direction, type)) return false;
 		return true;
@@ -96,7 +96,7 @@ public abstract class Robot {
 	public void build(Direction direction, RobotType type) throws GameActionException {
 		
 		this.robotController.build(direction, type);
-		this.broadcaster.decrementCurrentCivicBudget(type.oreCost);
+		this.broadcaster.decrementBudget(type, type.oreCost);
 		this.broadcaster.incrementBuildingRobotCountFor(type);
 				
 	}
@@ -294,7 +294,7 @@ public abstract class Robot {
 	
 	public Boolean canSpawn(Direction direction, RobotType type) throws GameActionException {
 		
-		if (type.oreCost > this.robotController.getTeamOre() - this.broadcaster.currentCivicBudget()) return false;
+		if (type.oreCost > this.broadcaster.budgetForType(type)) return false;
 		if (!this.robotController.hasSpawnRequirements(type)) return false;
 		if (!this.robotController.canSpawn(direction, type)) return false;
 		return true;
@@ -316,6 +316,7 @@ public abstract class Robot {
 	public void spawn(Direction direction, RobotType type) throws GameActionException {
 		
 		this.robotController.spawn(direction, type);
+		this.broadcaster.decrementBudget(type, type.oreCost);
 		this.broadcaster.incrementBuildingRobotCountFor(type);
 		
 	}

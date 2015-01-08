@@ -23,12 +23,12 @@ public class HQ extends BattleRobot {
 			this.broadcaster.resetLivingRobotCounts();
 			
 			int budget = 3;
-			budget += (int)Math.max(0, this.robotController.getTeamOre() - this.broadcaster.currentCivicBudget() - 800) / 70; // account for lots of ore
+			budget += (int)Math.max(0, this.robotController.getTeamOre() - this.broadcaster.civicBudget() - 800) / 70; // account for lots of ore
 			budget += Math.max(0, 500 - Clock.getRoundNum()) / 100;
 			if (this.currentPlaystyle().nextBuildingType() == null) budget = 0;
-			this.broadcaster.incrementCurrentCivicBudget(budget);
+			this.broadcaster.incrementCivicBudget(budget);
 			
-			this.robotController.setIndicatorString(1, "Civic budget: " + this.broadcaster.currentCivicBudget());
+			this.robotController.setIndicatorString(1, "Civic budget: " + this.broadcaster.civicBudget());
 		}
 		catch (GameActionException e) {}
 		

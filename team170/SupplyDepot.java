@@ -23,17 +23,9 @@ public class SupplyDepot extends Robot {
 	}
 	
 	// MARK: Static Helpers
-
-	public RobotType getType() {
-		return type();
-	}
 		
 	public static RobotType type() {
 		return RobotType.SUPPLYDEPOT;
-	}
-	
-	public static int identifierInteger() {
-		return 6;
 	}
 
 }

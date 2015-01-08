@@ -17,12 +17,8 @@ public class AerospaceLab extends Robot {
 		try {
 			
 			if (this.robotController.isCoreReady()) {
-				
-				if (this.broadcaster.robotCountFor(Launcher.type()) < 50) {
-					
-					this.trySpawn(this.randomDirection(), Launcher.type());
-					
-				}
+
+				this.trySpawn(this.randomDirection(), Launcher.type());
 				
 			}
 							
