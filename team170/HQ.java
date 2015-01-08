@@ -4,6 +4,9 @@ import battlecode.common.*;
 import team170.playstyles.*;
 
 public class HQ extends BattleRobot {
+	
+	private int previousOreTotal;
+	private int currentOreTotal;
 
 	public HQ(RobotController robotController) {
 		
@@ -22,13 +25,35 @@ public class HQ extends BattleRobot {
 		try {
 			this.broadcaster.newTurn();
 			
-			int budget = 3;
-			budget += (int)Math.max(0, this.robotController.getTeamOre() - this.broadcaster.civicBudget() - 800) / 70; // account for lots of ore
-			budget += Math.max(0, 500 - Clock.getRoundNum()) / 100;
-			if (this.currentPlaystyle().nextBuildingType() == null) budget = 0;
-			this.broadcaster.incrementCivicBudget(budget);
+			// update the new ore totals
 			
-			this.robotController.setIndicatorString(1, "Civic budget: " + this.broadcaster.civicBudget());
+			this.previousOreTotal = this.currentOreTotal;
+			this.currentOreTotal = (int)this.robotController.getTeamOre();
+			
+			int currentOre = this.currentOreTotal;
+			currentOre += this.broadcaster.oreSpentLastTurn();
+			
+			int oreMined = currentOre - this.previousOreTotal;
+			
+			// update the budgets
+			
+			int remainingOre = oreMined;
+			
+			int budget = (int)(remainingOre * 0.35);
+			this.broadcaster.incrementCivicBudget(budget);
+			remainingOre -= budget;
+						
+			int totalBeavers = this.broadcaster.robotCountFor(Beaver.type());
+			if (totalBeavers < 10) {
+				
+				budget = (int)(remainingOre * ((10 - totalBeavers) / 10.0));
+				this.broadcaster.incrementBudget(Beaver.type(), budget);
+				remainingOre -= budget;
+								
+			}
+			
+			this.broadcaster.incrementBudget(Miner.type(), remainingOre);
+			
 		}
 		catch (GameActionException e) {}
 		

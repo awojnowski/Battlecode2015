@@ -6,8 +6,8 @@ public class RobotBroadcaster {
 	
 	// definitions
 	private static final int PLAYSTYLE_CHANNEL = 1;
-	private static final int ORE_SPENT_INDEX = 2;
-	private static final int ORE_SPENT_COPY_INDEX = 3;
+	private static final int ORE_SPENT_INDEX = 4;
+	private static final int ORE_SPENT_COPY_INDEX = 5;
 	
 	private static final int ROBOTS_STARTING_INDEX = 100;
 	private static final int ROBOTS_COPY_INDEX = 200;

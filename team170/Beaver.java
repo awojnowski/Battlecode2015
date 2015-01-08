@@ -33,9 +33,15 @@ public class Beaver extends BattleRobot {
 					
 				}
 				
-				if (!this.tryMine(false)) { // no ore underneath
+				if (this.tryMine(false)) {
 					
-					while (!this.robotController.canMove(facing)) {
+					// we mined
+					
+				} else { 
+					
+					// no ore underneath
+					
+					while (!this.robotController.canMove(this.facing)) {
 						
 						this.facing = this.randomDirection();
 						
