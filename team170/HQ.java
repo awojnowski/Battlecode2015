@@ -38,7 +38,7 @@ public class HQ extends BattleRobot {
 			// update the budgets
 			
 			this.currentPlaystyle().updateBudgeting(oreMined);
-			
+						
 		}
 		catch (GameActionException e) {}
 		

@@ -8,6 +8,8 @@ public class RobotBroadcaster {
 	private static final int PLAYSTYLE_CHANNEL = 1;
 	private static final int ORE_SPENT_INDEX = 4;
 	private static final int ORE_SPENT_COPY_INDEX = 5;
+	private static final int ROBOTS_SPAWNED_INDEX = 6;
+	private static final int ROBOTS_SPAWNED_COPY_INDEX = 7;
 	
 	private static final int ROBOTS_STARTING_INDEX = 100;
 	private static final int ROBOTS_COPY_INDEX = 200;
@@ -121,6 +123,12 @@ public class RobotBroadcaster {
 		
 	}
 	
+	public int totalSpawnedRobotCount() throws GameActionException {
+		
+		return this.readBroadcast(ROBOTS_SPAWNED_COPY_INDEX);
+		
+	}
+	
 	private int incrementForRobot(RobotType type) {
 		
 		return type.ordinal();
@@ -147,13 +155,12 @@ public class RobotBroadcaster {
 		
 		int channel = ROBOTS_STARTING_INDEX + this.incrementForRobot(type);
 		this.broadcast(channel, this.readBroadcast(channel) + 1);
-		
-	}
-	
-	public void incrementLivingRobotCountFor(RobotType type) throws GameActionException {
 
-		int channel = ROBOTS_COPY_INDEX + this.incrementForRobot(type);
-		this.broadcast(channel, this.readBroadcast(channel) + 1);
+		if (!this.isRobotTypeCivic(type)) {
+			
+			this.broadcast(ROBOTS_SPAWNED_INDEX, this.readBroadcast(ROBOTS_SPAWNED_INDEX) + 1);
+			
+		}
 		
 	}
 	
@@ -196,6 +203,9 @@ public class RobotBroadcaster {
 			this.broadcast(ROBOTS_STARTING_INDEX + i, 0);
 			
 		}
+
+		this.broadcast(ROBOTS_SPAWNED_COPY_INDEX, this.readBroadcast(ROBOTS_SPAWNED_INDEX));
+		this.broadcast(ROBOTS_SPAWNED_INDEX, 0);
 				
 		// copy the ore spent
 		this.broadcast(ORE_SPENT_COPY_INDEX, this.readBroadcast(ORE_SPENT_INDEX));

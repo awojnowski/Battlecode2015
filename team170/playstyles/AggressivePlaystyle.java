@@ -1,8 +1,7 @@
 package team170.playstyles;
 
-import team170.Beaver;
-import team170.Miner;
-import battlecode.common.GameActionException;
+import team170.*;
+import battlecode.common.*;
 
 public class AggressivePlaystyle extends Playstyle {
 	
@@ -14,28 +13,36 @@ public class AggressivePlaystyle extends Playstyle {
 		this.helipadSpawnOrder = new int[] {};
 		this.aerospaceLabSpawnOrder = new int[] {};
 		
+		//                                   1     2     3     4     5     6     7     8     9     10    End   
+		this.civicRatios =   new double[] { 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35 };
+		this.beaverRatios =  new double[] {  };
+		this.minerRatios =   new double[] {  };
+		this.soldierRatios = new double[] {  };
+		this.tankRatios =    new double[] {  };
+		
 	}
 	
 	// MARK: Budgeting
 	
-	public void updateBudgeting(int oreMined) throws GameActionException {
-		
+	public void updateBudgetingForBuildOrderProgress(int oreMined, int progress) throws GameActionException {
+
 		int remainingOre = oreMined;
 		
-		int budget = (int)(remainingOre * 0.35);
+		double civicRatio = this.civicRatios[progress];
+		
+		int totalSpawned = this.broadcaster.totalSpawnedRobotCount();
+		double beaverRatio = this.civicRatios[progress];
+		double minerRatio = this.civicRatios[progress];
+		double soldierRatio = this.civicRatios[progress];
+		double tankRatio = this.civicRatios[progress];
+		
+		int budget = (int)(remainingOre * civicRatio);
 		this.broadcaster.incrementCivicBudget(budget);
 		remainingOre -= budget;
-					
-		int totalBeavers = this.broadcaster.robotCountFor(Beaver.type());
-		if (totalBeavers < 10) {
-			
-			budget = (int)(remainingOre * ((10 - totalBeavers) / 10.0));
-			this.broadcaster.incrementBudget(Beaver.type(), budget);
-			remainingOre -= budget;
-							
-		}
 		
-		this.broadcaster.incrementBudget(Miner.type(), remainingOre);
+		// now update the remaining ore
+		
+		this.broadcaster.incrementBudget(Beaver.type(), remainingOre);
 		
 	}
 	
