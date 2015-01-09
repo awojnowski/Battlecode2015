@@ -3,6 +3,7 @@ package team170;
 import battlecode.common.*;
 import java.util.Random;
 
+import team170.locations.LocationController;
 import team170.movement.MovementController;
 import team170.playstyles.*;
 
@@ -17,6 +18,7 @@ public abstract class Robot {
 	// MARK: Instance Variables
 	
 	// controllers
+	public LocationController locationController;
 	public MovementController movementController;
 	public RobotBroadcaster broadcaster;
 	public RobotController robotController;
@@ -34,6 +36,7 @@ public abstract class Robot {
 	public Robot(RobotController robotController) {
 		
 		this.broadcaster = new RobotBroadcaster();
+		this.locationController = new LocationController();
 		this.movementController = new MovementController();
 		this.robotController = robotController;
 		this.random = new Random(robotController.getID());
@@ -41,6 +44,7 @@ public abstract class Robot {
 		// update the controllers
 		
 		this.broadcaster.robotController = this.robotController;
+		this.locationController.robotController = this.robotController;
 		this.movementController.robot = this;
 		
 		// setup the helpers
@@ -64,7 +68,7 @@ public abstract class Robot {
 	
 	public Boolean canBuild(Direction direction, RobotType type) throws GameActionException {
 		
-		if (this.distanceTo(this.HQLocation()) > MAX_BUILD_TILES) return false;
+		if (this.distanceTo(this.locationController.HQLocation()) > MAX_BUILD_TILES) return false;
 		if (type.oreCost > this.broadcaster.budgetForType(type)) return false;
 		if (!this.robotController.hasBuildRequirements(type)) return false;
 		if (!this.robotController.canBuild(direction, type)) return false;
@@ -110,62 +114,6 @@ public abstract class Robot {
 		
 	}
 	
-	// MARK: Locations
-	
-	public MapLocation[] towerLocations() {
-		
-		return this.robotController.senseTowerLocations();
-		
-	}
-	
-	public MapLocation HQLocation() {
-		
-		return this.robotController.senseHQLocation();
-		
-	}
-	
-	// MARK: Locations (Enemy)
-
-	public MapLocation[] enemyTowerLocations() {
-		
-		return this.robotController.senseEnemyTowerLocations();
-		
-	}
-	
-	public MapLocation bestObjective() {
-		
-		MapLocation bestLocation = null;
-		int closestTowerDistance = Integer.MAX_VALUE;
-		
-		MapLocation[] towers = this.enemyTowerLocations();
-		for (MapLocation tower : towers) {
-			
-			int distance = this.enemyHQLocation().distanceSquaredTo(tower);
-			if (distance < closestTowerDistance) {
-				
-				bestLocation = tower;
-				closestTowerDistance = distance;
-				
-			}
-			
-		}
-		
-		if (bestLocation == null) {
-			
-			bestLocation = this.enemyHQLocation();
-			
-		}
-		
-		return bestLocation;
-		
-	}
-	
-	public MapLocation enemyHQLocation() {
-		
-		return this.robotController.senseEnemyHQLocation();
-		
-	}
-	
 	// MARK: Mining
 	
 	public boolean tryMine(Boolean mineClose) throws GameActionException {
@@ -174,7 +122,7 @@ public abstract class Robot {
 		
 		if (!this.robotController.isCoreReady()) return false;
 		if (this.robotController.senseOre(this.robotController.getLocation()) == 0) return false;
-		if (this.distanceTo(this.HQLocation()) <= 2 && !mineClose) return false;
+		if (this.distanceTo(this.locationController.HQLocation()) <= 2 && !mineClose) return false;
 		if (!this.robotController.canMine()) return false;
 		
 		this.robotController.mine();

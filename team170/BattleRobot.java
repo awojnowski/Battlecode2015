@@ -126,7 +126,7 @@ public class BattleRobot extends Robot {
 		
 		if (!this.canBeMobilized) return;
 		
-		MapLocation objective = this.bestObjective();
+		MapLocation objective = this.locationController.bestObjective();
 		if (objective != null) {
 
 			this.movementController.moveToward(objective);

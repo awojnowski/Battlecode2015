@@ -24,9 +24,10 @@ public class Soldier extends BattleRobot {
 					
 					if (!this.shouldMobilize()) {
 						
-						if (this.distanceTo(this.HQLocation()) > 100) {
+						MapLocation rallyLocation = this.locationController.militaryRallyLocation();
+						if (this.distanceTo(rallyLocation) > 100) {
 
-							this.movementController.moveToward(this.HQLocation());
+							this.movementController.moveToward(rallyLocation);
 							
 						} else {
 							

@@ -87,95 +87,95 @@ public abstract class Playstyle {
        
         for (int i = 0; i < robotTypes.length && !ratiosAreOff; i++) {
                
+            currentRobotCount = this.broadcaster.robotCountFor(robotTypes[i]);
+            actualRobotRatio = currentRobotCount / totalUnits;
+            desiredRobotRatio = desiredRatios[i];
+           
+            if (desiredRobotRatio > 0) { // if the ratio is set to 0 but there are units it'll throw the system off
+
+                if (Math.abs(desiredRobotRatio - actualRobotRatio) > ratioThreshold) {
+                       
+                    ratiosAreOff = true;
+
+                }
+
+            }
+               
+        }
+       
+        if (ratiosAreOff) { // Otherwise just use the passed in ratios
+           
+            // FIND THE RATIO THAT IS THE MOST ABOVE THE DESIRED RATIO
+           
+            for (int i = 0; i < robotTypes.length; i++) {
+                   
                 currentRobotCount = this.broadcaster.robotCountFor(robotTypes[i]);
                 actualRobotRatio = currentRobotCount / totalUnits;
                 desiredRobotRatio = desiredRatios[i];
                
                 if (desiredRobotRatio > 0) { // if the ratio is set to 0 but there are units it'll throw the system off
 
-                        if (Math.abs(desiredRobotRatio - actualRobotRatio) > ratioThreshold) {
-                               
-                                ratiosAreOff = true;
-
-                        }
+                    if (actualRobotRatio > desiredRobotRatio) {
+                           
+                        unitsPerDesiredPercentage = currentRobotCount / (desiredRobotRatio / 0.01);
+                        if (unitsPerDesiredPercentage > maximumUnitsPerDesiredPercentage)
+                                maximumUnitsPerDesiredPercentage = unitsPerDesiredPercentage;
+                       
+                        desiredRatios[i] = 0.0; // this type is above desired ratio so don't allocate money this turn
+                           
+                    }
 
                 }
+                   
+            }
+           
+            // FIND THE PROJECTED AMOUNTS OF EACH TYPE
+           
+            // FIND THE TOTAL UNITS NEEDED
+           
+            for (int i = 0; i < robotTypes.length; i++) {
+                   
+                currentRobotCount = this.broadcaster.robotCountFor(robotTypes[i]);
+                actualRobotRatio = currentRobotCount / totalUnits;
+                desiredRobotRatio = desiredRatios[i];
                
-        }
-       
-        if (ratiosAreOff) { // Otherwise just use the passed in ratios
-               
-                // FIND THE RATIO THAT IS THE MOST ABOVE THE DESIRED RATIO
-               
-                for (int i = 0; i < robotTypes.length; i++) {
-                       
-                        currentRobotCount = this.broadcaster.robotCountFor(robotTypes[i]);
-                        actualRobotRatio = currentRobotCount / totalUnits;
-                        desiredRobotRatio = desiredRatios[i];
-                       
-                        if (desiredRobotRatio > 0) { // if the ratio is set to 0 but there are units it'll throw the system off
+                if (desiredRobotRatio > 0) { // if the ratio is set to 0 but there are units it'll throw the system off
 
-                                if (actualRobotRatio > desiredRobotRatio) {
-                                       
-                                        unitsPerDesiredPercentage = currentRobotCount / (desiredRobotRatio / 0.01);
-                                        if (unitsPerDesiredPercentage > maximumUnitsPerDesiredPercentage)
-                                                maximumUnitsPerDesiredPercentage = unitsPerDesiredPercentage;
-                                       
-                                        desiredRatios[i] = 0.0; // this type is above desired ratio so don't allocate money this turn
-                                       
-                                }
+                    if (actualRobotRatio < desiredRobotRatio) {
+                           
+                        projectedRobotCount = maximumUnitsPerDesiredPercentage * (desiredRobotRatio / 0.01);
+                        robotsNeeded = projectedRobotCount - currentRobotCount;
+                        totalRobotsNeeded += robotsNeeded;
 
-                        }
-                       
+                    }
+
                 }
+                   
+            }
+           
+            // ALLOCATE RATIOS ACCORDINGLY (BASED ON HOW MANY ROBOTS OF THAT TYPE NEED TO BE CREATED VS TOTAL ROBOTS THAT NEED TO BE CREATED)
+           
+            for (int i = 0; i < robotTypes.length; i++) {
+                   
+                currentRobotCount = this.broadcaster.robotCountFor(robotTypes[i]);
+                actualRobotRatio = currentRobotCount / totalUnits;
+                desiredRobotRatio = desiredRatios[i];
                
-                // FIND THE PROJECTED AMOUNTS OF EACH TYPE
-               
-                // FIND THE TOTAL UNITS NEEDED
-               
-                for (int i = 0; i < robotTypes.length; i++) {
-                       
-                        currentRobotCount = this.broadcaster.robotCountFor(robotTypes[i]);
-                        actualRobotRatio = currentRobotCount / totalUnits;
-                        desiredRobotRatio = desiredRatios[i];
-                       
-                        if (desiredRobotRatio > 0) { // if the ratio is set to 0 but there are units it'll throw the system off
+                if (desiredRobotRatio > 0) { // if the ratio is set to 0 but there are units it'll throw the system off
 
-                                if (actualRobotRatio < desiredRobotRatio) {
-                                       
-                                        projectedRobotCount = maximumUnitsPerDesiredPercentage * (desiredRobotRatio / 0.01);
-                                        robotsNeeded = projectedRobotCount - currentRobotCount;
-                                        totalRobotsNeeded += robotsNeeded;
-
-                                }
-
-                        }
+                    if (actualRobotRatio < desiredRobotRatio) {
                        
+                        projectedRobotCount = maximumUnitsPerDesiredPercentage * (desiredRobotRatio / 0.01);
+                        robotsNeeded = projectedRobotCount - currentRobotCount;
+                        desiredRatios[i] = robotsNeeded / totalRobotsNeeded;
+
+                    }
+
                 }
-               
-                // ALLOCATE RATIOS ACCORDINGLY (BASED ON HOW MANY ROBOTS OF THAT TYPE NEED TO BE CREATED VS TOTAL ROBOTS THAT NEED TO BE CREATED)
-               
-                for (int i = 0; i < robotTypes.length; i++) {
-                       
-                        currentRobotCount = this.broadcaster.robotCountFor(robotTypes[i]);
-                        actualRobotRatio = currentRobotCount / totalUnits;
-                        desiredRobotRatio = desiredRatios[i];
-                       
-                        if (desiredRobotRatio > 0) { // if the ratio is set to 0 but there are units it'll throw the system off
-
-                                if (actualRobotRatio < desiredRobotRatio) {
-                                       
-                                        projectedRobotCount = maximumUnitsPerDesiredPercentage * (desiredRobotRatio / 0.01);
-                                        robotsNeeded = projectedRobotCount - currentRobotCount;
-                                        desiredRatios[i] = robotsNeeded / totalRobotsNeeded;
-
-                                }
-
-                        }
-                       
-                }
-                                      
-               
+                   
+            }
+                                  
+           
         }
        
         // CALCULATE BUDGET NEEDED FOR DESIRED RATIOS
@@ -185,15 +185,18 @@ public abstract class Playstyle {
        
         // CALCULATE TOTAL BUDGET WEIGHT
        
-        for (int i = 0; i < robotTypes.length; i++)
-                totalBudgetWeight += robotTypes[i].oreCost * desiredRatios[i];
+        for (int i = 0; i < robotTypes.length; i++) {
+        	
+        	totalBudgetWeight += robotTypes[i].oreCost * desiredRatios[i];
+        	
+        }  
        
         // SET BUDGET RATIOS
        
         for (int i = 0; i < robotTypes.length; i++) {
                
-                robotBudgetWeight = robotTypes[i].oreCost * desiredRatios[i];
-                budgetRatios[i] = robotBudgetWeight / totalBudgetWeight;
+            robotBudgetWeight = robotTypes[i].oreCost * desiredRatios[i];
+            budgetRatios[i] = robotBudgetWeight / totalBudgetWeight;
                
         }
        
@@ -201,19 +204,19 @@ public abstract class Playstyle {
        
         for (int i = 0; i < robotTypes.length; i++) {
                
-                budget = (int)(remainingOre * budgetRatios[i]);
-               
-                if (remainingOre > budget) {
-                       
-                        this.broadcaster.incrementBudget(robotTypes[i], budget);
-                        remainingOre -= budget;
-               
-                } else {
-                       
-                        this.broadcaster.incrementBudget(robotTypes[i], remainingOre);
-                        remainingOre = 0;
-                       
-                }
+            budget = (int)(remainingOre * budgetRatios[i]);
+           
+            if (remainingOre > budget) {
+                   
+                this.broadcaster.incrementBudget(robotTypes[i], budget);
+                remainingOre -= budget;
+           
+            } else {
+                   
+                this.broadcaster.incrementBudget(robotTypes[i], remainingOre);
+                remainingOre = 0;
+                   
+            }
                
         }
        

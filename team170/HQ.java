@@ -74,7 +74,7 @@ public class HQ extends BattleRobot {
 			
 			this.transferSupplyIfPossible();
 			
-			this.robotController.setIndicatorString(1, "Budgets: Civic: " + this.broadcaster.civicBudget() + " Beavers: " + this.broadcaster.budgetForType(Beaver.type()) + " Miners: " + this.broadcaster.budgetForType(Miner.type()) + " Soldiers: " + this.broadcaster.budgetForType(Soldier.type()) + " Tanks: " + this.broadcaster.budgetForType(Tank.type()));
+			this.robotController.setIndicatorString(1, "Turn: " + this.currentPlaystyle().buildOrderProgress() + " Budgets: Civic: " + this.broadcaster.civicBudget() + " Beavers: " + this.broadcaster.budgetForType(Beaver.type()) + " Miners: " + this.broadcaster.budgetForType(Miner.type()) + " Soldiers: " + this.broadcaster.budgetForType(Soldier.type()) + " Tanks: " + this.broadcaster.budgetForType(Tank.type()));
 			
 		} catch (GameActionException e) {
 		}

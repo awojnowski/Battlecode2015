@@ -6,6 +6,8 @@ public class Beaver extends BattleRobot {
 	
 	public Direction facing;
 	public int mineTime;
+	
+	public Boolean isDesignatedBuilder;
 
 	public Beaver(RobotController robotController) {
 		
@@ -14,7 +16,24 @@ public class Beaver extends BattleRobot {
 		this.attackStyle = BattleRobotAttackStyle.STRAFE_ON_ATTACK;
 		this.canBeMobilized = false;
 		this.facing = this.randomDirection();
+		
+		try {
+			
+			if (this.broadcaster.robotCountFor(this.type) < 5 ||
+				this.random.nextInt(10) == 4) {
+					
+				this.isDesignatedBuilder = true;
+				this.robotController.setIndicatorString(1, "Designated Builder Bot");
+					
+			} else {
 				
+				this.isDesignatedBuilder = false;
+				
+			}
+			
+		}
+		catch (GameActionException exception) {}
+		
 	}
 
 	public void run() {
@@ -27,10 +46,14 @@ public class Beaver extends BattleRobot {
 			
 			if (this.robotController.isCoreReady()) {
 				
-				RobotType buildType = this.currentPlaystyle().nextBuildingType();
-				if (buildType != null) {
+				if (this.isDesignatedBuilder) {
 					
-					this.tryBuild(this.randomDirection(), buildType);
+					RobotType buildType = this.currentPlaystyle().nextBuildingType();
+					if (buildType != null) {
+						
+						this.tryBuild(this.randomDirection(), buildType);
+						
+					}
 					
 				}
 				
@@ -38,10 +61,25 @@ public class Beaver extends BattleRobot {
 				if (shouldMine && this.tryMine(false)) {
 					
 					this.mineTime ++;
-					this.robotController.setIndicatorString(1, "MT: " + this.mineTime);
+					this.robotController.setIndicatorString(2, "MT: " + this.mineTime);
 					
 				} else { // no ore underneath
 					
+					if (this.isDesignatedBuilder) {
+
+						MapLocation hqLocation = this.locationController.HQLocation();
+						if (this.distanceTo(hqLocation) > 64) {
+
+							this.movementController.moveToward(hqLocation);
+							
+						} else {
+							
+							this.movementController.moveTo(this.randomDirection());
+							
+						}
+						
+					} else {
+						
 					while (!this.robotController.canMove(this.facing)) {
 						
 						this.facing = this.randomDirection();
@@ -49,7 +87,9 @@ public class Beaver extends BattleRobot {
 					}
 					this.movementController.moveTo(facing);
 					this.mineTime = 0;
-					this.robotController.setIndicatorString(1, "MT: " + this.mineTime);
+					this.robotController.setIndicatorString(2, "MT: " + this.mineTime);
+						
+					}
 					
 				}
 				
