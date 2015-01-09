@@ -2,7 +2,7 @@ package team170;
 
 import battlecode.common.*;
 
-public class MinerFactory extends CivicRobot {
+public class MinerFactory extends BuildableRobot {
 
 	public MinerFactory(RobotController robotController) {
 		

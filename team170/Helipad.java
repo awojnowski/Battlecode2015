@@ -2,7 +2,7 @@ package team170;
 
 import battlecode.common.*;
 
-public class Helipad extends CivicRobot {
+public class Helipad extends BuildableRobot {
 
 	public Helipad(RobotController robotController) {
 		

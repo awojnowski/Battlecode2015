@@ -5,7 +5,6 @@ import battlecode.common.*;
 public class Beaver extends BattleRobot {
 	
 	public Direction facing;
-	public int mineTime;
 	
 	public Boolean isDesignatedBuilder;
 
@@ -48,20 +47,27 @@ public class Beaver extends BattleRobot {
 				
 				if (this.isDesignatedBuilder) {
 					
+					Boolean builtBuilding = false;
+					
 					RobotType buildType = this.currentPlaystyle().nextBuildingType();
 					if (buildType != null) {
 						
-						this.tryBuild(this.randomDirection(), buildType);
+						builtBuilding = this.tryBuild(this.randomDirection(), buildType);
+						
+					}
+					
+					// try to build a supply depot
+					if (!builtBuilding) {
+						
+						this.tryBuild(this.randomDirection(), SupplyDepot.type());
 						
 					}
 					
 				}
 				
-				Boolean shouldMine = (this.mineTime < 6);
-				if (shouldMine && this.tryMine(false)) {
+				if (this.tryMine(false)) {
 					
-					this.mineTime ++;
-					this.robotController.setIndicatorString(2, "MT: " + this.mineTime);
+
 					
 				} else { // no ore underneath
 					
@@ -86,8 +92,6 @@ public class Beaver extends BattleRobot {
 						
 					}
 					this.movementController.moveTo(facing);
-					this.mineTime = 0;
-					this.robotController.setIndicatorString(2, "MT: " + this.mineTime);
 						
 					}
 					

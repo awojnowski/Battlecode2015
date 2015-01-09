@@ -92,7 +92,7 @@ public abstract class Robot {
 		
 		this.robotController.build(direction, type);
 		this.broadcaster.decrementBudget(type, type.oreCost);
-		this.broadcaster.incrementCivicBuildingRobotCountFor(type);
+		this.broadcaster.incrementBuildingRobotCountFor(type);
 		this.broadcaster.incrementSpentOre(type.oreCost);
 				
 	}

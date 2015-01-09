@@ -6,17 +6,18 @@ public class AggressivePlaystyle extends Playstyle {
 		
 		this.barracksSpawnOrder = new int[] {4};
 		this.minerFactorySpawnOrder = new int[] {1, 2, 3};
-		this.tankFactorySpawnOrder = new int[] {5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
+		this.tankFactorySpawnOrder = new int[] {5, 6, 7, 8, 9, 10, 11, 12, 13};
 		this.helipadSpawnOrder = new int[] {};
 		this.aerospaceLabSpawnOrder = new int[] {};
 		
-		//                                   1     2     3     4     5     6     7     8     9     10    11     12     13     14    End  
-		this.civicRatios =   new double[] { 0.50, 0.35, 0.35, 0.35, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25,  0.25,  0.25,  0.25,  0.0 };
-		// CIVIC RATIO IS % OF MONEY ALLOCATED TO ECON, RATIOS BELOW ARE AMOUNT OF UNIT TYPE TO ALL UNITS
-		this.beaverRatios =  new double[] { 1.00, 0.70, 0.40, 0.10, 0.10, 0.10, 0.05, 0.05, 0.05, 0.05, 0.025, 0.025, 0.025, 0.025, 0.025 };
-		this.minerRatios =   new double[] { 0.00, 0.30, 0.60, 0.80, 0.80, 0.50, 0.30, 0.30, 0.30, 0.30, 0.20,  0.20,  0.20,  0.20,  0.20 };
-		this.soldierRatios = new double[] { 0.00, 0.00, 0.00, 0.10, 0.10, 0.20, 0.10, 0.10, 0.10, 0.10, 0.10,  0.10,  0.10,  0.10,  0.10 };
-		this.tankRatios =    new double[] { 0.00, 0.00, 0.00, 0.00, 0.00, 0.20, 0.55, 0.55, 0.55, 0.55, 0.675, 0.675, 0.675, 0.675, 0.675 };
+		//                                   1     2     3     4     5     6     7     8     9     10    11    12     13     14    15    16     17     End  
+		this.civicRatios =       new double[] { 0.50, 0.35, 0.35, 0.35, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25,  0.25,  0.25,  0.25,  0.00 };
+		this.supplyDepotRatios = new double[] { 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05,  0.05,  0.05,  0.05,  0.05 };
+		
+		this.beaverRatios =      new double[] { 1.00, 0.70, 0.40, 0.10, 0.10, 0.10, 0.05, 0.05, 0.10, 0.05, 0.05, 0.05, 0.05, 0.025, 0.025, 0.025, 0.025, 0.025 };
+		this.minerRatios =       new double[] { 0.00, 0.30, 0.60, 0.80, 0.80, 0.50, 0.30, 0.30, 0.50, 0.30, 0.30, 0.30, 0.30, 0.20,  0.20,  0.20,  0.20,  0.20 };
+		this.soldierRatios =     new double[] { 0.00, 0.00, 0.00, 0.10, 0.10, 0.20, 0.10, 0.10, 0.20, 0.10, 0.10, 0.10, 0.10, 0.10,  0.10,  0.10,  0.10,  0.10 };
+		this.tankRatios =        new double[] { 0.00, 0.00, 0.00, 0.00, 0.00, 0.20, 0.55, 0.55, 0.20, 0.55, 0.55, 0.55, 0.55, 0.675, 0.675, 0.675, 0.675, 0.675 };
 		
 	}
 	

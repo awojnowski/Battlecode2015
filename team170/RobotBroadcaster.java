@@ -13,7 +13,7 @@ public class RobotBroadcaster {
 	
 	private static final int ROBOTS_STARTING_INDEX = 100; // amount of robots reported this turn (tally)
 	private static final int ROBOTS_COPY_INDEX = 200; // robot types reported last turn
-	private static final int ROBOTS_CIVIC_BUILDING_INDEX = 300; // civic robot types reported as building
+	private static final int ROBOTS_BUILDING_INDEX = 300; // civic robot types reported as building
 	private static final int ROBOTS_BUDGET_INDEX = 400; // robot budgets
 	
 	// required properties
@@ -47,6 +47,14 @@ public class RobotBroadcaster {
 	
 	// MARK: Budgeting
 	
+	public Boolean isRobotTypeBuilding(RobotType type) {
+		
+		if (this.isRobotTypeCivic(type)) return true;
+		if (type == SupplyDepot.type()) return true;
+		return false;
+		
+	}
+	
 	public Boolean isRobotTypeCivic(RobotType type) {
 		
 		switch (type) {
@@ -56,7 +64,6 @@ public class RobotBroadcaster {
 			case MINERFACTORY:
 			case HELIPAD:
 			case TANKFACTORY:
-			case SUPPLYDEPOT:
 			case AEROSPACELAB:
 				return true;
 			default: return false;
@@ -66,7 +73,7 @@ public class RobotBroadcaster {
 	
 	public int budgetIndexForRobotType(RobotType type) {
 		
-		if (isRobotTypeCivic(type)) return 50;
+		if (this.isRobotTypeCivic(type)) return 50;
 		return incrementForRobot(type);
 		
 	}
@@ -99,7 +106,7 @@ public class RobotBroadcaster {
 	
 	public int civicBudget() throws GameActionException {
 		
-		return budgetForType(RobotType.HQ);
+		return this.budgetForType(RobotType.HQ);
 		
 	}
 	
@@ -120,7 +127,7 @@ public class RobotBroadcaster {
 	public int robotCountFor(RobotType type) throws GameActionException {
 		
 		int count = this.livingRobotCountFor(type);
-		if (this.isRobotTypeCivic(type)) count += this.buildingCivicRobotCountFor(type);
+		if (this.isRobotTypeBuilding(type)) count += this.buildingRobotCountFor(type);
 		return count;
 		
 	}
@@ -172,30 +179,30 @@ public class RobotBroadcaster {
 		
 	}
 	
-	// MARK: Robots (Civic Building)
+	// MARK: Robots (Building)
 	
-	public void incrementCivicBuildingRobotCountFor(RobotType type) throws GameActionException {
+	public void incrementBuildingRobotCountFor(RobotType type) throws GameActionException {
 		
-		if (!this.isRobotTypeCivic(type)) return;
+		if (!this.isRobotTypeBuilding(type)) return;
 
-		int channel = ROBOTS_CIVIC_BUILDING_INDEX + this.incrementForRobot(type);
+		int channel = ROBOTS_BUILDING_INDEX + this.incrementForRobot(type);
 		this.broadcast(channel, this.readBroadcast(channel) + 1);
 		
 	}
 	
-	public void decrementCivicBuildingRobotCountFor(RobotType type) throws GameActionException {
+	public void decrementBuildingRobotCountFor(RobotType type) throws GameActionException {
 		
-		if (!this.isRobotTypeCivic(type)) return;
+		if (!this.isRobotTypeBuilding(type)) return;
 
-		int channel = ROBOTS_CIVIC_BUILDING_INDEX + this.incrementForRobot(type);
+		int channel = ROBOTS_BUILDING_INDEX + this.incrementForRobot(type);
 		this.broadcast(channel, Math.max(0, this.readBroadcast(channel) - 1));
 		
 	}
 	
-	public int buildingCivicRobotCountFor(RobotType type) throws GameActionException {
+	public int buildingRobotCountFor(RobotType type) throws GameActionException {
 		
-		if (!this.isRobotTypeCivic(type)) return 0;
-		return this.readBroadcast(ROBOTS_CIVIC_BUILDING_INDEX + this.incrementForRobot(type));
+		if (!this.isRobotTypeBuilding(type)) return 0;
+		return this.readBroadcast(ROBOTS_BUILDING_INDEX + this.incrementForRobot(type));
 		
 	}
 	

@@ -14,6 +14,8 @@ public abstract class Playstyle {
 	public int[] aerospaceLabSpawnOrder;
 	
 	public double[] civicRatios;
+	public double[] supplyDepotRatios;
+	
 	public double[] beaverRatios;
 	public double[] minerRatios;
 	public double[] soldierRatios;
@@ -28,6 +30,8 @@ public abstract class Playstyle {
 		this.aerospaceLabSpawnOrder = new int[] {};
 		
 		this.civicRatios = new double[] {};
+		this.supplyDepotRatios = new double[] {};
+		
 		this.beaverRatios = new double[] {};
 		this.minerRatios = new double[] {};
 		this.soldierRatios = new double[] {};
@@ -48,8 +52,40 @@ public abstract class Playstyle {
 	}
 	
 	public void updateBudgetingForBuildOrderProgress(int oreMined, int progress) throws GameActionException {
+		
+		int remainingOre = oreMined;
+		
+		// account for the ore taken off the top
+		
+		int civicOre = (int)(oreMined * this.civicRatios[progress]);
+		this.broadcaster.incrementCivicBudget(civicOre);
+		remainingOre -= civicOre;
+		
+		int supplyOre = (int)(oreMined * this.supplyDepotRatios[progress]);
+		this.broadcaster.incrementBudget(SupplyDepot.type(), supplyOre);
+		remainingOre -= supplyOre;
+		
+		// calculate unit ratios
+		
+		int oreUsed = 0;
+		
+		int oreAllocation = Math.min((int)(remainingOre * this.beaverRatios[progress]), (remainingOre - oreUsed));
+		this.broadcaster.incrementBudget(Beaver.type(), oreAllocation);
+		oreUsed += oreAllocation;
+		
+		oreAllocation = Math.min((int)(remainingOre * this.minerRatios[progress]), (remainingOre - oreUsed));
+		this.broadcaster.incrementBudget(Miner.type(), oreAllocation);
+		oreUsed += oreAllocation;
+		
+		oreAllocation = Math.min((int)(remainingOre * this.soldierRatios[progress]), (remainingOre - oreUsed));
+		this.broadcaster.incrementBudget(Soldier.type(), oreAllocation);
+		oreUsed += oreAllocation;
+		
+		oreAllocation = Math.min((int)(remainingOre * this.tankRatios[progress]), (remainingOre - oreUsed));
+		this.broadcaster.incrementBudget(Tank.type(), oreAllocation);
+		oreUsed += oreAllocation;
         
-        final double ratioThreshold = 0.05; // COULD POSSIBLY BE PARAMETER OF PLAYSTYLE
+        /*final double ratioThreshold = 0.05; // COULD POSSIBLY BE PARAMETER OF PLAYSTYLE
         int remainingOre = oreMined;
        
         // ALLOCATE CIVIC BUDGET
@@ -220,7 +256,7 @@ public abstract class Playstyle {
                
         }
        
-        this.broadcaster.incrementCivicBudget(remainingOre);
+        this.broadcaster.incrementCivicBudget(remainingOre);*/
        
 }
 	
