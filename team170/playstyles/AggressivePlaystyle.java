@@ -10,12 +10,13 @@ public class AggressivePlaystyle extends Playstyle {
 		this.helipadSpawnOrder = new int[] {};
 		this.aerospaceLabSpawnOrder = new int[] {};
 		
-		//                                   1     2     3     4     5     6     7     8     9     10    End   
+		//                                   1     2     3     4     5     6     7     8     9     10    End  
 		this.civicRatios =   new double[] { 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.00 };
-		this.beaverRatios =  new double[] {  };
-		this.minerRatios =   new double[] {  };
-		this.soldierRatios = new double[] {  };
-		this.tankRatios =    new double[] {  };
+		// CIVIC RATIO IS % OF MONEY ALLOCATED TO ECON, RATIOS BELOW ARE AMOUNT OF UNIT TYPE TO ALL UNITS
+		this.beaverRatios =  new double[] { 1.00, 0.50, 0.50, 0.40, 0.40, 0.40, 0.40, 0.40, 0.40, 0.40, 0.10 };
+		this.minerRatios =   new double[] { 0.00, 0.50, 0.50, 0.50, 0.50, 0.50, 0.50, 0.50, 0.50, 0.50, 0.40 };
+		this.soldierRatios = new double[] { 0.00, 0.00, 0.00, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10 };
+		this.tankRatios =    new double[] { 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.40 };
 		
 	}
 	
