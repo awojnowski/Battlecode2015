@@ -43,7 +43,7 @@ public class Missile extends BattleRobot {
 				}
 				
 			}
-			this.transferSupplyIfPossible();
+			this.supplyController.transferSupplyIfPossible();
 			
 		} catch (GameActionException exception) {
 		}

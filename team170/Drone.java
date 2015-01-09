@@ -47,7 +47,7 @@ public class Drone extends BattleRobot {
 				}
 				
 			}
-			this.transferSupplyIfPossible();
+			this.supplyController.transferSupplyIfPossible();
 			
 		} catch (GameActionException exception) {
 		}

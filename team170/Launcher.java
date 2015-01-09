@@ -21,7 +21,7 @@ public class Launcher extends Robot {
 				
 				
 			}
-			this.transferSupplyIfPossible();
+			this.supplyController.transferSupplyIfPossible();
 			
 		} catch (GameActionException exception) {
 		}

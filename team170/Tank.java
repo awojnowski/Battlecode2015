@@ -44,7 +44,7 @@ public class Tank extends BattleRobot {
 				}
 				
 			}
-			this.transferSupplyIfPossible();
+			this.supplyController.transferSupplyIfPossible();
 			
 		} catch (GameActionException exception) {
 		}

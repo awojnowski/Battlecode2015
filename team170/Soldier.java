@@ -44,7 +44,7 @@ public class Soldier extends BattleRobot {
 				}
 				
 			}
-			this.transferSupplyIfPossible();
+			this.supplyController.transferSupplyIfPossible();
 			
 		} catch (GameActionException exception) {
 		}

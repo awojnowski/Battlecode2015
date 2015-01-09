@@ -12,7 +12,6 @@ public class BattleRobot extends Robot {
 	public BattleRobotAttackStyle attackStyle;
 	public Boolean canBeMobilized;
 	public Boolean isMobilized;
-	public Boolean isRegrouping;
 	
 	public BattleRobot(RobotController robotController) {
 		
@@ -21,17 +20,6 @@ public class BattleRobot extends Robot {
 		this.attackStyle = BattleRobotAttackStyle.STOP_ON_ATTACK;
 		this.canBeMobilized = true;
 		this.isMobilized = false;
-		this.isRegrouping = false;
-		
-		// check if we are created during a rush
-		try {
-			if (this.currentPlaystyle() != null) {
-				if (this.currentPlaystyle().canMobilizeForClockNumber(Clock.getRoundNum())) {
-					this.isRegrouping = true;
-				}
-			}
-		}
-		catch (GameActionException e) {}
 		
 	}
 	
@@ -43,9 +31,6 @@ public class BattleRobot extends Robot {
 			Boolean shouldMobilize = this.shouldMobilize();
 			if (!this.isMobilized && shouldMobilize) {
 				this.isMobilized = true;
-			}
-			if (this.isRegrouping && !shouldMobilize) {
-				this.isRegrouping = false;
 			}
 		}
 		catch (GameActionException e) {}
@@ -142,7 +127,6 @@ public class BattleRobot extends Robot {
 		if (this.isMobilized) return true; // if we are mobilized, we are attacking yo
 		
 		if (!this.canBeMobilized) return false;
-		if (this.isRegrouping) return false;
 		if (!this.movementController.shouldMove()) return false;
 
 		int roundNum = Clock.getRoundNum();

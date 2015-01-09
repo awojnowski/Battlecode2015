@@ -62,7 +62,7 @@ public class Miner extends BattleRobot {
 				
 			}
 			
-			this.transferSupplyIfPossible();
+			this.supplyController.transferSupplyIfPossible();
 							
 		} catch (GameActionException exception) {
 		}
