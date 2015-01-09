@@ -18,7 +18,7 @@ public class Barracks extends BuildableRobot {
 			
 			if (this.robotController.isCoreReady()) {
 
-				this.trySpawn(this.randomDirection(), Soldier.type());
+				this.trySpawn(this.locationController.randomDirection(), Soldier.type());
 				
 			}
 										

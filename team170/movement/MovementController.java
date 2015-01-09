@@ -42,10 +42,10 @@ public class MovementController {
 		
 	}
 	
-	public void moveToward(MapLocation location) throws GameActionException {
+	public Direction moveToward(MapLocation location) throws GameActionException {
 		
-		if (location == null) return; 
-		if (!this.shouldMove()) return;
+		if (location == null) return null; 
+		if (!this.shouldMove()) return null;
 		
 		Direction direction = this.robot.robotController.getLocation().directionTo(location);
 		int directionInteger = this.directionToInt(direction);
@@ -53,10 +53,38 @@ public class MovementController {
 		int[] offsets = {0,1,-1,2,-2};
 		for (int offset : offsets) {
 			
-			direction = this.robot.DIRECTIONS[(directionInteger + offset + 8) % 8];
-			if (this.moveTo(direction)) return;
+			direction = this.robot.locationController.DIRECTIONS[(directionInteger + offset + 8) % 8];
+			if (this.moveTo(direction)) {
+				
+				return direction;
+				
+			}
 			
 		}
+		return null;
+		
+	}
+	
+	public Direction moveAway(MapLocation location) throws GameActionException {
+		
+		if (location == null) return null; 
+		if (!this.shouldMove()) return null;
+		
+		Direction direction = this.robot.robotController.getLocation().directionTo(location);
+		int directionInteger = this.directionToInt(direction);
+		
+		int[] offsets = {-4,5,-5,6,-6};
+		for (int offset : offsets) {
+			
+			direction = this.robot.locationController.DIRECTIONS[(directionInteger + offset + 8) % 8];
+			if (this.moveTo(direction)) {
+				
+				return direction;
+				
+			}
+			
+		}
+		return null;
 		
 	}
 	

@@ -10,10 +10,6 @@ import team170.playstyles.*;
 public abstract class Robot {
 	
 	private static final int MAX_BUILD_TILES = 10000;
-	
-	// MARK: Static Variables
-	
-	public final Direction[] DIRECTIONS = {Direction.NORTH, Direction.NORTH_EAST, Direction.EAST, Direction.SOUTH_EAST, Direction.SOUTH, Direction.SOUTH_WEST, Direction.WEST, Direction.NORTH_WEST};
 
 	// MARK: Instance Variables
 	
@@ -45,6 +41,7 @@ public abstract class Robot {
 		
 		this.broadcaster.robotController = this.robotController;
 		this.locationController.robotController = this.robotController;
+		this.locationController.random = this.random;
 		this.movementController.robot = this;
 		
 		// setup the helpers
@@ -68,7 +65,7 @@ public abstract class Robot {
 	
 	public Boolean canBuild(Direction direction, RobotType type) throws GameActionException {
 		
-		if (this.distanceTo(this.locationController.HQLocation()) > MAX_BUILD_TILES) return false;
+		if (this.locationController.distanceTo(this.locationController.HQLocation()) > MAX_BUILD_TILES) return false;
 		if (type.oreCost > this.broadcaster.budgetForType(type)) return false;
 		if (!this.robotController.hasBuildRequirements(type)) return false;
 		if (!this.robotController.canBuild(direction, type)) return false;
@@ -97,23 +94,6 @@ public abstract class Robot {
 				
 	}
 	
-	// MARK: Directions
-	
-	public Direction randomDirection() {
-		
-		int rand = this.random.nextInt(DIRECTIONS.length);
-		return DIRECTIONS[rand];
-		
-	}
-	
-	// MARK: Distance
-	
-	public int distanceTo(MapLocation location) {
-		
-		return this.robotController.getLocation().distanceSquaredTo(location);
-		
-	}
-	
 	// MARK: Mining
 	
 	public boolean tryMine(Boolean mineClose) throws GameActionException {
@@ -122,7 +102,7 @@ public abstract class Robot {
 		
 		if (!this.robotController.isCoreReady()) return false;
 		if (this.robotController.senseOre(this.robotController.getLocation()) == 0) return false;
-		if (this.distanceTo(this.locationController.HQLocation()) <= 2 && !mineClose) return false;
+		if (this.locationController.distanceTo(this.locationController.HQLocation()) <= 2 && !mineClose) return false;
 		if (!this.robotController.canMine()) return false;
 		
 		this.robotController.mine();
@@ -146,6 +126,7 @@ public abstract class Robot {
 		Playstyle playstyle = null;
 		int playstyleIdentifier = this.broadcaster.currentPlaystyle();
 		if (playstyleIdentifier == AggressivePlaystyle.identifierS()) playstyle = new AggressivePlaystyle();
+		if (playstyleIdentifier == MarineRushPlaystyle.identifierS()) playstyle = new MarineRushPlaystyle();
 		
 		if (playstyle != null) {
 			
