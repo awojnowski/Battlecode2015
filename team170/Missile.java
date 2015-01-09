@@ -24,13 +24,13 @@ public class Missile extends BattleRobot {
 					
 					if (!this.shouldMobilize()) {
 						
-						if (this.distanceTo(this.HQLocation()) > 100) {
+						if (this.distanceTo(this.locationController.HQLocation()) > 100) {
 
-							this.moveToward(this.HQLocation());
+							this.movementController.moveToward(this.locationController.HQLocation());
 							
 						} else {
 							
-							this.moveTo(this.randomDirection());
+							this.movementController.moveTo(this.randomDirection());
 							
 						}
 						
