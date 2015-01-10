@@ -79,7 +79,7 @@ public class Miner extends BattleRobot {
 		
 		if (!this.moveToBestOre(this.facing)) {
 
-			while (!this.movementController.canMoveSafely(this.facing, true)) {
+			while (!this.movementController.canMoveSafely(this.facing, true, true, true)) {
 					
 				this.facing = this.movementController.randomDirection();
 					
@@ -92,9 +92,7 @@ public class Miner extends BattleRobot {
 	}
 	
     public Boolean moveToBestOre(Direction initialDirection) throws GameActionException {
-        
-        if (!this.movementController.shouldMove()) return false;
-       
+               
         MapLocation robotLocation = this.robotController.getLocation();
         MapLocation bestOreLocation = null;
         
@@ -104,11 +102,11 @@ public class Miner extends BattleRobot {
        
         for (int offset: offsets) {
 
-        	Direction currDirection = MovementController.DIRECTIONS[(safestDirection + offset + 8) % 8];
+        	Direction currDirection = MovementController.directionFromInt(safestDirection + offset);
         	MapLocation currLocation = robotLocation.add(currDirection);
         	double currOre = this.robotController.senseOre(currLocation);
            
-            if (currOre > mostOre && this.movementController.canMoveSafely(currDirection, true)) {
+            if (currOre > mostOre && this.movementController.canMoveSafely(currDirection, true, true, true)) {
                    
                 bestOreLocation = currLocation;
                 mostOre = currOre;

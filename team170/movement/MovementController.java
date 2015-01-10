@@ -7,9 +7,7 @@ import team170.units.UnitController;
 public class MovementController {
 	
 	public Robot robot;
-	
-	private int stopTurns;
-	
+		
 	// MARK: Static Variables
 	
 	public static final Direction[] DIRECTIONS = {Direction.NORTH, Direction.NORTH_EAST, Direction.EAST, Direction.SOUTH_EAST, Direction.SOUTH, Direction.SOUTH_WEST, Direction.WEST, Direction.NORTH_WEST};
@@ -53,14 +51,6 @@ public class MovementController {
 	public static Direction directionFromInt(int d) {
 		return DIRECTIONS[directionIndexFromInt(d)];
 	}
-
-	// MARK: Movement
-
-	public Boolean shouldMove() {
-		
-		return this.stopTurns == 0;
-		
-	}
 	
 	// moves toward a location using the moveTo method (and its implications)
 	public Direction moveToward(MapLocation location) throws GameActionException {
@@ -73,7 +63,6 @@ public class MovementController {
 	public Direction moveToward(MapLocation location, Boolean allowGreaterDistance) throws GameActionException {
 		
 		if (location == null) return null; 
-		if (!this.shouldMove()) return null;
 		
 		MapLocation currentLocation = this.robot.locationController.currentLocation();
 		double currentDistance = currentLocation.distanceSquaredTo(location);
@@ -103,7 +92,6 @@ public class MovementController {
 	public Direction moveAway(MapLocation location) throws GameActionException {
 		
 		if (location == null) return null; 
-		if (!this.shouldMove()) return null;
 		
 		Direction direction = this.robot.robotController.getLocation().directionTo(location);
 		int directionInteger = directionToInt(direction);
@@ -151,24 +139,19 @@ public class MovementController {
 	// depending on the playstyle and unit type, it will avoid towers or other unit types
 	public Boolean moveTo(Direction direction) throws GameActionException {
 		
-		if (!this.shouldMove()) return false;
-
 		RobotType type = this.robot.type;
+
+		Boolean moveAroundHQ = !this.robot.currentPlaystyle().canAttackInHQRange(this.robot.unitController.enemyTowers().length);
+
+		Boolean moveAroundTowers = !this.robot.currentPlaystyle().canAttackInTowerRange();
+		if (type == Missile.type()) moveAroundTowers = false;
+		if (type == Launcher.type()) moveAroundTowers = true;
 
 		Boolean moveAroundMilitary = false;
 		if (UnitController.isUnitTypeMiner(type)) moveAroundMilitary = true;
 		else if (type == Drone.type()) moveAroundMilitary = true;
-
-		Boolean moveSafely = false;
-		if (type == Missile.type()) moveSafely = false;
-		if (type == Launcher.type()) moveSafely = true;
-		else moveSafely = !this.robot.currentPlaystyle().canAttackInTowerRange();
 		
-		Boolean canMove = null;
-		if (moveSafely) canMove = this.canMoveSafely(direction, moveAroundMilitary);
-		else canMove = this.robot.robotController.canMove(direction);
-		
-		if (canMove) {
+		if (this.canMoveSafely(direction, moveAroundHQ, moveAroundTowers, moveAroundMilitary)) {
 			
 			this.robot.robotController.move(direction);
 			return true;
@@ -177,14 +160,8 @@ public class MovementController {
 		return false;
 		
 	}
-	
-	public void stopFor(int turns) {
-		
-		this.stopTurns = turns;
-		
-	}
     
-    public Boolean canMoveSafely(Direction direction, Boolean moveAroundUnits) throws GameActionException {
+    public Boolean canMoveSafely(Direction direction, Boolean moveAroundHQ, Boolean moveAroundTowers, Boolean moveAroundUnits) throws GameActionException {
         
         if (direction == null) return false;
     	
@@ -194,6 +171,24 @@ public class MovementController {
         
         MapLocation currentLocation = this.robot.locationController.currentLocation();
         MapLocation moveLocation = currentLocation.add(direction);
+        
+        if (moveAroundHQ) {
+
+        	MapLocation[] towers = this.robot.unitController.enemyTowers();
+            if (moveLocation.distanceSquaredTo(this.robot.locationController.enemyHQLocation()) <= HQ.attackRadiusSquared(towers.length)) return false;
+        	
+        }
+
+        if (moveAroundTowers) {
+            
+            MapLocation[] towers = this.robot.unitController.enemyTowers();
+            for (MapLocation tower : towers) {
+
+            	if (moveLocation.distanceSquaredTo(tower) <= Tower.type().attackRadiusSquared) return false;
+            	
+            }
+        	
+        }
         
         if (moveAroundUnits) {
             
@@ -207,25 +202,8 @@ public class MovementController {
         	
         }
         
-        MapLocation[] towers = this.robot.unitController.enemyTowers();
-        for (MapLocation tower : towers) {
-
-        	if (moveLocation.distanceSquaredTo(tower) <= Tower.type().attackRadiusSquared) return false;
-        	
-        }
-        
-        if (moveLocation.distanceSquaredTo(this.robot.locationController.enemyHQLocation()) <= HQ.attackRadiusSquared(towers.length)) return false;
-        
         return true;
     	
     }
-    
-	// MARK: Move Turns
-	
-	public void decrementMoveTurns() {
-	
-		this.stopTurns = Math.max(0, this.stopTurns - 1);
-	
-	}
 
 }

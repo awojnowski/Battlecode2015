@@ -64,6 +64,12 @@ public class AggressivePlaystyle extends Playstyle {
 		
 	}
 	
+	public Boolean canAttackInHQRange(int totalTowers) throws GameActionException {
+		
+		return totalTowers == 0;
+		
+	}
+	
 	// MARK: Mobilizing
 	
 	public Boolean canMobilizeForClockNumber(int clockNumber) throws GameActionException {

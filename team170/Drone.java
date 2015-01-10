@@ -47,7 +47,7 @@ public class Drone extends BattleRobot {
 			if (!this.attack()) {
 					
 				if (this.robotController.isCoreReady()) {
-					
+										
 					this.movementController.moveToward(this.targetLocation, this.allowFurtherTargetTravel);
 					this.moveRefreshCount ++;
 					

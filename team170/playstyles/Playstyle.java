@@ -53,6 +53,12 @@ public abstract class Playstyle {
 		
 	}
 	
+	public Boolean canAttackInHQRange(int totalTowers) throws GameActionException {
+		
+		return true;
+		
+	}
+	
 	// MARK: Budgeting
 	
 	public void updateBudgeting(int oreMined) throws GameActionException {

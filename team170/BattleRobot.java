@@ -109,9 +109,7 @@ public class BattleRobot extends Robot {
 	public Boolean shouldMobilize() throws GameActionException {
 		
 		if (this.isMobilized) return true; // if we are mobilized, we are attacking yo
-		
 		if (!this.canBeMobilized) return false;
-		if (!this.movementController.shouldMove()) return false;
 
 		int roundNum = Clock.getRoundNum();
 		return this.currentPlaystyle().canMobilizeForClockNumber(roundNum);
