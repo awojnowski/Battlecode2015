@@ -2,7 +2,7 @@ package team170;
 
 import battlecode.common.*;
 
-public class Launcher extends Robot {
+public class Launcher extends BattleRobot {
 
 	public Launcher(RobotController robotController) {
 		
@@ -13,18 +13,37 @@ public class Launcher extends Robot {
 	public void run() {
 		
 		super.run();
-		
-		try {
 			
-			if (this.robotController.isCoreReady()) {
+			try {
 				
+				this.robotController.setIndicatorString(1, "Nearby enemies: " + this.unitController.nearbyEnemies());
 				
+				if (this.robotController.isCoreReady()) {
+					
+					if (!this.shouldMobilize()) {
+						
+						MapLocation rallyLocation = this.locationController.militaryRallyLocation();
+						if (this.locationController.distanceTo(rallyLocation) > 18) {
+	
+							this.movementController.moveToward(rallyLocation);
+							
+						} else {
+							
+							this.movementController.moveTo(this.locationController.randomDirection());
+							
+						}
+						
+					} else {
+	
+						this.mobilize();
+						
+					}
+					
+				}
+				this.supplyController.transferSupplyIfPossible();
 				
 			}
-			this.supplyController.transferSupplyIfPossible();
-			
-		} catch (GameActionException exception) {
-		}
+			catch (GameActionException exception) {}
 		
 		this.robotController.yield();
 		

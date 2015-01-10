@@ -16,7 +16,7 @@ public class Tank extends BattleRobot {
 		
 		try {
 			
-			Boolean attacked = attack();
+			Boolean attacked = this.attack();
 			if (this.robotController.isCoreReady()) {
 				
 				Boolean shouldMove = !attacked || this.attackStyle == BattleRobotAttackStyle.STRAFE_ON_ATTACK;

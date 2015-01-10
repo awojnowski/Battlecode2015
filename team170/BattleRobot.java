@@ -93,14 +93,14 @@ public class BattleRobot extends Robot {
 							
 			RobotInfo chosenEnemy = null;
 			for (RobotInfo enemy : enemies) {
-				
+
+				if (enemy.type == Missile.type()) continue;
 				if (chosenEnemy == null) {
 					
 					chosenEnemy = enemy;
 					
 				} else {
 					
-					if (enemy.type == Missile.type()) continue;
 					if (chosenEnemy.health > enemy.health) {
 						
 						chosenEnemy = enemy;

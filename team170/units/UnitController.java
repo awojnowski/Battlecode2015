@@ -65,13 +65,15 @@ public class UnitController {
 
 	public RobotInfo[] nearbyEnemies() throws GameActionException {
 		
-		return this.robot.robotController.senseNearbyRobots(this.robot.type.sensorRadiusSquared, this.robot.team.opponent());
+		return this.robot.robotController.senseNearbyRobots(Tower.type().sensorRadiusSquared, this.robot.team.opponent());
 		
 	}
 
 	public RobotInfo[] nearbyAttackableEnemies() throws GameActionException {
 		
-		return this.robot.robotController.senseNearbyRobots(this.robot.type.attackRadiusSquared, this.robot.team.opponent());
+		int attackRadius = this.robot.type.attackRadiusSquared;
+		if (this.robot.type == HQ.type()) attackRadius = HQ.attackRadiusSquared(this.robot.locationController.enemyTowerLocations().length);
+		return this.robot.robotController.senseNearbyRobots(attackRadius, this.robot.team.opponent());
 		
 	}
 	

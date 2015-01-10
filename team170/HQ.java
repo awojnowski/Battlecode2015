@@ -1,6 +1,7 @@
 package team170;
 
 import battlecode.common.*;
+import team170.movement.MovementController;
 import team170.playstyles.*;
 
 public class HQ extends BattleRobot {
@@ -70,7 +71,7 @@ public class HQ extends BattleRobot {
 		
 		try {
 			
-			attack();
+			this.attack();
 			
 			if (this.robotController.isCoreReady()) {
 				
@@ -94,7 +95,15 @@ public class HQ extends BattleRobot {
 	}
 	
 	// MARK: Static Helpers
+	
+	public static int attackRadiusSquared(int towers) {
+
+        int attackRadius = HQ.type().attackRadiusSquared;
+        if (towers >= 2) attackRadius = 35;
+        return attackRadius;
 		
+	}
+	
 	public static RobotType type() {
 		return RobotType.HQ;
 	}

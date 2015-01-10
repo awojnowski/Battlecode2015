@@ -176,7 +176,7 @@ public class MovementController {
         	
         }
         
-        if (moveLocation.distanceSquaredTo(this.robot.locationController.enemyHQLocation()) <= HQ.type().attackRadiusSquared + 1) return false;
+        if (moveLocation.distanceSquaredTo(this.robot.locationController.enemyHQLocation()) <= HQ.attackRadiusSquared(towers.length)) return false;
         
         return true;
     	
