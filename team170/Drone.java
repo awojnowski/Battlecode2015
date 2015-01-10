@@ -42,6 +42,8 @@ public class Drone extends BattleRobot {
 		
 		try {
 			
+			this.robotController.setIndicatorLine(this.locationController.currentLocation(), this.targetLocation, 255, 0, 0);
+			
 			if (!this.attack()) {
 					
 				if (this.robotController.isCoreReady()) {
