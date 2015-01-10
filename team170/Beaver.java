@@ -58,7 +58,7 @@ public class Beaver extends BattleRobot {
 					if (this.isDesignatedBuilder) {
 
 						MapLocation hqLocation = this.locationController.HQLocation();
-						if (this.locationController.distanceTo(hqLocation) > 64) {
+						if (this.locationController.distanceTo(hqLocation) > 81) {
 
 							this.movementController.moveToward(hqLocation);
 							
