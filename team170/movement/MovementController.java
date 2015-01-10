@@ -124,6 +124,7 @@ public class MovementController {
 		RobotType type = this.robot.type;
 		Boolean moveAroundMilitary = false;
 		if (UnitController.isUnitTypeMiner(type)) moveAroundMilitary = true;
+		if (type == Drone.type()) moveAroundMilitary = true;
 		
 		Boolean canMove = null;
 		if (this.robot.currentPlaystyle().canAttackInTowerRange()) canMove = this.robot.robotController.canMove(direction);
@@ -175,7 +176,7 @@ public class MovementController {
         	
         }
         
-        if (moveLocation.distanceSquaredTo(this.robot.locationController.enemyHQLocation()) <= HQ.type().attackRadiusSquared) return false;
+        if (moveLocation.distanceSquaredTo(this.robot.locationController.enemyHQLocation()) <= HQ.type().attackRadiusSquared + 1) return false;
         
         return true;
     	

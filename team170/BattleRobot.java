@@ -65,13 +65,15 @@ public class BattleRobot extends Robot {
 	
 	public RobotInfo desiredEnemy(RobotInfo[] enemies) {
 		
-		// prioritize towers
+		// prioritize the HQ
 		
 		for (RobotInfo enemy : enemies) {
 			
 			if (enemy.type == RobotType.HQ) return enemy;
 			
 		}
+		
+		// prioritize towers next
 		
 		for (RobotInfo enemy : enemies) {
 			
@@ -98,6 +100,7 @@ public class BattleRobot extends Robot {
 					
 				} else {
 					
+					if (enemy.type == Missile.type()) continue;
 					if (chosenEnemy.health > enemy.health) {
 						
 						chosenEnemy = enemy;
