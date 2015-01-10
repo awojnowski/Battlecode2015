@@ -1,5 +1,6 @@
 package team170;
 
+import team170.movement.MovementController;
 import battlecode.common.*;
 
 public class RobotBroadcaster {
@@ -10,6 +11,7 @@ public class RobotBroadcaster {
 	private static final int ORE_SPENT_COPY_INDEX = 5; // amount of ore spent last turn
 	private static final int ROBOTS_SPAWNED_TALLY_INDEX = 6; // amount of robots SPAWNED (not built) (tally)
 	private static final int ROBOTS_SPAWNED_INDEX = 7; // amount of robots SPAWNED (spawned_index + building_index)
+	private static final int MISSILE_DIRECTION_INDEX = 8; // the direction that the next spawned missile should go in
 	
 	private static final int ROBOTS_STARTING_INDEX = 100; // amount of robots reported this turn (tally)
 	private static final int ROBOTS_COPY_INDEX = 200; // robot types reported last turn
@@ -119,6 +121,20 @@ public class RobotBroadcaster {
 	public void decrementCivicBudget(int decrement) throws GameActionException {
 		
 		this.decrementBudget(RobotType.HQ, decrement);
+		
+	}
+	
+	// MARK: Missiles
+	
+	public void setNextMissileDirection(Direction direction) throws GameActionException {
+		
+		this.broadcast(MISSILE_DIRECTION_INDEX, MovementController.directionToInt(direction));
+		
+	}
+	
+	public Direction nextMissileDirection() throws GameActionException {
+		
+		return MovementController.directionFromInt(this.readBroadcast(MISSILE_DIRECTION_INDEX));
 		
 	}
 	

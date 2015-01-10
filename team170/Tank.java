@@ -19,7 +19,7 @@ public class Tank extends BattleRobot {
 			Boolean attacked = this.attack();
 			if (this.robotController.isCoreReady()) {
 				
-				Boolean shouldMove = !attacked || this.attackStyle == BattleRobotAttackStyle.STRAFE_ON_ATTACK;
+				Boolean shouldMove = !attacked;
 				if (shouldMove) {
 					
 					if (!this.shouldMobilize()) {
@@ -31,7 +31,7 @@ public class Tank extends BattleRobot {
 							
 						} else {
 							
-							this.movementController.moveTo(this.locationController.randomDirection());
+							this.movementController.moveTo(this.movementController.randomDirection());
 							
 						}
 						

@@ -1,7 +1,10 @@
 package team170;
 
-import team170.units.UnitController;
+import java.util.ArrayList;
+
 import battlecode.common.*;
+import team170.movement.*;
+import team170.units.*;
 
 public class Drone extends BattleRobot {
 	
@@ -9,15 +12,27 @@ public class Drone extends BattleRobot {
 	private MapLocation targetLocation;
 	private MapLocation lastPatrolLocation; // stores where they were last sitting to patrol HQ
 	private int patrolDirection; 			// switches if they are in the same place
+	
+	private Boolean allowFurtherTargetTravel = true;
 
 	public Drone(RobotController robotController) {
 		
 		super(robotController);
 		
 		this.moveRefreshCount = 0;
-		this.targetLocation = this.robotController.senseEnemyHQLocation();
 		this.lastPatrolLocation = null;
 		this.patrolDirection = 1;
+		
+		try {
+
+			this.setTargetLocation( this.leftOrRightOfHQ(20), true);
+			
+		}
+		catch (GameActionException e) {
+			
+			this.setTargetLocation(this.locationController.enemyHQLocation(), true);
+			
+		}
 		
 	}
 
@@ -31,7 +46,7 @@ public class Drone extends BattleRobot {
 					
 				if (this.robotController.isCoreReady()) {
 					
-					this.movementController.moveToward(this.targetLocation);
+					this.movementController.moveToward(this.targetLocation, this.allowFurtherTargetTravel);
 					this.moveRefreshCount ++;
 					
 					if (this.moveRefreshCount > 10) { // The refresh is fairly low, but helps them patrol faster
@@ -67,6 +82,7 @@ public class Drone extends BattleRobot {
 		
 		// initially try to target any buildings that we see
 		
+		ArrayList<RobotInfo> targettableEnemies = new ArrayList<RobotInfo>();
 		RobotInfo[] enemies = this.unitController.nearbyEnemies();
 		for (RobotInfo enemy : enemies) {
 			
@@ -95,13 +111,18 @@ public class Drone extends BattleRobot {
 				
 				if (targettable) {
 					
-					// we can target this building so that's our new target location
-					this.targetLocation = enemy.location;
-					return;
+					targettableEnemies.add(enemy);
 					
 				}
 				
 			}
+			
+		}
+		
+		if (targettableEnemies.size() > 0) {
+			
+			this.setTargetLocation(this.desiredEnemy((RobotInfo[])targettableEnemies.toArray()).location, false);
+			return;
 			
 		}
 
@@ -115,10 +136,10 @@ public class Drone extends BattleRobot {
 			final int patrolAmount = 2; // fast and unreliable at 1, slow and reliable at 3, 2 is the sweet spot
 			final int estimatedHQRange = 6;
 			
-			int directionToHqInt = this.movementController.directionToInt(robotLocation.directionTo(enemyHQLocation));
-			Direction tangentDirection = this.locationController.DIRECTIONS[(directionToHqInt + patrolAmount * this.patrolDirection() + 8) % 8];
+			int directionToHqInt = MovementController.directionToInt(robotLocation.directionTo(enemyHQLocation));
+			Direction tangentDirection = MovementController.directionFromInt(directionToHqInt + patrolAmount * this.patrolDirection());
 			
-			this.targetLocation = enemyHQLocation.add(tangentDirection, estimatedHQRange);
+			this.setTargetLocation(enemyHQLocation.add(tangentDirection, estimatedHQRange), false);
 			
 		} else {  
 			
@@ -128,31 +149,32 @@ public class Drone extends BattleRobot {
 				
 				if (robotLocation.distanceSquaredTo(this.lastPatrolLocation) < 1) { // stuck
 					
-					int directionToHqInt = this.movementController.directionToInt(robotLocation.directionTo(enemyHQLocation));
-					int leftStrafeDirection = (directionToHqInt - 2 + 8) % 8;
-					int rightStrafeDirection = (directionToHqInt + 2) % 8;
+					int directionToHqInt = MovementController.directionToInt(robotLocation.directionTo(enemyHQLocation));
+					int leftStrafeDirection = MovementController.directionIndexFromInt(directionToHqInt - 2);
+					int rightStrafeDirection = MovementController.directionIndexFromInt(directionToHqInt + 2);
 					int towersOnLeft = 0;
 					int towersOnRight = 0;
 					
 					for (MapLocation towerLocation : towers) {
 						
-						int directionToTowerInt = this.movementController.directionToInt(robotLocation.directionTo(towerLocation)); 
-						
-						if (directionToTowerInt == leftStrafeDirection || (directionToTowerInt+1)%8 == leftStrafeDirection || (directionToTowerInt+1)%8 == leftStrafeDirection)
+						int directionToTowerInt = MovementController.directionToInt(robotLocation.directionTo(towerLocation)); 
+						if (directionToTowerInt == leftStrafeDirection || MovementController.directionIndexFromInt(directionToHqInt + 1) == leftStrafeDirection || MovementController.directionIndexFromInt(directionToHqInt - 1) == leftStrafeDirection)
 							towersOnLeft++;
-						else if (directionToTowerInt == rightStrafeDirection || (directionToTowerInt+1)%8 == rightStrafeDirection || (directionToTowerInt+1)%8 == rightStrafeDirection)
+						else if (directionToTowerInt == rightStrafeDirection || MovementController.directionIndexFromInt(directionToHqInt + 1) == rightStrafeDirection || MovementController.directionIndexFromInt(directionToHqInt - 1) == rightStrafeDirection)
 							towersOnRight++;
 						
 					}
 					
+					int strafeDirection = 0;
 					if (towersOnRight > towersOnLeft)
-						this.targetLocation = robotLocation.add(this.locationController.DIRECTIONS[leftStrafeDirection], 12);
+						strafeDirection = leftStrafeDirection;
 					else
-						this.targetLocation = robotLocation.add(this.locationController.DIRECTIONS[rightStrafeDirection], 12);
+						strafeDirection = rightStrafeDirection;
+					this.setTargetLocation(robotLocation.add(MovementController.directionFromInt(strafeDirection), 12), true);
 					
 				} else {
-					
-					this.targetLocation = enemyHQLocation;
+
+					this.setTargetLocation(enemyHQLocation, true);
 					
 				}
 				
@@ -184,6 +206,29 @@ public class Drone extends BattleRobot {
 		this.lastPatrolLocation = currLocation;
 		
 		return this.patrolDirection;
+		
+	}
+	
+	private MapLocation leftOrRightOfHQ(int distance) throws GameActionException {
+		
+		MapLocation robotLocation = this.robotController.getLocation();
+		MapLocation enemyHQLocation = this.robotController.senseEnemyHQLocation();
+		
+		int directionToHQInt = MovementController.directionToInt(robotLocation.directionTo(enemyHQLocation));
+		
+		final int offset = (this.broadcaster.robotCountFor(this.type) % 2 == 0) ? 2 : -2;
+		Direction tangentDirection = MovementController.directionFromInt(directionToHQInt + offset);
+		
+		return enemyHQLocation.add(tangentDirection, distance);
+		
+	}
+	
+	// MARK: Target Location Setter
+	
+	public void setTargetLocation(MapLocation location, Boolean allowFurtherTargetTravel) {
+		
+		this.allowFurtherTargetTravel = allowFurtherTargetTravel;
+		this.targetLocation = location;
 		
 	}
 	

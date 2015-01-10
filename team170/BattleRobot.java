@@ -2,14 +2,8 @@ package team170;
 
 import battlecode.common.*;
 
-enum BattleRobotAttackStyle {
-	STOP_ON_ATTACK,
-	STRAFE_ON_ATTACK
-}
-
 public class BattleRobot extends Robot {
 
-	public BattleRobotAttackStyle attackStyle;
 	public Boolean canBeMobilized;
 	public Boolean isMobilized;
 	
@@ -17,7 +11,6 @@ public class BattleRobot extends Robot {
 		
 		super(robotController);
 		
-		this.attackStyle = BattleRobotAttackStyle.STOP_ON_ATTACK;
 		this.canBeMobilized = true;
 		this.isMobilized = false;
 		
@@ -41,18 +34,12 @@ public class BattleRobot extends Robot {
 	
 	public Boolean attack() throws GameActionException {
 		
-		if (!this.robotController.isWeaponReady()) return false;
+		if (!this.robotController.isWeaponReady()) return true;
 		
 		RobotInfo desiredEnemy = this.desiredEnemy(this.unitController.nearbyAttackableEnemies());
 		if (desiredEnemy != null) {
 			
 			this.robotController.attackLocation(desiredEnemy.location);
-			
-			if (this.attackStyle == BattleRobotAttackStyle.STOP_ON_ATTACK) {
-				
-				this.movementController.stopFor(this.type.attackDelay);
-				
-			}
 			
 			return true;
 			

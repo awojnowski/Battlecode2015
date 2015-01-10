@@ -18,7 +18,7 @@ public class AerospaceLab extends BuildableRobot {
 			
 			if (this.robotController.isCoreReady()) {
 
-				this.trySpawn(this.locationController.randomDirection(), Launcher.type());
+				this.trySpawn(this.movementController.randomDirection(), Launcher.type());
 				
 			}
 							

@@ -16,8 +16,25 @@ public class Launcher extends BattleRobot {
 			
 			try {
 				
-				this.robotController.setIndicatorString(1, "Nearby enemies: " + this.unitController.nearbyEnemies());
+				if (this.robotController.getMissileCount() > 0) {
+
+					RobotInfo[] nearbyEnemies = this.unitController.nearbyEnemies();
+					RobotInfo desiredEnemy = this.desiredEnemy(nearbyEnemies);
+					if (desiredEnemy != null) {
+						
+						Direction direction = this.locationController.currentLocation().directionTo(desiredEnemy.location);
+						if (this.robotController.canLaunch(direction)) {
+							
+							this.broadcaster.setNextMissileDirection(direction);
+							this.robotController.launchMissile(direction);
+							
+						}
+						
+					}
+					
+				}
 				
+							
 				if (this.robotController.isCoreReady()) {
 					
 					if (!this.shouldMobilize()) {
@@ -29,7 +46,7 @@ public class Launcher extends BattleRobot {
 							
 						} else {
 							
-							this.movementController.moveTo(this.locationController.randomDirection());
+							this.movementController.moveTo(this.movementController.randomDirection());
 							
 						}
 						

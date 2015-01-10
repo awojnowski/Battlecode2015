@@ -77,7 +77,7 @@ public class HQ extends BattleRobot {
 				
 				if (this.broadcaster.robotCountFor(Beaver.type()) < 15) {
 					
-					this.trySpawn(this.locationController.randomDirection(), Beaver.type());
+					this.trySpawn(this.movementController.randomDirection(), Beaver.type());
 					
 				}
 				

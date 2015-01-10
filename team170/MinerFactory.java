@@ -18,7 +18,7 @@ public class MinerFactory extends BuildableRobot {
 			
 			if (this.robotController.isCoreReady()) {
 
-				this.trySpawn(this.locationController.randomDirection(), Miner.type());
+				this.trySpawn(this.movementController.randomDirection(), Miner.type());
 				
 			}
 							

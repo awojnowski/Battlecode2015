@@ -2,11 +2,24 @@ package team170;
 
 import battlecode.common.*;
 
-public class Missile extends BattleRobot {
+public class Missile extends Robot {
+	
+	private Direction direction;
 
 	public Missile(RobotController robotController) {
 		
 		super(robotController);
+		
+		try {
+			
+			this.direction = this.broadcaster.nextMissileDirection();
+			
+		}
+		catch (GameActionException e) {
+			
+			this.direction = this.movementController.randomDirection();
+			
+		}
 		
 	}
 
@@ -16,37 +29,18 @@ public class Missile extends BattleRobot {
 		
 		try {
 			
-			Boolean attacked = attack();
-			if (this.robotController.isCoreReady()) {
+			if (this.unitController.nearbyAttackableEnemies().length > 0) {
 				
-				Boolean shouldMove = !attacked || this.attackStyle == BattleRobotAttackStyle.STRAFE_ON_ATTACK;
-				if (shouldMove) {
-					
-					if (!this.shouldMobilize()) {
-						
-						if (this.locationController.distanceTo(this.locationController.HQLocation()) > 100) {
+				this.robotController.explode();
+				
+			} else {
 
-							this.movementController.moveToward(this.locationController.HQLocation());
-							
-						} else {
-							
-							this.movementController.moveTo(this.locationController.randomDirection());
-							
-						}
-						
-					} else {
-
-						this.mobilize();
-						
-					}
-					
-				}
+				this.movementController.moveTo(direction);
 				
 			}
-			this.supplyController.transferSupplyIfPossible();
 			
-		} catch (GameActionException exception) {
 		}
+		catch (GameActionException e) {}
 		
 		this.robotController.yield();
 		

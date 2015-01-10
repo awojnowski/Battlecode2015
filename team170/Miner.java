@@ -1,5 +1,6 @@
 package team170;
 
+import team170.movement.*;
 import battlecode.common.*;
 
 public class Miner extends BattleRobot {
@@ -11,7 +12,7 @@ public class Miner extends BattleRobot {
 		
 		super(robotController);
 		
-		this.facing = this.locationController.randomDirection();
+		this.facing = this.movementController.randomDirection();
 		
 	}
 
@@ -33,7 +34,7 @@ public class Miner extends BattleRobot {
 					if (this.movementController.fleeFrom(closestEnemy.location)) {
 						
 						this.miningTurns = 0;
-						this.facing = this.locationController.randomDirection();
+						this.facing = this.movementController.randomDirection();
 						
 					}
 					
@@ -80,7 +81,7 @@ public class Miner extends BattleRobot {
 
 			while (!this.movementController.canMoveSafely(this.facing, true)) {
 					
-				this.facing = this.locationController.randomDirection();
+				this.facing = this.movementController.randomDirection();
 					
 			}
 			this.movementController.moveTo(facing);
@@ -98,12 +99,12 @@ public class Miner extends BattleRobot {
         MapLocation bestOreLocation = null;
         
         double mostOre = 0.0;
-        int safestDirection = this.movementController.directionToInt(initialDirection);
+        int safestDirection = MovementController.directionToInt(initialDirection);
         int[] offsets = { 0, -1, 1, -2, 2, -3, 3, 4 };
        
         for (int offset: offsets) {
 
-        	Direction currDirection = this.locationController.DIRECTIONS[(safestDirection + offset + 8) % 8];
+        	Direction currDirection = MovementController.DIRECTIONS[(safestDirection + offset + 8) % 8];
         	MapLocation currLocation = robotLocation.add(currDirection);
         	double currOre = this.robotController.senseOre(currLocation);
            

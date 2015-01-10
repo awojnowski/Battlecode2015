@@ -79,6 +79,15 @@ public abstract class Playstyle {
 		this.broadcaster.incrementBudget(SupplyDepot.type(), supplyOre);
 		remainingOre -= supplyOre;
 		
+		// make sure we have minimum beavers at all times
+		if (this.broadcaster.robotCountFor(Beaver.type()) < 5 && this.beaverRatios[progress] == 0.0) {
+
+			supplyOre = (int)(oreMined * 0.05);
+			this.broadcaster.incrementBudget(Beaver.type(), supplyOre);
+			remainingOre -= supplyOre;
+			
+		}
+		
 		// calculate unit ratios
 		
 		int oreUsed = 0;
@@ -172,7 +181,7 @@ public abstract class Playstyle {
 	
 	// MARK: Mobilizing
 	
-	public Boolean canMobilizeForClockNumber(int clockNumber) {
+	public Boolean canMobilizeForClockNumber(int clockNumber) throws GameActionException {
 		
 		return false;
 		

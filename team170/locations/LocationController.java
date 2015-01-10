@@ -1,36 +1,10 @@
 package team170.locations;
 
-import java.util.Random;
-
-import battlecode.common.Direction;
-import battlecode.common.MapLocation;
-import battlecode.common.RobotController;
+import battlecode.common.*;
 
 public class LocationController {
 	
 	public RobotController robotController;
-	public Random random;
-	
-	// MARK: Static Variables
-	
-	public final Direction[] DIRECTIONS = {Direction.NORTH, Direction.NORTH_EAST, Direction.EAST, Direction.SOUTH_EAST, Direction.SOUTH, Direction.SOUTH_WEST, Direction.WEST, Direction.NORTH_WEST};
-	
-	// MARK: Init
-	
-	public LocationController() {
-		
-		
-		
-	}
-	
-	// MARK: Directions
-	
-	public Direction randomDirection() {
-		
-		int rand = this.random.nextInt(DIRECTIONS.length);
-		return DIRECTIONS[rand];
-		
-	}
 	
 	// MARK: Distance
 	

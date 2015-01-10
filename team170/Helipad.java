@@ -18,7 +18,7 @@ public class Helipad extends BuildableRobot {
 			
 			if (this.robotController.isCoreReady()) {
 
-				this.trySpawn(this.locationController.randomDirection(), Drone.type());
+				this.trySpawn(this.movementController.randomDirection(), Drone.type());
 				
 			}
 							

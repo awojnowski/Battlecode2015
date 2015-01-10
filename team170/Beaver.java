@@ -12,9 +12,8 @@ public class Beaver extends BattleRobot {
 		
 		super(robotController);
 
-		this.attackStyle = BattleRobotAttackStyle.STRAFE_ON_ATTACK;
 		this.canBeMobilized = false;
-		this.facing = this.locationController.randomDirection();
+		this.facing = this.movementController.randomDirection();
 		this.isDesignatedBuilder = true;
 		
 	}
@@ -36,14 +35,14 @@ public class Beaver extends BattleRobot {
 					RobotType buildType = this.currentPlaystyle().nextBuildingType();
 					if (buildType != null) {
 						
-						builtBuilding = this.tryBuild(this.locationController.randomDirection(), buildType);
+						builtBuilding = this.tryBuild(this.movementController.randomDirection(), buildType);
 						
 					}
 					
 					// try to build a supply depot
 					if (!builtBuilding) {
 						
-						this.tryBuild(this.locationController.randomDirection(), SupplyDepot.type());
+						this.tryBuild(this.movementController.randomDirection(), SupplyDepot.type());
 						
 					}
 					
@@ -64,7 +63,7 @@ public class Beaver extends BattleRobot {
 							
 						} else {
 							
-							this.movementController.moveTo(this.locationController.randomDirection());
+							this.movementController.moveTo(this.movementController.randomDirection());
 							
 						}
 						

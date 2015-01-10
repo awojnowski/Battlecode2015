@@ -46,7 +46,6 @@ public abstract class Robot {
 		
 		this.broadcaster.robotController = this.robotController;
 		this.locationController.robotController = this.robotController;
-		this.locationController.random = this.random;
 		this.movementController.robot = this;
 		this.supplyController.robot = this;
 		this.unitController.robot = this;
