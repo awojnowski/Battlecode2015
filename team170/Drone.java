@@ -147,7 +147,7 @@ public class Drone extends BattleRobot {
 			
 			if (this.lastPatrolLocation != null) {
 				
-				if (robotLocation.distanceSquaredTo(this.lastPatrolLocation) < 1) { // stuck
+				if (robotLocation.distanceSquaredTo(this.lastPatrolLocation) <= 1) { // stuck
 					
 					int directionToHqInt = MovementController.directionToInt(robotLocation.directionTo(enemyHQLocation));
 					int leftStrafeDirection = MovementController.directionIndexFromInt(directionToHqInt - 2);
