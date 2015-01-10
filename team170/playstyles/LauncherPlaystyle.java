@@ -2,24 +2,23 @@ package team170.playstyles;
 
 import battlecode.common.*;
 
-public class MarineRushPlaystyle extends Playstyle {
-	
-	public MarineRushPlaystyle() {
+public class LauncherPlaystyle extends Playstyle {
+
+	public LauncherPlaystyle() {
 		
-		this.barracksSpawnOrder =     new int[] {3, 4, 5, 6, 7, 8, 9, 10};
+		this.barracksSpawnOrder = new int[] {3, 4, 5, 6, 7, 8, 9, 10};
 		this.minerFactorySpawnOrder = new int[] {1, 2};
-		this.tankFactorySpawnOrder =  new int[] {};
-		this.helipadSpawnOrder =      new int[] {};
+		this.tankFactorySpawnOrder = new int[] {};
+		this.helipadSpawnOrder = new int[] {};
 		this.aerospaceLabSpawnOrder = new int[] {};
 		
 		this.civicRatios =       new double[] { 0.50, 0.65, 0.75, 0.85, 0.25, 0.20, 0.15, 0.10, 0.05, 0.05, 0.00 };
 		this.supplyDepotRatios = new double[] { 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05 };
 		
-		this.beaverRatios =      new double[] { 1.00, 0.10, 0.10, 0.10, 0.10, 0.10, 0.05, 0.00, 0.00, 0.00, 0.00 };
-		this.minerRatios =       new double[] { 0.00, 0.90, 0.50, 0.40, 0.30, 0.20, 0.15, 0.10, 0.05, 0.05, 0.05 };
-		this.soldierRatios =     new double[] { 0.00, 0.00, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90, 0.95, 0.95, 0.95 };
+		this.beaverRatios =      new double[] { 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00 };
+		this.minerRatios =       new double[] { 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00 };
+		this.soldierRatios =     new double[] { 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00 };
 		this.tankRatios =        new double[] { 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00 };
-		this.droneRatios =       new double[] { 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00 };
 		this.launcherRatios =    new double[] { 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00 };
 		
 	}
@@ -57,7 +56,7 @@ public class MarineRushPlaystyle extends Playstyle {
 	
 	// MARK: Static Helpers
 
-	public int identifierI() { return 3; }
-	public static int identifierS() { return 3; }
-	
+	public int identifierI() { return 4; }
+	public static int identifierS() { return 4; }
+
 }

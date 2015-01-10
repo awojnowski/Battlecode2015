@@ -43,7 +43,7 @@ public class BattleRobot extends Robot {
 		
 		if (!this.robotController.isWeaponReady()) return false;
 		
-		RobotInfo desiredEnemy = this.desiredEnemy(this.enemies());
+		RobotInfo desiredEnemy = this.desiredEnemy(this.unitController.nearbyAttackableEnemies());
 		if (desiredEnemy != null) {
 			
 			this.robotController.attackLocation(desiredEnemy.location);
@@ -62,12 +62,6 @@ public class BattleRobot extends Robot {
 	}
 
 	// MARK: Enemy Helpers
-	
-	public RobotInfo[] enemies() {
-		
-		return this.robotController.senseNearbyRobots(this.type.attackRadiusSquared, this.team.opponent());
-		
-	}
 	
 	public RobotInfo desiredEnemy(RobotInfo[] enemies) {
 		

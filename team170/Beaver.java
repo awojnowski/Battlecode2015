@@ -70,13 +70,6 @@ public class Beaver extends BattleRobot {
 						
 					} else {
 						
-					while (!this.robotController.canMove(this.facing)) {
-						
-						this.facing = this.locationController.randomDirection();
-						
-					}
-					this.movementController.moveTo(facing);
-						
 					}
 					
 				}

@@ -20,14 +20,17 @@ public class HQ extends BattleRobot {
 		this.oreMinedTurns = ORE_MINED_HOLD_TURNS;
 
 		try {
-			int towerCount = this.locationController.towerLocations().length;
+			System.out.println("Using aggressive playstyle.");
+			this.broadcaster.setCurrentPlaystyle(AggressivePlaystyle.identifierS());
+			
+			/*int towerCount = this.locationController.towerLocations().length;
 			if (towerCount < 2) {
 				System.out.println("Using marine rush playstyle.");
 				this.broadcaster.setCurrentPlaystyle(MarineRushPlaystyle.identifierS());
 			} else {
 				System.out.println("Using aggressive playstyle.");
 				this.broadcaster.setCurrentPlaystyle(AggressivePlaystyle.identifierS());
-			}
+			}*/
 		} catch (GameActionException e) {}
 		
 	}
@@ -81,7 +84,7 @@ public class HQ extends BattleRobot {
 			
 			this.supplyController.transferSupplyIfPossible();
 			
-			this.robotController.setIndicatorString(1, "Turn: " + this.currentPlaystyle().buildOrderProgress() + " Budgets: Civic: " + this.broadcaster.civicBudget() + " Beavers: " + this.broadcaster.budgetForType(Beaver.type()) + " Miners: " + this.broadcaster.budgetForType(Miner.type()) + " Soldiers: " + this.broadcaster.budgetForType(Soldier.type()) + " Tanks: " + this.broadcaster.budgetForType(Tank.type()));
+			this.robotController.setIndicatorString(1, "Turn: " + this.currentPlaystyle().buildOrderProgress() + " Budgets: Civic: " + this.broadcaster.civicBudget() + " Beavers: " + this.broadcaster.budgetForType(Beaver.type()) + " Miners: " + this.broadcaster.budgetForType(Miner.type()) + " Soldiers: " + this.broadcaster.budgetForType(Soldier.type()) + " Tanks: " + this.broadcaster.budgetForType(Tank.type()) + " Drones: " + this.broadcaster.budgetForType(Drone.type()) + " Launcher: " + this.broadcaster.budgetForType(Launcher.type()));
 			
 		} catch (GameActionException e) {
 		}

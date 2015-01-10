@@ -2,11 +2,11 @@ package team170;
 
 import battlecode.common.*;
 import java.util.Random;
-
-import team170.locations.LocationController;
-import team170.movement.MovementController;
+import team170.locations.*;
+import team170.movement.*;
 import team170.playstyles.*;
-import team170.supply.SupplyController;
+import team170.supply.*;
+import team170.units.*;
 
 public abstract class Robot {
 	
@@ -21,6 +21,7 @@ public abstract class Robot {
 	public RobotController robotController;
 	public Random random;
 	public SupplyController supplyController;
+	public UnitController unitController;
 	
 	// helpers
 	public Team team;
@@ -39,6 +40,7 @@ public abstract class Robot {
 		this.robotController = robotController;
 		this.random = new Random(robotController.getID());
 		this.supplyController = new SupplyController();
+		this.unitController = new UnitController();
 		
 		// update the controllers
 		
@@ -47,6 +49,7 @@ public abstract class Robot {
 		this.locationController.random = this.random;
 		this.movementController.robot = this;
 		this.supplyController.robot = this;
+		this.unitController.robot = this;
 		
 		// setup the helpers
 		
@@ -115,14 +118,6 @@ public abstract class Robot {
 		
 	}
 	
-	// MARK: Nearby
-	
-	public RobotInfo[] nearbyAllies() throws GameActionException {
-		
-		return this.robotController.senseNearbyRobots(GameConstants.SUPPLY_TRANSFER_RADIUS_SQUARED, this.team);
-		
-	}
-	
 	// MARK: Playstyles
 	
 	public Playstyle currentPlaystyle() throws GameActionException {
@@ -131,6 +126,7 @@ public abstract class Robot {
 		int playstyleIdentifier = this.broadcaster.currentPlaystyle();
 		if (playstyleIdentifier == AggressivePlaystyle.identifierS()) playstyle = new AggressivePlaystyle();
 		if (playstyleIdentifier == MarineRushPlaystyle.identifierS()) playstyle = new MarineRushPlaystyle();
+		if (playstyleIdentifier == LauncherPlaystyle.identifierS()) playstyle = new LauncherPlaystyle();
 		
 		if (playstyle != null) {
 			

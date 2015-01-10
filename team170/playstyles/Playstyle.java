@@ -20,14 +20,18 @@ public abstract class Playstyle {
 	public double[] minerRatios;
 	public double[] soldierRatios;
 	public double[] tankRatios;
+	public double[] droneRatios;
+	public double[] launcherRatios;
 		
 	public Playstyle() {
-				
+		
 		this.barracksSpawnOrder = new int[] {};
 		this.minerFactorySpawnOrder = new int[] {};
 		this.tankFactorySpawnOrder = new int[] {};
 		this.helipadSpawnOrder = new int[] {};
 		this.aerospaceLabSpawnOrder = new int[] {};
+		
+		// NOTE: ratios should go from [0, n] where n is the number of build order buildings
 		
 		this.civicRatios = new double[] {};
 		this.supplyDepotRatios = new double[] {};
@@ -36,6 +40,16 @@ public abstract class Playstyle {
 		this.minerRatios = new double[] {};
 		this.soldierRatios = new double[] {};
 		this.tankRatios = new double[] {};
+		this.droneRatios = new double[] {};
+		this.launcherRatios = new double[] {};
+		
+	}
+	
+	// MARK: Attacking
+	
+	public Boolean canAttackInTowerRange() throws GameActionException {
+		
+		return true;
 		
 	}
 	
@@ -83,6 +97,14 @@ public abstract class Playstyle {
 		
 		oreAllocation = Math.min((int)(remainingOre * this.tankRatios[progress]), (remainingOre - oreUsed));
 		this.broadcaster.incrementBudget(Tank.type(), oreAllocation);
+		oreUsed += oreAllocation;
+		
+		oreAllocation = Math.min((int)(remainingOre * this.droneRatios[progress]), (remainingOre - oreUsed));
+		this.broadcaster.incrementBudget(Drone.type(), oreAllocation);
+		oreUsed += oreAllocation;
+		
+		oreAllocation = Math.min((int)(remainingOre * this.launcherRatios[progress]), (remainingOre - oreUsed));
+		this.broadcaster.incrementBudget(Launcher.type(), oreAllocation);
 		oreUsed += oreAllocation;
 
 		this.broadcaster.incrementCivicBudget(Math.max(0, remainingOre - oreUsed));

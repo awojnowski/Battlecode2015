@@ -1,9 +1,6 @@
 package team170;
 
-import battlecode.common.GameActionException;
-import battlecode.common.MapLocation;
-import battlecode.common.RobotController;
-import battlecode.common.RobotType;
+import battlecode.common.*;
 
 public class Drone extends BattleRobot {
 
@@ -19,33 +16,12 @@ public class Drone extends BattleRobot {
 		
 		try {
 			
-			Boolean attacked = attack();
+			this.attack();
 			if (this.robotController.isCoreReady()) {
 				
-				Boolean shouldMove = !attacked || this.attackStyle == BattleRobotAttackStyle.STRAFE_ON_ATTACK;
-				if (shouldMove) {
-					
-					if (!this.shouldMobilize()) {
-						
-						MapLocation rallyLocation = this.locationController.militaryRallyLocation();
-						if (this.locationController.distanceTo(rallyLocation) > 64) {
-
-							this.movementController.moveToward(rallyLocation);
-							
-						} else {
-							
-							this.movementController.moveTo(this.locationController.randomDirection());
-							
-						}
-						
-					} else {
-
-						this.mobilize();
-						
-					}
-					
-				}
-				
+				MapLocation location = this.locationController.enemyHQLocation();
+				this.movementController.moveToward(location);
+								
 			}
 			this.supplyController.transferSupplyIfPossible();
 			

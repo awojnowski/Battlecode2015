@@ -17,7 +17,7 @@ public class SupplyController {
 		
 		double transferableSupply = supplyLevel - minimumSupplyLevel;
 		
-		RobotInfo[] allies = this.robot.nearbyAllies();
+		RobotInfo[] allies = this.robot.unitController.nearbyAllies();
 		double lowestSupply = supplyLevel;
 		
 		MapLocation targetLocation = null;
@@ -47,7 +47,7 @@ public class SupplyController {
 	
 	private Boolean canTypeReceiveSupply(RobotType type) {
 		
-		return !type.isBuildable();
+		return type.needsSupply();
 		
 	}
 	

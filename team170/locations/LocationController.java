@@ -42,6 +42,12 @@ public class LocationController {
 
 	// MARK: Locations
 	
+	public MapLocation currentLocation() {
+		
+		return this.robotController.getLocation();
+		
+	}
+	
 	public MapLocation[] towerLocations() {
 		
 		return this.robotController.senseTowerLocations();
