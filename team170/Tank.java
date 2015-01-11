@@ -30,6 +30,7 @@ public class Tank extends BattleRobot {
 						RobotInfo[] enemies = this.unitController.nearbyEnemies(100);
 						for (RobotInfo enemy : enemies) {
 							
+							if (enemy.type == Missile.type()) continue;
 							if (locationController.isLocationInFriendlyTerritory(enemy.location)) {
 								
 								targettableEnemies.add(enemy);

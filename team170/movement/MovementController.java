@@ -70,13 +70,68 @@ public class MovementController {
 		Direction direction = this.robot.robotController.getLocation().directionTo(location);
 		int directionInteger = directionToInt(direction);
 		
-		int[] offsets = {0,1,-1,2,-2};
-		for (int offset : offsets) {
+		if (moveTo(direction)) {
 			
-			direction = MovementController.directionFromInt(directionInteger + offset);
-			MapLocation moveLocation = currentLocation.add(direction);
-			if (!allowGreaterDistance && moveLocation.distanceSquaredTo(location) > currentDistance) continue;
+			return direction;
 			
+		} else {
+			
+			int[] offsets = {1,2};
+			for (int offset : offsets) {
+
+				Direction directionOne = MovementController.directionFromInt(directionInteger + offset);
+				Direction directionTwo = MovementController.directionFromInt(directionInteger - offset);
+				direction = this.moveTowardDirections(currentLocation, location, directionOne, directionTwo, allowGreaterDistance, currentDistance);
+				if (direction != null) return direction;
+				
+			}
+			
+		}
+		return null;
+		
+	}
+	
+	// figures out the better of two directions to go in
+	private Direction moveTowardDirections(MapLocation currentLocation, MapLocation desiredLocation, Direction directionOne, Direction directionTwo, Boolean allowGreaterDistance, double currentDistance) throws GameActionException {
+		
+		Direction direction = null;
+		
+		MapLocation moveLocationOne = currentLocation.add(directionOne);
+		MapLocation moveLocationTwo = currentLocation.add(directionTwo);
+		MapLocation moveLocation = null;
+		
+		int moveLocationInteger = (moveLocationOne.distanceSquaredTo(desiredLocation) <= moveLocationTwo.distanceSquaredTo(desiredLocation)) ? 1 : 2;
+		if (moveLocationInteger == 1) {
+			
+			moveLocation = moveLocationOne;
+			direction = directionOne;
+			
+		} else {
+			
+			moveLocation = moveLocationTwo;
+			direction = directionTwo;
+			
+		}
+		
+		if (!allowGreaterDistance && moveLocation.distanceSquaredTo(desiredLocation) > currentDistance) return null;
+		if (this.moveTo(direction)) {
+			
+			return direction;
+			
+		} else {
+			
+			if (!allowGreaterDistance && moveLocation.distanceSquaredTo(desiredLocation) > currentDistance) return null;
+			if (moveLocationInteger == 1) {
+				
+				moveLocation = moveLocationTwo;
+				direction = directionTwo;
+				
+			} else {
+				
+				moveLocation = moveLocationOne;
+				direction = directionOne;
+				
+			}
 			if (this.moveTo(direction)) {
 				
 				return direction;
@@ -99,7 +154,7 @@ public class MovementController {
 		int[] offsets = {-4,5,-5,6,-6};
 		for (int offset : offsets) {
 			
-			direction = DIRECTIONS[(directionInteger + offset + 8) % 8];
+			direction = MovementController.directionFromInt(directionInteger + offset);
 			if (this.moveTo(direction)) {
 				
 				return direction;
