@@ -1,8 +1,8 @@
-package team170.movement;
+package boyer01111206.movement;
 
 import battlecode.common.*;
-import team170.*;
-import team170.units.UnitController;
+import boyer01111206.*;
+import boyer01111206.units.UnitController;
 
 public class MovementController {
 	
@@ -175,7 +175,7 @@ public class MovementController {
         if (moveAroundHQ) {
 
         	MapLocation[] towers = this.robot.unitController.enemyTowers();
-            if (moveLocation.distanceSquaredTo(this.robot.locationController.enemyHQLocation()) <= HQ.enemyAttackRadiusSquared(towers.length)) return false;
+            if (moveLocation.distanceSquaredTo(this.robot.locationController.enemyHQLocation()) <= HQ.attackRadiusSquared(towers.length)) return false;
         	
         }
 

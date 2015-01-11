@@ -1,8 +1,8 @@
-package team170;
+package boyer01111206;
 
 import battlecode.common.*;
-import team170.movement.MovementController;
-import team170.playstyles.*;
+import boyer01111206.movement.MovementController;
+import boyer01111206.playstyles.*;
 
 public class HQ extends BattleRobot {
 	
@@ -65,30 +65,9 @@ public class HQ extends BattleRobot {
 			if (!this.attack()) {
 				
 				// check if we can deal damage with splash damage
-				
-				int towers = this.locationController.towerLocations().length; 
-				if (towers >= 5) {
+				if (this.locationController.towerLocations().length >= 5) {
 					
-					MapLocation currentLocation = this.locationController.currentLocation();
-					RobotInfo[] enemies = this.unitController.nearbyEnemies(HQ.type().sensorRadiusSquared + 10);
-					for (RobotInfo enemy : enemies) {
-						
-						int distance = currentLocation.distanceSquaredTo(enemy.location);
-						if (distance <= 42) {
-							
-							Direction direction = enemy.location.directionTo(currentLocation);
-							MapLocation attackLocation = enemy.location.add(direction);
-							
-							if (this.robotController.canAttackLocation(attackLocation)) {
-								
-								this.robotController.attackLocation(attackLocation);
-								
-							}
-							break;
-							
-						}
-						
-					}
+					
 					
 				}
 				
@@ -117,19 +96,10 @@ public class HQ extends BattleRobot {
 	
 	// MARK: Static Helpers
 	
-	public static int friendlyAttackRadiusSquared(int towers) {
-		
-        int attackRadius = HQ.type().attackRadiusSquared;
-        if (towers >= 2) attackRadius = 35;
-        return attackRadius;
-		
-	}
-	
-	public static int enemyAttackRadiusSquared(int towers) {
+	public static int attackRadiusSquared(int towers) {
 
         int attackRadius = HQ.type().attackRadiusSquared;
         if (towers >= 2) attackRadius = 35;
-        if (towers >= 5) attackRadius = 41;
         return attackRadius;
 		
 	}

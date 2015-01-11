@@ -1,7 +1,7 @@
-package team170.playstyles;
+package boyer01111206.playstyles;
 
 import battlecode.common.*;
-import team170.*;
+import boyer01111206.*;
 
 public abstract class Playstyle {
 	

@@ -1,10 +1,10 @@
-package team170;
+package boyer01111206;
 
 import java.util.ArrayList;
 
 import battlecode.common.*;
-import team170.movement.*;
-import team170.units.*;
+import boyer01111206.movement.*;
+import boyer01111206.units.*;
 
 public class Drone extends BattleRobot {
 	
@@ -78,7 +78,7 @@ public class Drone extends BattleRobot {
 		final MapLocation[] towers = this.locationController.enemyTowerLocations();
 		final MapLocation enemyHQLocation = this.robotController.senseEnemyHQLocation();
 		
-		final int HQAttackRadius = HQ.enemyAttackRadiusSquared(towers.length);
+		final int HQAttackRadius = HQ.attackRadiusSquared(towers.length);
 		final int untargettableHQRadius = HQAttackRadius - this.type.attackRadiusSquared;
 		final int untargettableTowerRadius = Tower.type().attackRadiusSquared - this.type.attackRadiusSquared;
 		

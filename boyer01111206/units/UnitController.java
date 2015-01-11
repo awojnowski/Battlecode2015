@@ -1,7 +1,7 @@
-package team170.units;
+package boyer01111206.units;
 
 import battlecode.common.*;
-import team170.*;
+import boyer01111206.*;
 
 public class UnitController {
 
@@ -65,20 +65,14 @@ public class UnitController {
 
 	public RobotInfo[] nearbyEnemies() throws GameActionException {
 		
-		return this.nearbyEnemies(HQ.type().sensorRadiusSquared);
+		return this.robot.robotController.senseNearbyRobots(Tower.type().sensorRadiusSquared, this.robot.team.opponent());
 		
 	}
 
-	public RobotInfo[] nearbyEnemies(int sensorRadius) throws GameActionException {
-
-		return this.robot.robotController.senseNearbyRobots(sensorRadius, this.robot.team.opponent());
-		
-	}
-	
 	public RobotInfo[] nearbyAttackableEnemies() throws GameActionException {
 		
 		int attackRadius = this.robot.type.attackRadiusSquared;
-		if (this.robot.type == HQ.type()) attackRadius = HQ.friendlyAttackRadiusSquared(this.robot.locationController.enemyTowerLocations().length);
+		if (this.robot.type == HQ.type()) attackRadius = HQ.attackRadiusSquared(this.robot.locationController.enemyTowerLocations().length);
 		return this.robot.robotController.senseNearbyRobots(attackRadius, this.robot.team.opponent());
 		
 	}
