@@ -1,8 +1,8 @@
-package team170;
+package boyer01111650;
 
 import battlecode.common.*;
-import team170.movement.MovementController;
-import team170.playstyles.*;
+import boyer01111650.movement.MovementController;
+import boyer01111650.playstyles.*;
 
 public class HQ extends BattleRobot {
 	

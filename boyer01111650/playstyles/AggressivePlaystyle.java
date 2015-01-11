@@ -1,7 +1,7 @@
-package team170.playstyles;
+package boyer01111650.playstyles;
 
 import battlecode.common.*;
-import team170.*;
+import boyer01111650.*;
 
 public class AggressivePlaystyle extends Playstyle {
 	

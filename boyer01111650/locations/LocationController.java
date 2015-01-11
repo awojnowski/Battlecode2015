@@ -1,4 +1,4 @@
-package team170.locations;
+package boyer01111650.locations;
 
 import battlecode.common.*;
 

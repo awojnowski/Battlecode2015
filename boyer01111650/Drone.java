@@ -1,10 +1,10 @@
-package team170;
+package boyer01111650;
 
 import java.util.ArrayList;
 
 import battlecode.common.*;
-import team170.movement.*;
-import team170.units.*;
+import boyer01111650.movement.*;
+import boyer01111650.units.*;
 
 public class Drone extends BattleRobot {
 	
