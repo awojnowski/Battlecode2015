@@ -9,7 +9,7 @@ public class BuildableRobot extends Robot {
 		super(robotController);
 		
 		try {
-			this.broadcaster.decrementBuildingRobotCountFor(this.type);
+			this.broadcaster.finishBuildingRobot(this.type);
 		}
 		catch (GameActionException exception){} 
 		

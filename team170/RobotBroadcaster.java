@@ -16,7 +16,8 @@ public class RobotBroadcaster {
 	private static final int ROBOTS_STARTING_INDEX = 100; // amount of robots reported this turn (tally)
 	private static final int ROBOTS_COPY_INDEX = 200; // robot types reported last turn
 	private static final int ROBOTS_BUILDING_INDEX = 300; // civic robot types reported as building
-	private static final int ROBOTS_BUDGET_INDEX = 400; // robot budgets
+	private static final int ROBOTS_BUILDING_COUNTDOWN_INDEX = 400; // civic robot types reported as building
+	private static final int ROBOTS_BUDGET_INDEX = 500; // robot budgets
 	
 	// required properties
 	public RobotController robotController;
@@ -197,16 +198,19 @@ public class RobotBroadcaster {
 	
 	// MARK: Robots (Building)
 	
-	public void incrementBuildingRobotCountFor(RobotType type) throws GameActionException {
+	public void beginBuildingRobot(RobotType type) throws GameActionException {
 		
 		if (!this.isRobotTypeBuilding(type)) return;
 
 		int channel = ROBOTS_BUILDING_INDEX + this.incrementForRobot(type);
 		this.broadcast(channel, this.readBroadcast(channel) + 1);
+
+		channel = ROBOTS_BUILDING_COUNTDOWN_INDEX + this.incrementForRobot(type);
+		this.broadcast(channel, this.readBroadcast(channel) + type.buildTurns + 2);
 		
 	}
 	
-	public void decrementBuildingRobotCountFor(RobotType type) throws GameActionException {
+	public void finishBuildingRobot(RobotType type) throws GameActionException {
 		
 		if (!this.isRobotTypeBuilding(type)) return;
 
@@ -236,6 +240,27 @@ public class RobotBroadcaster {
 
 		this.broadcast(ROBOTS_SPAWNED_INDEX, this.readBroadcast(ROBOTS_SPAWNED_TALLY_INDEX));
 		this.broadcast(ROBOTS_SPAWNED_TALLY_INDEX, 0);
+		
+		// figure out if any building buildings are written off
+		for (int i = 0; i < 25; i++) {
+			
+			int total = this.readBroadcast(ROBOTS_BUILDING_COUNTDOWN_INDEX + i);
+			if (total > 0) {
+				
+				total -= this.readBroadcast(ROBOTS_BUILDING_INDEX + i);
+				if (total <= 0) {
+							
+					// we just decremented it to zero from >0 which means that
+					// the counter never stopped so there should be a write off
+					total = 0;
+					this.broadcast(ROBOTS_BUILDING_INDEX + i, Math.max(0, this.readBroadcast(ROBOTS_BUILDING_INDEX + i) - 1));
+					
+				}
+				this.broadcast(ROBOTS_BUILDING_COUNTDOWN_INDEX + i, total);
+				
+			}
+			
+		}
 		
 		// copy the ore spent
 		this.broadcast(ORE_SPENT_COPY_INDEX, this.readBroadcast(ORE_SPENT_INDEX));

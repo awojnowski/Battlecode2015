@@ -81,7 +81,7 @@ public abstract class Robot {
 	public Boolean tryBuild(Direction direction, RobotType type) throws GameActionException {
 		
 		if (this.canBuild(direction, type)) {
-			
+
 			this.build(direction, type);
 			return true;
 			
@@ -94,7 +94,7 @@ public abstract class Robot {
 		
 		this.robotController.build(direction, type);
 		this.broadcaster.decrementBudget(type, type.oreCost);
-		this.broadcaster.incrementBuildingRobotCountFor(type);
+		this.broadcaster.beginBuildingRobot(type);
 		this.broadcaster.incrementSpentOre(type.oreCost);
 				
 	}

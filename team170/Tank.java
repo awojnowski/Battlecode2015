@@ -24,6 +24,8 @@ public class Tank extends BattleRobot {
 					
 					if (!this.shouldMobilize()) {
 						
+						
+						
 						MapLocation rallyLocation = this.locationController.militaryRallyLocation();
 						if (this.locationController.distanceTo(rallyLocation) > 18) {
 

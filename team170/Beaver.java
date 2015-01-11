@@ -5,7 +5,6 @@ import battlecode.common.*;
 public class Beaver extends BattleRobot {
 	
 	public Direction facing;
-	
 	public Boolean isDesignatedBuilder;
 
 	public Beaver(RobotController robotController) {
@@ -28,10 +27,9 @@ public class Beaver extends BattleRobot {
 			
 			if (this.robotController.isCoreReady()) {
 				
-				if (this.isDesignatedBuilder) {
+				if (this.isDesignatedBuilder && this.robotController.getHealth() > 10) {
 					
 					Boolean builtBuilding = false;
-					
 					RobotType buildType = this.currentPlaystyle().nextBuildingType();
 					if (buildType != null) {
 						

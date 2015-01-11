@@ -23,15 +23,6 @@ public class HQ extends BattleRobot {
 		try {
 			System.out.println("Using aggressive playstyle.");
 			this.broadcaster.setCurrentPlaystyle(AggressivePlaystyle.identifierS());
-			
-			/*int towerCount = this.locationController.towerLocations().length;
-			if (towerCount < 2) {
-				System.out.println("Using marine rush playstyle.");
-				this.broadcaster.setCurrentPlaystyle(MarineRushPlaystyle.identifierS());
-			} else {
-				System.out.println("Using aggressive playstyle.");
-				this.broadcaster.setCurrentPlaystyle(AggressivePlaystyle.identifierS());
-			}*/
 		} catch (GameActionException e) {}
 		
 	}
