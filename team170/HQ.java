@@ -129,7 +129,7 @@ public class HQ extends BattleRobot {
 
         int attackRadius = HQ.type().attackRadiusSquared;
         if (towers >= 2) attackRadius = 35;
-        if (towers >= 5) attackRadius = 41;
+        if (towers >= 5) attackRadius = 45;
         return attackRadius;
 		
 	}
