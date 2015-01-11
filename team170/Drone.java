@@ -44,20 +44,45 @@ public class Drone extends BattleRobot {
 			
 			this.robotController.setIndicatorLine(this.locationController.currentLocation(), this.targetLocation, 255, 0, 0);
 			
-			if (!this.attack()) {
+			Boolean attacked = this.attack();
+			if (this.robotController.isCoreReady()) {
+				
+				// figure out if we're in danger
+				RobotInfo dangerousEnemy = null;
+				
+				MapLocation currentLocation = this.locationController.currentLocation();
+				RobotInfo[] enemies = this.unitController.nearbyEnemies();
+				for (RobotInfo enemy : enemies) {
 					
-				if (this.robotController.isCoreReady()) {
-					
-					this.movementController.moveToward(this.targetLocation, this.allowFurtherTargetTravel);
-					this.moveRefreshCount ++;
-					
-					if (this.moveRefreshCount > 10) { // The refresh is fairly low, but helps them patrol faster
+					if (currentLocation.distanceSquaredTo(enemy.location) <= enemy.type.attackRadiusSquared) {
 						
-						this.moveRefreshCount = 0;
-						this.refreshTargetLocation();
+						dangerousEnemy = enemy;
+						break;
 						
 					}
-									
+					
+				}
+				
+				if (dangerousEnemy != null) {
+					
+					this.movementController.moveAway(dangerousEnemy.location);
+					
+				} else {
+					
+					if (!attacked) {
+						
+						this.movementController.moveToward(this.targetLocation, this.allowFurtherTargetTravel);
+						this.moveRefreshCount ++;
+						
+						if (this.moveRefreshCount > 10) { // The refresh is fairly low, but helps them patrol faster
+							
+							this.moveRefreshCount = 0;
+							this.refreshTargetLocation();
+							
+						}
+						
+					}
+					
 				}
 				
 			}
