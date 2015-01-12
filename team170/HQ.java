@@ -68,9 +68,9 @@ public class HQ extends BattleRobot {
 				
 				int towers = this.locationController.towerLocations().length; 
 				if (towers >= 5) {
-					
+										
 					MapLocation currentLocation = this.locationController.currentLocation();
-					RobotInfo[] enemies = this.unitController.nearbyEnemies(HQ.type().sensorRadiusSquared + 10);
+					RobotInfo[] enemies = this.unitController.nearbyEnemies(HQ.type().sensorRadiusSquared + 50);
 					for (RobotInfo enemy : enemies) {
 						
 						int distance = currentLocation.distanceSquaredTo(enemy.location);
@@ -82,9 +82,9 @@ public class HQ extends BattleRobot {
 							if (this.robotController.canAttackLocation(attackLocation)) {
 								
 								this.robotController.attackLocation(attackLocation);
+								break;
 								
 							}
-							break;
 							
 						}
 						
@@ -129,7 +129,7 @@ public class HQ extends BattleRobot {
 
         int attackRadius = HQ.type().attackRadiusSquared;
         if (towers >= 2) attackRadius = 35;
-        if (towers >= 5) attackRadius = 45;
+        if (towers >= 5) attackRadius = 49;
         return attackRadius;
 		
 	}
