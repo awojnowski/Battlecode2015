@@ -28,14 +28,10 @@ public class Missile extends Robot {
 		super.run();
 		
 		try {
-			
-			if (this.unitController.nearbyAttackableEnemies().length > 0) {
-				
-				this.robotController.explode();
-				
-			} else {
 
-				this.movementController.moveTo(direction);
+			if (this.robotController.canMove(this.direction)) {
+				
+				this.robotController.move(this.direction);
 				
 			}
 			

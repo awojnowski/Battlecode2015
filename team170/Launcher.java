@@ -1,5 +1,7 @@
 package team170;
 
+import java.util.ArrayList;
+
 import battlecode.common.*;
 
 public class Launcher extends BattleRobot {
@@ -37,22 +39,53 @@ public class Launcher extends BattleRobot {
 							
 				if (this.robotController.isCoreReady()) {
 					
-					if (!this.shouldMobilize()) {
+					Boolean shouldMove = true;
+					if (shouldMove) {
 						
-						MapLocation rallyLocation = this.locationController.militaryRallyLocation();
-						if (this.locationController.distanceTo(rallyLocation) > 18) {
-	
-							this.movementController.moveToward(rallyLocation);
+						RobotInfo dangerousEnemy = this.nearbyDangerousEnemy(24, 21);
+						if (dangerousEnemy != null) {
+							
+							this.movementController.moveAway(dangerousEnemy.location);
+							shouldMove = false;
+							
+						}						
+						
+					}
+					
+					if (shouldMove) {
+						
+						if (!this.shouldMobilize()) {
+							
+							RobotInfo[] enemiesInTerritory = this.enemiesInTerritory();
+							if (enemiesInTerritory.length > 0) {
+								
+								RobotInfo enemy = this.desiredEnemy(enemiesInTerritory);
+								MapLocation bestLocation = enemy.location;
+								shouldMove = this.movementController.moveToward(bestLocation) == null;
+								
+							}
+							
+							// if we haven't moved toward an enemy location then we can go and stick to the plan
+							if (shouldMove) {
+
+								MapLocation rallyLocation = this.locationController.militaryRallyLocation();
+								if (this.locationController.distanceTo(rallyLocation) > 18) {
+
+									this.movementController.moveToward(rallyLocation);
+									
+								} else {
+									
+									this.movementController.moveTo(this.movementController.randomDirection());
+									
+								}
+								
+							}
 							
 						} else {
-							
-							this.movementController.moveTo(this.movementController.randomDirection());
+
+							this.mobilize();
 							
 						}
-						
-					} else {
-	
-						this.mobilize();
 						
 					}
 					

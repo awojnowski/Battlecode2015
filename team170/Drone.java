@@ -139,8 +139,13 @@ public class Drone extends BattleRobot {
 		
 		if (targettableEnemies.size() > 0) {
 			
-			this.setTargetLocation(this.desiredEnemy(targettableEnemies.toArray(new RobotInfo[targettableEnemies.size()])).location, false);
-			return true;
+			RobotInfo enemy = this.desiredEnemy(targettableEnemies.toArray(new RobotInfo[targettableEnemies.size()]));
+			if (enemy != null) { 
+
+				this.setTargetLocation(enemy.location, false);
+				return true;
+				
+			}
 			
 		}
 		return false;

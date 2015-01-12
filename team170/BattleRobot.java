@@ -1,5 +1,7 @@
 package team170;
 
+import java.util.ArrayList;
+
 import battlecode.common.*;
 
 public class BattleRobot extends Robot {
@@ -127,14 +129,20 @@ public class BattleRobot extends Robot {
 	
 	public RobotInfo nearbyDangerousEnemy() throws GameActionException {
 		
+		return this.nearbyDangerousEnemy(16, 0);
+		
+	}
+	
+	public RobotInfo nearbyDangerousEnemy(int visionRadius, double attackRadius) throws GameActionException {
+		
 		RobotInfo dangerousEnemy = null;
 		
 		MapLocation currentLocation = this.locationController.currentLocation();
-		RobotInfo[] enemies = this.unitController.nearbyEnemies(16);
+		RobotInfo[] enemies = this.unitController.nearbyEnemies(visionRadius);
 		for (RobotInfo enemy : enemies) {
 			
 			this.broadcaster.evaluateSeenLaunchersWithType(enemy.type);
-			if (currentLocation.distanceSquaredTo(enemy.location) <= enemy.type.attackRadiusSquared) {
+			if (currentLocation.distanceSquaredTo(enemy.location) <= (attackRadius > 0 ? attackRadius : enemy.type.attackRadiusSquared)) {
 				
 				dangerousEnemy = enemy;
 				break;
@@ -143,6 +151,27 @@ public class BattleRobot extends Robot {
 			
 		}
 		return dangerousEnemy;
+		
+	}
+	
+	public RobotInfo[] enemiesInTerritory() throws GameActionException {
+		
+		// figure out if we should engage units in friendly territory
+		ArrayList<RobotInfo> targettableEnemies = new ArrayList<RobotInfo>();
+		RobotInfo[] enemies = this.unitController.nearbyEnemies(100);
+		for (RobotInfo enemy : enemies) {
+			
+			this.broadcaster.evaluateSeenLaunchersWithType(enemy.type);
+			if (enemy.type == Missile.type()) continue;
+			
+			if (locationController.isLocationInFriendlyTerritory(enemy.location)) {
+				
+				targettableEnemies.add(enemy);
+				
+			}
+			
+		}
+		return targettableEnemies.toArray(new RobotInfo[targettableEnemies.size()]);
 		
 	}
 	

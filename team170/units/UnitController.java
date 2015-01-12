@@ -75,6 +75,35 @@ public class UnitController {
 		
 	}
 	
+	public RobotInfo closestNearbyEnemy() throws GameActionException {
+		
+		return this.closestNearbyEnemy(HQ.type().sensorRadiusSquared);
+		
+	}
+	
+	public RobotInfo closestNearbyEnemy(int sensorRadius) throws GameActionException {
+		
+		RobotInfo closest = null;
+		double distance = Double.MAX_VALUE;
+		
+		MapLocation currentLocation = this.robot.locationController.currentLocation();
+		RobotInfo[] enemies = this.nearbyEnemies(sensorRadius);
+		for (RobotInfo enemy : enemies) {
+			
+			double enemyDistance = currentLocation.distanceSquaredTo(enemy.location);
+			if (enemyDistance < distance) {
+				
+				closest = enemy;
+				distance = enemyDistance;
+				
+			}
+			
+		}
+		
+		return closest;
+		
+	}
+	
 	public RobotInfo[] nearbyAttackableEnemies() throws GameActionException {
 		
 		int attackRadius = this.robot.type.attackRadiusSquared;

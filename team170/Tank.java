@@ -1,6 +1,7 @@
 package team170;
 
 import battlecode.common.*;
+
 import java.util.ArrayList;
 
 public class Tank extends BattleRobot {
@@ -53,26 +54,11 @@ public class Tank extends BattleRobot {
 				if (shouldMove) {
 					
 					if (!this.shouldMobilize()) {
-						
-						// figure out if we should engage units in friendly territory
-						ArrayList<RobotInfo> targettableEnemies = new ArrayList<RobotInfo>();
-						RobotInfo[] enemies = this.unitController.nearbyEnemies(100);
-						for (RobotInfo enemy : enemies) {
+
+						RobotInfo[] enemiesInTerritory = this.enemiesInTerritory();
+						if (enemiesInTerritory.length > 0) {
 							
-							this.broadcaster.evaluateSeenLaunchersWithType(enemy.type);
-							if (enemy.type == Missile.type()) continue;
-							
-							if (locationController.isLocationInFriendlyTerritory(enemy.location)) {
-								
-								targettableEnemies.add(enemy);
-								
-							}
-							
-						}
-						
-						if (targettableEnemies.size() > 0) {
-							
-							RobotInfo enemy = this.desiredEnemy(targettableEnemies.toArray(new RobotInfo[targettableEnemies.size()]));
+							RobotInfo enemy = this.desiredEnemy(enemiesInTerritory);
 							MapLocation bestLocation = enemy.location;
 							shouldMove = this.movementController.moveToward(bestLocation) == null;
 							if (!shouldMove) {
