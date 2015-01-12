@@ -2,8 +2,6 @@ package team170;
 
 import battlecode.common.*;
 
-import java.util.ArrayList;
-
 public class Tank extends BattleRobot {
 	
 	private int turnsChasingDrone;

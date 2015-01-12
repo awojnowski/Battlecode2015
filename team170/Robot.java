@@ -10,8 +10,6 @@ import team170.units.*;
 
 public abstract class Robot {
 	
-	private static final int MAX_BUILD_TILES = 10000;
-
 	// MARK: Instance Variables
 	
 	// controllers
@@ -64,39 +62,6 @@ public abstract class Robot {
 		}
 		catch (GameActionException e){}
 		
-	}
-	
-	// MARK: Building
-	
-	public Boolean canBuild(Direction direction, RobotType type) throws GameActionException {
-		
-		if (this.locationController.distanceTo(this.locationController.HQLocation()) > MAX_BUILD_TILES) return false;
-		if (type.oreCost > this.broadcaster.budgetForType(type)) return false;
-		if (!this.robotController.hasBuildRequirements(type)) return false;
-		if (!this.robotController.canBuild(direction, type)) return false;
-		return true;
-		
-	}
-	
-	public Boolean tryBuild(Direction direction, RobotType type) throws GameActionException {
-		
-		if (this.canBuild(direction, type)) {
-
-			this.build(direction, type);
-			return true;
-			
-		}
-		return false;
-		
-	}
-	
-	public void build(Direction direction, RobotType type) throws GameActionException {
-		
-		this.robotController.build(direction, type);
-		this.broadcaster.decrementBudget(type, type.oreCost);
-		this.broadcaster.beginBuildingRobot(type);
-		this.broadcaster.incrementSpentOre(type.oreCost);
-				
 	}
 	
 	// MARK: Mining
@@ -167,12 +132,17 @@ public abstract class Robot {
 		
 	}
 	
-	public Boolean trySpawn(Direction direction, RobotType type) throws GameActionException {
+	public Boolean trySpawn(RobotType type) throws GameActionException {
 		
-		if (this.canSpawn(direction, type)) {
+		for (int i = 0; i < 8; i++) {
 			
-			this.spawn(direction, type);
-			return true;
+			Direction direction = MovementController.directionFromInt(i);
+			if (this.canSpawn(direction, type)) {
+				
+				this.spawn(direction, type);
+				return true;
+				
+			}
 			
 		}
 		return false;

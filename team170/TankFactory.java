@@ -18,7 +18,7 @@ public class TankFactory extends BuildableRobot {
 			
 			if (this.robotController.isCoreReady()) {
 
-				this.trySpawn(this.movementController.randomDirection(), Tank.type());
+				this.trySpawn(Tank.type());
 				
 			}
 							

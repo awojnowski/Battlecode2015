@@ -1,5 +1,7 @@
 package team170;
 
+import team170.movement.MovementController;
+import team170.units.UnitController;
 import battlecode.common.*;
 
 public class Beaver extends BattleRobot {
@@ -33,14 +35,14 @@ public class Beaver extends BattleRobot {
 					RobotType buildType = this.currentPlaystyle().nextBuildingType();
 					if (buildType != null) {
 						
-						builtBuilding = this.tryBuild(this.movementController.randomDirection(), buildType);
+						builtBuilding = this.tryBuild(buildType);
 						
 					}
 					
 					// try to build a supply depot
 					if (!builtBuilding) {
 						
-						this.tryBuild(this.movementController.randomDirection(), SupplyDepot.type());
+						this.tryBuild(SupplyDepot.type());
 						
 					}
 					
@@ -80,6 +82,74 @@ public class Beaver extends BattleRobot {
 		
 		this.robotController.yield();
 		
+	}
+	
+	// MARK: Building
+	
+	public Boolean canBuild(MapLocation location, Direction direction, RobotType type) throws GameActionException {
+		
+		if (type.oreCost > this.broadcaster.budgetForType(type)) return false;
+		if (!this.robotController.hasBuildRequirements(type)) return false;
+		if (!this.robotController.canBuild(direction, type)) return false;
+		
+		Boolean edgesHaveBuilding = false;
+		Boolean cornersHaveBuilding = false;
+		
+		for (int i = 0; i < 8 && !edgesHaveBuilding; i++) {
+			
+			MapLocation adjacentTile = location.add(MovementController.directionFromInt(i));
+			RobotInfo robot = this.robotController.senseRobotAtLocation(adjacentTile);
+			if (i % 2 != 0) {
+
+				if (robot == null) continue;
+				if (UnitController.isUnitTypeBuilding(robot.type)) {
+					
+					cornersHaveBuilding = true;
+					
+				}
+				
+			} else {
+
+				if (robot == null) continue;
+				if (UnitController.isUnitTypeBuilding(robot.type)) {
+					
+					edgesHaveBuilding = true;
+					
+				}
+				
+			}
+			
+		}
+		return (cornersHaveBuilding && !edgesHaveBuilding);
+		
+	}
+	
+	public Boolean tryBuild(RobotType type) throws GameActionException {
+		
+		MapLocation currentLocation = this.locationController.currentLocation();		
+		for (int i = 0; i < 8; i++) {
+			
+			Direction direction = MovementController.directionFromInt(i);
+			MapLocation location = currentLocation.add(direction);
+			if (this.canBuild(location, direction, type)) {
+
+				this.build(direction, type);
+				return true;
+				
+			}
+			
+		}
+		return false;
+		
+	}
+	
+	public void build(Direction direction, RobotType type) throws GameActionException {
+		
+		this.robotController.build(direction, type);
+		this.broadcaster.decrementBudget(type, type.oreCost);
+		this.broadcaster.beginBuildingRobot(type);
+		this.broadcaster.incrementSpentOre(type.oreCost);
+				
 	}
 	
 	// MARK: Static Helpers

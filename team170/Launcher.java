@@ -1,7 +1,5 @@
 package team170;
 
-import java.util.ArrayList;
-
 import battlecode.common.*;
 
 public class Launcher extends BattleRobot {
