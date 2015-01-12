@@ -127,6 +127,27 @@ public class BattleRobot extends Robot {
 		
 	}
 	
+	public RobotInfo nearbyDangerousEnemy() throws GameActionException {
+		
+		RobotInfo dangerousEnemy = null;
+		
+		MapLocation currentLocation = this.locationController.currentLocation();
+		RobotInfo[] enemies = this.unitController.nearbyEnemies(16);
+		for (RobotInfo enemy : enemies) {
+			
+			this.broadcaster.evaluateSeenLaunchersWithType(enemy.type);
+			if (currentLocation.distanceSquaredTo(enemy.location) <= enemy.type.attackRadiusSquared) {
+				
+				dangerousEnemy = enemy;
+				break;
+				
+			}
+			
+		}
+		return dangerousEnemy;
+		
+	}
+	
 	// MARK: Mobilization
 	
 	public Boolean shouldMobilize() throws GameActionException {

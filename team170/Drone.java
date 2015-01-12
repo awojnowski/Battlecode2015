@@ -47,23 +47,7 @@ public class Drone extends BattleRobot {
 			Boolean attacked = this.attack();
 			if (this.robotController.isCoreReady()) {
 				
-				// figure out if we're in danger
-				RobotInfo dangerousEnemy = null;
-				
-				MapLocation currentLocation = this.locationController.currentLocation();
-				RobotInfo[] enemies = this.unitController.nearbyEnemies(16);
-				for (RobotInfo enemy : enemies) {
-					
-					this.broadcaster.evaluateSeenLaunchersWithType(enemy.type);
-					if (currentLocation.distanceSquaredTo(enemy.location) <= enemy.type.attackRadiusSquared) {
-						
-						dangerousEnemy = enemy;
-						break;
-						
-					}
-					
-				}
-				
+				RobotInfo dangerousEnemy = this.nearbyDangerousEnemy();
 				if (dangerousEnemy != null) {
 					
 					this.movementController.moveAway(dangerousEnemy.location);
