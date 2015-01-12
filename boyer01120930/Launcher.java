@@ -1,4 +1,6 @@
-package team170;
+package boyer01120930;
+
+import java.util.ArrayList;
 
 import battlecode.common.*;
 
@@ -16,7 +18,7 @@ public class Launcher extends BattleRobot {
 			
 			try {
 				
-				if (this.robotController.getMissileCount() > 2) {
+				if (this.robotController.getMissileCount() > 0) {
 
 					RobotInfo[] nearbyEnemies = this.unitController.nearbyEnemies();
 					RobotInfo desiredEnemy = this.desiredEnemy(nearbyEnemies);
@@ -39,11 +41,11 @@ public class Launcher extends BattleRobot {
 					
 					Boolean shouldMove = true;
 					if (shouldMove) {
-
-						RobotInfo[] dangerousEnemies = this.nearbyDangerousEnemies(25, 25);
-						if (dangerousEnemies != null && dangerousEnemies.length > 0) {
+						
+						RobotInfo dangerousEnemy = this.nearbyDangerousEnemy(24, 21);
+						if (dangerousEnemy != null) {
 							
-							this.movementController.moveAway(dangerousEnemies);
+							this.movementController.moveAway(dangerousEnemy.location);
 							shouldMove = false;
 							
 						}						
