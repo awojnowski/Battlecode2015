@@ -67,7 +67,7 @@ public class MovementController {
 		MapLocation currentLocation = this.robot.locationController.currentLocation();
 		double currentDistance = currentLocation.distanceSquaredTo(location);
 		
-		Direction direction = this.robot.robotController.getLocation().directionTo(location);
+		Direction direction = currentLocation.directionTo(location);
 		int directionInteger = directionToInt(direction);
 		
 		if (moveTo(direction)) {
@@ -120,7 +120,6 @@ public class MovementController {
 			
 		} else {
 			
-			if (!allowGreaterDistance && moveLocation.distanceSquaredTo(desiredLocation) > currentDistance) return null;
 			if (moveLocationInteger == 1) {
 				
 				moveLocation = moveLocationTwo;
@@ -132,6 +131,7 @@ public class MovementController {
 				direction = directionOne;
 				
 			}
+			if (!allowGreaterDistance && moveLocation.distanceSquaredTo(desiredLocation) > currentDistance) return null;
 			if (this.moveTo(direction)) {
 				
 				return direction;
@@ -148,21 +148,10 @@ public class MovementController {
 		
 		if (location == null) return null; 
 		
-		Direction direction = this.robot.robotController.getLocation().directionTo(location);
-		int directionInteger = directionToInt(direction);
+		MapLocation currentLocation = this.robot.locationController.currentLocation();
+		Direction direction = currentLocation.directionTo(location);
 		
-		int[] offsets = {-4,5,-5,6,-6};
-		for (int offset : offsets) {
-			
-			direction = MovementController.directionFromInt(directionInteger + offset);
-			if (this.moveTo(direction)) {
-				
-				return direction;
-				
-			}
-			
-		}
-		return null;
+		return this.moveToward(currentLocation.add(MovementController.directionFromInt(MovementController.directionToInt(direction) - 4)));
 		
 	}
 	

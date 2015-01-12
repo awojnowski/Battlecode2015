@@ -77,7 +77,15 @@ public class Drone extends BattleRobot {
 						if (this.moveRefreshCount > 10) { // The refresh is fairly low, but helps them patrol faster
 							
 							this.moveRefreshCount = 0;
-							this.refreshTargetLocation();
+							if (this.currentPlaystyle().areDronesRestrictedToMiners()) {
+
+								this.refreshTargetLocation();
+								
+							} else {
+								
+								this.refreshScoutTargetLocation();
+								
+							}
 							
 						}
 						
@@ -231,7 +239,6 @@ public class Drone extends BattleRobot {
 		}
 		
 		this.lastPatrolLocation = currLocation;
-		
 		return this.patrolDirection;
 		
 	}
@@ -247,6 +254,12 @@ public class Drone extends BattleRobot {
 		Direction tangentDirection = MovementController.directionFromInt(directionToHQInt + offset);
 		
 		return enemyHQLocation.add(tangentDirection, distance);
+		
+	}
+	
+	private void refreshScoutTargetLocation() throws GameActionException { 
+		
+		this.setTargetLocation(this.locationController.enemyHQLocation().add(this.movementController.randomDirection(), 10 + this.random.nextInt(30)), true);
 		
 	}
 	

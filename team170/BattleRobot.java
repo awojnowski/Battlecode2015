@@ -81,7 +81,11 @@ public class BattleRobot extends Robot {
 			RobotInfo chosenEnemy = null;
 			for (RobotInfo enemy : enemies) {
 
+				// restrictions on units
 				if (enemy.type == Missile.type()) continue;
+				if (this.type == Drone.type() && enemy.type != Beaver.type() && enemy.type != Miner.type()) continue;
+				
+				// figure out the best enemy
 				if (chosenEnemy == null) {
 					
 					chosenEnemy = enemy;

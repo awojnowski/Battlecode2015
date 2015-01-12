@@ -59,6 +59,12 @@ public abstract class Playstyle {
 		
 	}
 	
+	public Boolean areDronesRestrictedToMiners() throws GameActionException {
+		
+		return true;
+		
+	}
+	
 	// MARK: Budgeting
 	
 	public void updateBudgeting(int oreMined) throws GameActionException {
