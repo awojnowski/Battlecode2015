@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 public class Tank extends BattleRobot {
 	
+	private int turnsChasingDrone;
 	private int freezeTurns = 0;
 
 	public Tank(RobotController robotController) {
@@ -19,14 +20,17 @@ public class Tank extends BattleRobot {
 		
 		try {
 			
+			this.robotController.setIndicatorString(2, "");
+			
 			AttackResult attackResult = new AttackResult();
 			Boolean attacked = this.attack(attackResult);
 			if (attackResult.target != null) {
-				
+								
 				if (attackResult.target.type == Drone.type()) {
 					
 					// don't want to be kited by drones
 					this.freezeTurns = 10;
+					this.turnsChasingDrone = 0; // since we attacked it
 					
 				}
 				
@@ -68,8 +72,29 @@ public class Tank extends BattleRobot {
 						
 						if (targettableEnemies.size() > 0) {
 							
-							MapLocation bestLocation = this.desiredEnemy(targettableEnemies.toArray(new RobotInfo[targettableEnemies.size()])).location;
-							shouldMove = this.movementController.moveToward(bestLocation) != null;
+							RobotInfo enemy = this.desiredEnemy(targettableEnemies.toArray(new RobotInfo[targettableEnemies.size()]));
+							MapLocation bestLocation = enemy.location;
+							shouldMove = this.movementController.moveToward(bestLocation) == null;
+							if (!shouldMove) {
+								
+								// avoid chasing drones
+								if (enemy.type == Drone.type()) {
+									
+									this.turnsChasingDrone ++;
+									if (this.turnsChasingDrone > 3) {
+										
+										this.freezeTurns = 20;
+										this.turnsChasingDrone = 0;
+										
+									}
+									
+								} else {
+									
+									this.turnsChasingDrone = 0;
+									
+								}
+								
+							}
 							
 						}
 						

@@ -61,8 +61,6 @@ public class BattleRobot extends Robot {
 		return false;
 		
 	}
-	
-	
 
 	// MARK: Enemy Helpers
 	
