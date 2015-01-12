@@ -12,6 +12,7 @@ public class RobotBroadcaster {
 	private static final int ROBOTS_SPAWNED_TALLY_INDEX = 6; // amount of robots SPAWNED (not built) (tally)
 	private static final int ROBOTS_SPAWNED_INDEX = 7; // amount of robots SPAWNED (spawned_index + building_index)
 	private static final int MISSILE_DIRECTION_INDEX = 8; // the direction that the next spawned missile should go in
+	private static final int SPOTTED_LAUNCHERS = 9; // whether launchers have been encountered this game or not
 	
 	private static final int ROBOTS_STARTING_INDEX = 100; // amount of robots reported this turn (tally)
 	private static final int ROBOTS_COPY_INDEX = 200; // robot types reported last turn
@@ -125,6 +126,27 @@ public class RobotBroadcaster {
 		
 	}
 	
+	// MARK: Launchers
+	
+	public void evaluateSeenLaunchersWithType(RobotType type) throws GameActionException {
+		
+		if (type == Launcher.type() || type == Missile.type()) this.setSeenLaunchers();
+		
+	}
+	
+	public void setSeenLaunchers() throws GameActionException {
+		
+		if (this.hasSeenLaunchers()) return;
+		this.broadcast(SPOTTED_LAUNCHERS, 1);
+		
+	}
+	
+	public Boolean hasSeenLaunchers() throws GameActionException {
+		
+		return this.readBroadcast(SPOTTED_LAUNCHERS) == 1;
+		
+	}
+	
 	// MARK: Missiles
 	
 	public void setNextMissileDirection(Direction direction) throws GameActionException {
@@ -136,6 +158,20 @@ public class RobotBroadcaster {
 	public Direction nextMissileDirection() throws GameActionException {
 		
 		return MovementController.directionFromInt(this.readBroadcast(MISSILE_DIRECTION_INDEX));
+		
+	}
+	
+	// MARK: Ore
+	
+	public void incrementSpentOre(int increment) throws GameActionException {
+
+		this.broadcast(ORE_SPENT_INDEX, this.readBroadcast(ORE_SPENT_INDEX) + increment);
+		
+	}
+	
+	public int oreSpentLastTurn() throws GameActionException {
+		
+		return this.readBroadcast(ORE_SPENT_COPY_INDEX);
 		
 	}
 	
@@ -158,20 +194,6 @@ public class RobotBroadcaster {
 	private int incrementForRobot(RobotType type) {
 		
 		return type.ordinal();
-		
-	}
-	
-	// MARK: Ore
-	
-	public void incrementSpentOre(int increment) throws GameActionException {
-
-		this.broadcast(ORE_SPENT_INDEX, this.readBroadcast(ORE_SPENT_INDEX) + increment);
-		
-	}
-	
-	public int oreSpentLastTurn() throws GameActionException {
-		
-		return this.readBroadcast(ORE_SPENT_COPY_INDEX);
 		
 	}
 	

@@ -32,7 +32,17 @@ public class BattleRobot extends Robot {
 	
 	// MARK: Attacking
 	
+	class AttackResult {
+		public RobotInfo target;
+	}
+	
 	public Boolean attack() throws GameActionException {
+		
+		return this.attack(null);
+		
+	}
+	
+	public Boolean attack(AttackResult attackResult) throws GameActionException {
 		
 		if (!this.robotController.isWeaponReady()) return true;
 		
@@ -40,17 +50,23 @@ public class BattleRobot extends Robot {
 		if (desiredEnemy != null) {
 			
 			this.robotController.attackLocation(desiredEnemy.location);
-			
+			if (attackResult != null) {
+				
+				attackResult.target = desiredEnemy;
+				
+			}
 			return true;
 			
 		}
 		return false;
 		
 	}
+	
+	
 
 	// MARK: Enemy Helpers
 	
-	public RobotInfo desiredEnemy(RobotInfo[] enemies) {
+	public RobotInfo desiredEnemy(RobotInfo[] enemies) throws GameActionException {
 		
 		// prioritize the HQ
 		
@@ -74,12 +90,15 @@ public class BattleRobot extends Robot {
 		
 	}
 	
-	public RobotInfo weakestEnemy(RobotInfo[] enemies) {
+	public RobotInfo weakestEnemy(RobotInfo[] enemies) throws GameActionException {
 		
 		if (enemies.length > 0) {
 							
 			RobotInfo chosenEnemy = null;
 			for (RobotInfo enemy : enemies) {
+				
+				// first report launcher sightings
+				this.broadcaster.evaluateSeenLaunchersWithType(enemy.type);
 
 				// restrictions on units
 				if (enemy.type == Missile.type()) continue;

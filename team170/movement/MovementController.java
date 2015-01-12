@@ -239,6 +239,7 @@ public class MovementController {
             RobotInfo[] enemies = this.robot.unitController.nearbyEnemies();
             for (RobotInfo enemy : enemies) {
 
+            	this.robot.broadcaster.evaluateSeenLaunchersWithType(enemy.type);
         		if (!UnitController.isUnitTypeDangerous(enemy.type)) continue;
             	if (moveLocation.distanceSquaredTo(enemy.location) <= enemy.type.attackRadiusSquared) return false;
             	

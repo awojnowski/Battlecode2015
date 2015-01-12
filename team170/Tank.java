@@ -4,6 +4,8 @@ import battlecode.common.*;
 import java.util.ArrayList;
 
 public class Tank extends BattleRobot {
+	
+	private int freezeTurns = 0;
 
 	public Tank(RobotController robotController) {
 		
@@ -17,10 +19,22 @@ public class Tank extends BattleRobot {
 		
 		try {
 			
-			Boolean attacked = this.attack();
+			AttackResult attackResult = new AttackResult();
+			Boolean attacked = this.attack(attackResult);
+			if (attackResult.target != null) {
+				
+				if (attackResult.target.type == Drone.type()) {
+					
+					// don't want to be kited by drones
+					this.freezeTurns = 10;
+					
+				}
+				
+			}
+			
 			if (this.robotController.isCoreReady()) {
 				
-				Boolean shouldMove = !attacked;
+				Boolean shouldMove = !attacked && this.freezeTurns == 0;
 				if (shouldMove) {
 					
 					if (!this.shouldMobilize()) {
@@ -30,7 +44,9 @@ public class Tank extends BattleRobot {
 						RobotInfo[] enemies = this.unitController.nearbyEnemies(100);
 						for (RobotInfo enemy : enemies) {
 							
+							this.broadcaster.evaluateSeenLaunchersWithType(enemy.type);
 							if (enemy.type == Missile.type()) continue;
+							
 							if (locationController.isLocationInFriendlyTerritory(enemy.location)) {
 								
 								targettableEnemies.add(enemy);
@@ -46,6 +62,7 @@ public class Tank extends BattleRobot {
 							
 						}
 						
+						// if we haven't moved toward an enemy location then we can go and stick to the plan
 						if (shouldMove) {
 
 							MapLocation rallyLocation = this.locationController.militaryRallyLocation();
@@ -75,6 +92,7 @@ public class Tank extends BattleRobot {
 		} catch (GameActionException exception) {
 		}
 		
+		if (this.freezeTurns > 0) this.freezeTurns --;
 		this.robotController.yield();
 		
 	}
