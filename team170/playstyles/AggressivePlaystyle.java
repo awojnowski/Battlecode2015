@@ -83,7 +83,7 @@ public class AggressivePlaystyle extends Playstyle {
 	public Boolean canMobilizeForClockNumber(int clockNumber) throws GameActionException {
 		
 		int totalTanks = this.broadcaster.robotCountFor(Tank.type());
-		if (totalTanks > 10 && !this.broadcaster.hasSeenLaunchers()) {
+		if (totalTanks > 15 && !this.broadcaster.hasSeenLaunchers()) {
 			
 			return true;
 			
