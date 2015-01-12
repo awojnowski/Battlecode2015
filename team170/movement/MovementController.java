@@ -48,6 +48,10 @@ public class MovementController {
 		return (d + 8000) % 8;
 	}
 	
+	public static Direction directionWithOffset(Direction direction, int offset) {
+		return MovementController.directionFromInt(MovementController.directionToInt(direction) - 4);
+	}
+	
 	public static Direction directionFromInt(int d) {
 		return DIRECTIONS[directionIndexFromInt(d)];
 	}
@@ -143,6 +147,19 @@ public class MovementController {
 		
 	}
 	
+	public Direction moveAway(RobotInfo[] enemies) throws GameActionException {
+		
+		MapLocation currentLocation = this.robot.locationController.currentLocation();
+		MapLocation location = currentLocation;
+		for (RobotInfo enemy : enemies) {
+			
+			location.add(MovementController.directionWithOffset(currentLocation.directionTo(enemy.location), -4), (int)(10 * (currentLocation.distanceSquaredTo(enemy.location) / 35.0)));
+			
+		}
+		return this.moveToward(location);
+		
+	}
+	
 	// moves away from a location using the moveTo method (and its implications)
 	public Direction moveAway(MapLocation location) throws GameActionException {
 		
@@ -151,7 +168,7 @@ public class MovementController {
 		MapLocation currentLocation = this.robot.locationController.currentLocation();
 		Direction direction = currentLocation.directionTo(location);
 		
-		return this.moveToward(currentLocation.add(MovementController.directionFromInt(MovementController.directionToInt(direction) - 4)));
+		return this.moveToward(currentLocation.add(MovementController.directionWithOffset(direction, -4)));
 		
 	}
 	
@@ -194,6 +211,7 @@ public class MovementController {
 		Boolean moveAroundMilitary = false;
 		if (UnitController.isUnitTypeMiner(type)) moveAroundMilitary = true;
 		else if (type == Drone.type()) moveAroundMilitary = true;
+		else if (type == Launcher.type()) moveAroundMilitary = true;
 		
 		if (this.canMoveSafely(direction, moveAroundHQ, moveAroundTowers, moveAroundMilitary)) {
 			
@@ -235,13 +253,16 @@ public class MovementController {
         }
         
         if (moveAroundUnits) {
+        	
+        	double buffer = 0;
+        	if (this.robot.type == Launcher.type()) buffer = 10;
             
             RobotInfo[] enemies = this.robot.unitController.nearbyEnemies();
             for (RobotInfo enemy : enemies) {
 
             	this.robot.broadcaster.evaluateSeenLaunchersWithType(enemy.type);
         		if (!UnitController.isUnitTypeDangerous(enemy.type)) continue;
-            	if (moveLocation.distanceSquaredTo(enemy.location) <= enemy.type.attackRadiusSquared) return false;
+            	if (moveLocation.distanceSquaredTo(enemy.location) <= enemy.type.attackRadiusSquared + buffer) return false;
             	
             }
         	

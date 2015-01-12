@@ -47,10 +47,10 @@ public class Drone extends BattleRobot {
 			Boolean attacked = this.attack();
 			if (this.robotController.isCoreReady()) {
 				
-				RobotInfo dangerousEnemy = this.nearbyDangerousEnemy();
-				if (dangerousEnemy != null) {
+				RobotInfo[] dangerousEnemies = this.nearbyDangerousEnemies();
+				if (dangerousEnemies != null && dangerousEnemies.length > 0) {
 					
-					this.movementController.moveAway(dangerousEnemy.location);
+					this.movementController.moveAway(dangerousEnemies);
 					
 				} else {
 					

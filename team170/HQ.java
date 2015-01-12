@@ -74,7 +74,7 @@ public class HQ extends BattleRobot {
 					for (RobotInfo enemy : enemies) {
 						
 						int distance = currentLocation.distanceSquaredTo(enemy.location);
-						if (distance <= 50) {
+						if (distance <= 64) {
 							
 							Direction direction = enemy.location.directionTo(currentLocation);
 							MapLocation attackLocation = enemy.location.add(direction);
@@ -129,7 +129,7 @@ public class HQ extends BattleRobot {
 
         int attackRadius = HQ.type().attackRadiusSquared;
         if (towers >= 2) attackRadius = 35;
-        if (towers >= 5) attackRadius = 50;
+        if (towers >= 5) attackRadius = 64;
         return attackRadius;
 		
 	}

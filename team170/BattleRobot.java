@@ -2,6 +2,8 @@ package team170;
 
 import java.util.ArrayList;
 
+import team170.units.UnitController;
+
 import battlecode.common.*;
 
 public class BattleRobot extends Robot {
@@ -127,30 +129,30 @@ public class BattleRobot extends Robot {
 		
 	}
 	
-	public RobotInfo nearbyDangerousEnemy() throws GameActionException {
+	public RobotInfo[] nearbyDangerousEnemies() throws GameActionException {
 		
-		return this.nearbyDangerousEnemy(16, 0);
+		return this.nearbyDangerousEnemies(16, 0);
 		
 	}
 	
-	public RobotInfo nearbyDangerousEnemy(int visionRadius, double attackRadius) throws GameActionException {
+	public RobotInfo[] nearbyDangerousEnemies(int visionRadius, double attackRadius) throws GameActionException {
 		
-		RobotInfo dangerousEnemy = null;
+		ArrayList<RobotInfo> dangerousEnemies = new ArrayList<RobotInfo>();
 		
 		MapLocation currentLocation = this.locationController.currentLocation();
 		RobotInfo[] enemies = this.unitController.nearbyEnemies(visionRadius);
 		for (RobotInfo enemy : enemies) {
 			
 			this.broadcaster.evaluateSeenLaunchersWithType(enemy.type);
+			if (!UnitController.isUnitTypeMilitary(enemy.type)) continue;
 			if (currentLocation.distanceSquaredTo(enemy.location) <= (attackRadius > 0 ? attackRadius : enemy.type.attackRadiusSquared)) {
-				
-				dangerousEnemy = enemy;
-				break;
+
+				dangerousEnemies.add(enemy);
 				
 			}
 			
 		}
-		return dangerousEnemy;
+		return dangerousEnemies.toArray(new RobotInfo[dangerousEnemies.size()]);
 		
 	}
 	

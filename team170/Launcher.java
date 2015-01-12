@@ -41,11 +41,11 @@ public class Launcher extends BattleRobot {
 					
 					Boolean shouldMove = true;
 					if (shouldMove) {
-						
-						RobotInfo dangerousEnemy = this.nearbyDangerousEnemy(24, 21);
-						if (dangerousEnemy != null) {
+
+						RobotInfo[] dangerousEnemies = this.nearbyDangerousEnemies(25, 25);
+						if (dangerousEnemies != null && dangerousEnemies.length > 0) {
 							
-							this.movementController.moveAway(dangerousEnemy.location);
+							this.movementController.moveAway(dangerousEnemies);
 							shouldMove = false;
 							
 						}						
