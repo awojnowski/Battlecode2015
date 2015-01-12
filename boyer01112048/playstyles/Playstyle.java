@@ -1,7 +1,7 @@
-package team170.playstyles;
+package boyer01112048.playstyles;
 
 import battlecode.common.*;
-import team170.*;
+import boyer01112048.*;
 
 public abstract class Playstyle {
 	
@@ -96,15 +96,6 @@ public abstract class Playstyle {
 
 			supplyOre = (int)(oreMined * 0.05);
 			this.broadcaster.incrementBudget(Beaver.type(), supplyOre);
-			remainingOre -= supplyOre;
-			
-		}
-		
-		// make sure we have minimum miners at all times
-		if (this.broadcaster.robotCountFor(Miner.type()) < 20 && this.buildOrderProgress() > 8) {
-
-			supplyOre = (int)(oreMined * 0.05);
-			this.broadcaster.incrementBudget(Miner.type(), supplyOre);
 			remainingOre -= supplyOre;
 			
 		}
