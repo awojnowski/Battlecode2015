@@ -89,9 +89,7 @@ public class Drone extends BattleRobot {
 		
 	}
 	
-	private void refreshTargetLocation() throws GameActionException { 
-		
-		// Attack passive buildings by default
+	private Boolean refreshNearbyBuildingTargets() throws GameActionException {
 		
 		final MapLocation[] towers = this.locationController.enemyTowerLocations();
 		final MapLocation enemyHQLocation = this.robotController.senseEnemyHQLocation();
@@ -142,9 +140,22 @@ public class Drone extends BattleRobot {
 		if (targettableEnemies.size() > 0) {
 			
 			this.setTargetLocation(this.desiredEnemy(targettableEnemies.toArray(new RobotInfo[targettableEnemies.size()])).location, false);
-			return;
+			return true;
 			
 		}
+		return false;
+		
+	}
+	
+	private void refreshTargetLocation() throws GameActionException {
+		
+		// Attack passive buildings by default
+		if (this.refreshNearbyBuildingTargets()) return;
+		
+		final MapLocation[] towers = this.locationController.enemyTowerLocations();
+		final MapLocation enemyHQLocation = this.robotController.senseEnemyHQLocation();
+		
+		final int HQAttackRadius = HQ.enemyAttackRadiusSquared(towers.length);
 
 		// no buildings, so let's try find somewhere to go
 		final MapLocation robotLocation = this.robotController.getLocation();
@@ -243,6 +254,9 @@ public class Drone extends BattleRobot {
 	}
 	
 	private void refreshScoutTargetLocation() throws GameActionException { 
+		
+		// Attack passive buildings by default
+		if (this.refreshNearbyBuildingTargets()) return;
 		
 		this.setTargetLocation(this.locationController.enemyHQLocation().add(this.movementController.randomDirection(), 10 + this.random.nextInt(30)), true);
 		

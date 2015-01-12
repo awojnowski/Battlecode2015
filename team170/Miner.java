@@ -31,7 +31,17 @@ public class Miner extends BattleRobot {
 				RobotInfo closestEnemy = this.unitController.closestMilitaryAttackerWithinRange();
 				if (closestEnemy != null) {
 					
-					if (this.movementController.fleeFrom(closestEnemy.location)) {
+					Boolean moved = false;
+					if (this.unitController.nearbyAllies().length >= 3 && this.unitController.nearbyEnemies().length < 3) {
+						
+						moved = this.movementController.moveToward(closestEnemy.location) != null;
+						
+					} else {
+						
+						moved = this.movementController.fleeFrom(closestEnemy.location) != null;
+						
+					}
+					if (moved) { 
 						
 						this.miningTurns = 0;
 						this.facing = this.movementController.randomDirection();
