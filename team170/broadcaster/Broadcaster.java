@@ -1,9 +1,9 @@
-package team170;
+package team170.broadcaster;
 
-import team170.movement.MovementController;
 import battlecode.common.*;
+import team170.movement.*;
 
-public class RobotBroadcaster {
+public class Broadcaster {
 	
 	// definitions
 	private static final int PLAYSTYLE_CHANNEL = 1; // channel denotes the current playstyle

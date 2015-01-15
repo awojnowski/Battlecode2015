@@ -1,7 +1,9 @@
 package team170;
 
 import battlecode.common.*;
+
 import java.util.Random;
+import team170.broadcaster.*;
 import team170.locations.*;
 import team170.movement.*;
 import team170.playstyles.*;
@@ -15,7 +17,7 @@ public abstract class Robot {
 	// controllers
 	public LocationController locationController;
 	public MovementController movementController;
-	public RobotBroadcaster broadcaster;
+	public Broadcaster broadcaster;
 	public RobotController robotController;
 	public Random random;
 	public SupplyController supplyController;
@@ -32,7 +34,7 @@ public abstract class Robot {
 	
 	public Robot(RobotController robotController) {
 		
-		this.broadcaster = new RobotBroadcaster();
+		this.broadcaster = new Broadcaster();
 		this.locationController = new LocationController();
 		this.movementController = new MovementController();
 		this.robotController = robotController;
