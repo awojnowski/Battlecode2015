@@ -1,7 +1,9 @@
 package team170.broadcaster;
 
 import battlecode.common.*;
+import team170.*;
 import team170.movement.*;
+import team170.units.UnitController;
 
 public class Broadcaster {
 	
@@ -50,14 +52,6 @@ public class Broadcaster {
 	}
 	
 	// MARK: Budgeting
-	
-	public Boolean isRobotTypeBuilding(RobotType type) {
-		
-		if (this.isRobotTypeCivic(type)) return true;
-		if (type == SupplyDepot.type()) return true;
-		return false;
-		
-	}
 	
 	public Boolean isRobotTypeCivic(RobotType type) {
 		
@@ -180,7 +174,7 @@ public class Broadcaster {
 	public int robotCountFor(RobotType type) throws GameActionException {
 		
 		int count = this.livingRobotCountFor(type);
-		if (this.isRobotTypeBuilding(type)) count += this.buildingRobotCountFor(type);
+		if (UnitController.isUnitTypeBuilding(type)) count += this.buildingRobotCountFor(type);
 		return count;
 		
 	}
@@ -222,7 +216,7 @@ public class Broadcaster {
 	
 	public void beginBuildingRobot(RobotType type) throws GameActionException {
 		
-		if (!this.isRobotTypeBuilding(type)) return;
+		if (!UnitController.isUnitTypeBuilding(type)) return;
 
 		int channel = ROBOTS_BUILDING_INDEX + this.incrementForRobot(type);
 		this.broadcast(channel, this.readBroadcast(channel) + 1);
@@ -234,7 +228,7 @@ public class Broadcaster {
 	
 	public void finishBuildingRobot(RobotType type) throws GameActionException {
 		
-		if (!this.isRobotTypeBuilding(type)) return;
+		if (!UnitController.isUnitTypeBuilding(type)) return;
 
 		int channel = ROBOTS_BUILDING_INDEX + this.incrementForRobot(type);
 		this.broadcast(channel, Math.max(0, this.readBroadcast(channel) - 1));
@@ -243,7 +237,7 @@ public class Broadcaster {
 	
 	public int buildingRobotCountFor(RobotType type) throws GameActionException {
 		
-		if (!this.isRobotTypeBuilding(type)) return 0;
+		if (!UnitController.isUnitTypeBuilding(type)) return 0;
 		return this.readBroadcast(ROBOTS_BUILDING_INDEX + this.incrementForRobot(type));
 		
 	}

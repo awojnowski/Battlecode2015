@@ -4,9 +4,6 @@ import battlecode.common.*;
 
 public class Tank extends BattleRobot {
 	
-	private int turnsChasingDrone;
-	private int freezeTurns = 0;
-
 	public Tank(RobotController robotController) {
 		
 		super(robotController);
@@ -23,21 +20,10 @@ public class Tank extends BattleRobot {
 			
 			AttackResult attackResult = new AttackResult();
 			Boolean attacked = this.attack(attackResult);
-			if (attackResult.target != null) {
-								
-				if (attackResult.target.type == Drone.type()) {
-					
-					// don't want to be kited by drones
-					this.freezeTurns = 10;
-					this.turnsChasingDrone = 0; // since we attacked it
-					
-				}
-				
-			}
 			
 			if (this.robotController.isCoreReady()) {
 				
-				Boolean shouldMove = !attacked && this.freezeTurns == 0;
+				Boolean shouldMove = !attacked;
 				if (shouldMove) {
 					
 					RobotInfo[] dangerousEnemies = this.nearbyDangerousEnemies();
@@ -60,26 +46,6 @@ public class Tank extends BattleRobot {
 							RobotInfo enemy = this.desiredEnemy(enemiesInTerritory);
 							MapLocation bestLocation = enemy.location;
 							shouldMove = this.movementController.moveToward(bestLocation) == null;
-							if (!shouldMove) {
-								
-								// avoid chasing drones
-								if (enemy.type == Drone.type()) {
-									
-									this.turnsChasingDrone ++;
-									if (this.turnsChasingDrone > 3) {
-										
-										this.freezeTurns = 20;
-										this.turnsChasingDrone = 0;
-										
-									}
-									
-								} else {
-									
-									this.turnsChasingDrone = 0;
-									
-								}
-								
-							}
 							
 						}
 						
@@ -113,7 +79,6 @@ public class Tank extends BattleRobot {
 		} catch (GameActionException exception) {
 		}
 		
-		if (this.freezeTurns > 0) this.freezeTurns --;
 		this.robotController.yield();
 		
 	}

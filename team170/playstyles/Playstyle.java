@@ -2,10 +2,11 @@ package team170.playstyles;
 
 import battlecode.common.*;
 import team170.*;
+import team170.broadcaster.*;
 
 public abstract class Playstyle {
 	
-	public RobotBroadcaster broadcaster;
+	public Broadcaster broadcaster;
 	
 	public int[] barracksSpawnOrder;
 	public int[] minerFactorySpawnOrder;
