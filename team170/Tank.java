@@ -45,6 +45,7 @@ public class Tank extends BattleRobot {
 							
 						} else {
 							
+							this.mobilize();
 							
 							// mobilize for 5 more turns if we were chasing shit
 							this.turnsChasingShitWhenWeShouldBeMobilizing ++;
