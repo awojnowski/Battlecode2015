@@ -1,14 +1,14 @@
-package team170;
+package boyer01161509;
 
 import battlecode.common.*;
 
 import java.util.Random;
-import team170.broadcaster.*;
-import team170.locations.*;
-import team170.movement.*;
-import team170.playstyles.*;
-import team170.supply.*;
-import team170.units.*;
+import boyer01161509.broadcaster.*;
+import boyer01161509.locations.*;
+import boyer01161509.movement.*;
+import boyer01161509.playstyles.*;
+import boyer01161509.supply.*;
+import boyer01161509.units.*;
 
 public abstract class Robot {
 	

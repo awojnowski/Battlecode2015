@@ -1,7 +1,7 @@
-package team170.units;
+package boyer01161509.units;
 
 import battlecode.common.*;
-import team170.*;
+import boyer01161509.*;
 
 public class UnitController {
 

@@ -1,8 +1,8 @@
-package team170.movement;
+package boyer01161509.movement;
 
 import battlecode.common.*;
-import team170.*;
-import team170.units.UnitController;
+import boyer01161509.*;
+import boyer01161509.units.UnitController;
 
 public class MovementController {
 	

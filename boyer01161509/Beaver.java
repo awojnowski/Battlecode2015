@@ -1,7 +1,7 @@
-package team170;
+package boyer01161509;
 
-import team170.movement.MovementController;
-import team170.units.UnitController;
+import boyer01161509.movement.MovementController;
+import boyer01161509.units.UnitController;
 import battlecode.common.*;
 
 public class Beaver extends BattleRobot {
@@ -25,7 +25,7 @@ public class Beaver extends BattleRobot {
 				
 		try {
 			
-			//this.robotController.setIndicatorString(1, "Turn: " + this.currentPlaystyle().buildOrderProgress() + " Budgets: Civic: " + this.broadcaster.civicBudget() + " Supply: " + this.broadcaster.budgetForType(SupplyDepot.type()) + " Beavers: " + this.broadcaster.budgetForType(Beaver.type()) + " Miners: " + this.broadcaster.budgetForType(Miner.type()) + " Soldiers: " + this.broadcaster.budgetForType(Soldier.type()) + " Tanks: " + this.broadcaster.budgetForType(Tank.type()) + " Drones: " + this.broadcaster.budgetForType(Drone.type()) + " Launcher: " + this.broadcaster.budgetForType(Launcher.type()));
+			this.robotController.setIndicatorString(1, "Turn: " + this.currentPlaystyle().buildOrderProgress() + " Budgets: Civic: " + this.broadcaster.civicBudget() + " Supply: " + this.broadcaster.budgetForType(SupplyDepot.type()) + " Beavers: " + this.broadcaster.budgetForType(Beaver.type()) + " Miners: " + this.broadcaster.budgetForType(Miner.type()) + " Soldiers: " + this.broadcaster.budgetForType(Soldier.type()) + " Tanks: " + this.broadcaster.budgetForType(Tank.type()) + " Drones: " + this.broadcaster.budgetForType(Drone.type()) + " Launcher: " + this.broadcaster.budgetForType(Launcher.type()));
 			
 			this.attack();
 			

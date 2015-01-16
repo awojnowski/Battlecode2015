@@ -1,7 +1,7 @@
-package team170.playstyles;
+package boyer01161509.playstyles;
 
 import battlecode.common.*;
-import team170.*;
+import boyer01161509.*;
 
 public class LauncherPlaystyle extends Playstyle {
 	

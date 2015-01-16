@@ -1,9 +1,9 @@
-package team170.broadcaster;
+package boyer01161509.broadcaster;
 
 import battlecode.common.*;
-import team170.*;
-import team170.movement.*;
-import team170.units.UnitController;
+import boyer01161509.*;
+import boyer01161509.movement.*;
+import boyer01161509.units.UnitController;
 
 public class Broadcaster {
 	
