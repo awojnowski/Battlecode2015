@@ -118,6 +118,12 @@ public class UnitController {
 		
 	}
 	
+	public RobotInfo[] allAllies() throws GameActionException {
+		
+		return this.robot.robotController.senseNearbyRobots((int)Math.pow(256, 2), this.robot.team);
+		
+	}
+	
 	// MARK: Unit Helpers (Classifications)
 	
 	public static Boolean isUnitTypeMiner(RobotType type) {

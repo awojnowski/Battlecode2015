@@ -4,6 +4,9 @@ import battlecode.common.*;
 
 public class Tank extends BattleRobot {
 	
+	// here at ayyyyyyylmao we like verbosity
+	private int turnsChasingShitWhenWeShouldBeMobilizing;
+	
 	public Tank(RobotController robotController) {
 		
 		super(robotController);
@@ -27,35 +30,31 @@ public class Tank extends BattleRobot {
 				if (shouldMove) {
 					
 					if (!this.shouldMobilize()) {
+												
+						if (!this.moveTowardEnemiesInTerritory()) {
 
-						RobotInfo[] enemiesInTerritory = this.enemiesInTerritory();
-						if (enemiesInTerritory.length > 0) {
-							
-							RobotInfo enemy = this.desiredEnemy(enemiesInTerritory);
-							MapLocation bestLocation = enemy.location;
-							shouldMove = this.movementController.moveToward(bestLocation) == null;
-							
-						}
-						
-						// if we haven't moved toward an enemy location then we can go and stick to the plan
-						if (shouldMove) {
-
-							MapLocation rallyLocation = this.locationController.militaryRallyLocation();
-							if (this.locationController.distanceTo(rallyLocation) > 18) {
-
-								this.movementController.moveToward(rallyLocation);
-								
-							} else {
-								
-								this.movementController.moveTo(this.movementController.randomDirection());
-								
-							}
+							this.move();
 							
 						}
 						
 					} else {
-
-						this.mobilize();
+						
+						if (this.turnsChasingShitWhenWeShouldBeMobilizing < 25 && this.moveTowardEnemiesNearby()) {
+							
+							this.turnsChasingShitWhenWeShouldBeMobilizing ++;
+							
+						} else {
+							
+							
+							// mobilize for 5 more turns if we were chasing shit
+							this.turnsChasingShitWhenWeShouldBeMobilizing ++;
+							if (this.turnsChasingShitWhenWeShouldBeMobilizing > 45) {
+								
+								this.turnsChasingShitWhenWeShouldBeMobilizing = 0;
+								
+							}
+							
+						}
 						
 					}
 					
@@ -68,6 +67,48 @@ public class Tank extends BattleRobot {
 		}
 		
 		this.robotController.yield();
+		
+	}
+	
+	// MARK: Movement
+	
+	private Boolean moveTowardEnemiesInTerritory() throws GameActionException {
+		
+		return this.moveTowardEnemies(this.enemiesInTerritory());
+		
+	}
+	
+	private Boolean moveTowardEnemiesNearby() throws GameActionException { 
+		
+		return this.moveTowardEnemies(this.nearbyDangerousEnemies(36, 0));
+		
+	}
+	
+	private Boolean moveTowardEnemies(RobotInfo[] enemies) throws GameActionException {
+		
+		if (enemies.length > 0) {
+			
+			RobotInfo enemy = this.desiredEnemy(enemies);
+			MapLocation bestLocation = enemy.location;
+			return this.movementController.moveToward(bestLocation) == null;
+			
+		}
+		return false;
+		
+	}
+	
+	private void move() throws GameActionException { 
+		
+		MapLocation rallyLocation = this.locationController.militaryRallyLocation();
+		if (this.locationController.distanceTo(rallyLocation) > 18) {
+
+			this.movementController.moveToward(rallyLocation);
+			
+		} else {
+			
+			this.movementController.moveTo(this.movementController.randomDirection());
+			
+		}
 		
 	}
 	
