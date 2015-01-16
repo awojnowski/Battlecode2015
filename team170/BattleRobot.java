@@ -160,7 +160,7 @@ public class BattleRobot extends Robot {
 		
 		// figure out if we should engage units in friendly territory
 		ArrayList<RobotInfo> targettableEnemies = new ArrayList<RobotInfo>();
-		RobotInfo[] enemies = this.unitController.nearbyEnemies(100);
+		RobotInfo[] enemies = this.unitController.nearbyEnemies(300);
 		for (RobotInfo enemy : enemies) {
 			
 			this.broadcaster.evaluateSeenLaunchersWithType(enemy.type);

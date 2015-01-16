@@ -26,18 +26,6 @@ public class Tank extends BattleRobot {
 				Boolean shouldMove = !attacked;
 				if (shouldMove) {
 					
-					RobotInfo[] dangerousEnemies = this.nearbyDangerousEnemies();
-					if (dangerousEnemies != null && dangerousEnemies.length > 0) {
-						
-						this.movementController.moveAway(dangerousEnemies);
-						shouldMove = false;
-						
-					}
-					
-				}
-				
-				if (shouldMove) {
-					
 					if (!this.shouldMobilize()) {
 
 						RobotInfo[] enemiesInTerritory = this.enemiesInTerritory();
