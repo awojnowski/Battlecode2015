@@ -16,6 +16,8 @@ public class Helipad extends BuildableRobot {
 				
 		try {
 			
+			this.robotController.setIndicatorString(1, "Budget: Drone = " + this.broadcaster.budgetForType(Drone.type()));
+			
 			if (this.robotController.isCoreReady()) {
 
 				this.trySpawn(Drone.type());

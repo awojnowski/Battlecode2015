@@ -16,6 +16,8 @@ public class TankFactory extends BuildableRobot {
 				
 		try {
 			
+			this.robotController.setIndicatorString(1, "Budget: Tank = " + this.broadcaster.budgetForType(Tank.type()));
+			
 			if (this.robotController.isCoreReady()) {
 
 				this.trySpawn(Tank.type());

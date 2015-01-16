@@ -30,31 +30,8 @@ public class HQ extends BattleRobot {
 		
 		boolean updatedBudgeting = false;
 		try {
-			this.broadcaster.newTurn();
-								
-			// update the new ore totals
 			
-			this.previousOreTotal = this.currentOreTotal;
-			this.currentOreTotal = (int)this.robotController.getTeamOre();
-			
-			int currentOre = this.currentOreTotal;
-			currentOre += this.broadcaster.oreSpentLastTurn();
-			
-			int oreMined = currentOre - this.previousOreTotal;
-			
-			this.oreMined += oreMined;
-			this.oreMinedTurns += 1;
-			
-			// update the budgets if necessary
-			if (this.oreMinedTurns > ORE_MINED_HOLD_TURNS) {
-				
-				this.currentPlaystyle().updateBudgeting(this.oreMined);
-				
-				updatedBudgeting = true;
-				this.oreMined = 0;
-				this.oreMinedTurns = 0;
-				
-			}
+			updatedBudgeting = this.processNewTurn();
 									
 		}
 		catch (GameActionException e) {}
@@ -63,29 +40,80 @@ public class HQ extends BattleRobot {
 		
 		try {
 			
-			if (!this.attack() && !updatedBudgeting) {
+			this.robotController.setIndicatorString(1, "Budget: Beavers = " + this.broadcaster.budgetForType(Beaver.type()));
+			
+			if (!updatedBudgeting) {
 				
-				// check if we can deal damage with splash damage
+				this.processAttacking();
+				this.processSpawning();
+				this.processSupplyTransfer();
 				
-				int towers = this.locationController.towerLocations().length; 
-				if (towers >= 5) {
-										
-					MapLocation currentLocation = this.locationController.currentLocation();
-					RobotInfo[] enemies = this.unitController.nearbyEnemies(HQ.type().sensorRadiusSquared + 50);
-					for (RobotInfo enemy : enemies) {
+			}
+			
+		} catch (GameActionException e) {
+		}
+		
+		this.robotController.yield();
+		
+	}
+	
+	// MARK: Progress Methods
+	
+	// @return boolean denotes whether we have updated the budgeting
+	private boolean processNewTurn() throws GameActionException {
+		
+		this.broadcaster.newTurn();
+		
+		// update the new ore totals
+		
+		this.previousOreTotal = this.currentOreTotal;
+		this.currentOreTotal = (int)this.robotController.getTeamOre();
+		
+		int currentOre = this.currentOreTotal;
+		currentOre += this.broadcaster.oreSpentLastTurn();
+		
+		int oreMined = currentOre - this.previousOreTotal;
+		
+		this.oreMined += oreMined;
+		this.oreMinedTurns += 1;
+		
+		// update the budgets if necessary
+		if (this.oreMinedTurns > ORE_MINED_HOLD_TURNS) {
+			
+			this.currentPlaystyle().updateBudgeting(this.oreMined);
+			
+			this.oreMined = 0;
+			this.oreMinedTurns = 0;
+			return true;
+			
+		}
+		return false;
+		
+	}
+	
+	private void processAttacking() throws GameActionException {
+		
+		if (this.attack()) {
+			
+			// check if we can deal damage with splash damage
+			
+			int towers = this.locationController.towerLocations().length; 
+			if (towers >= 5) {
+									
+				MapLocation currentLocation = this.locationController.currentLocation();
+				RobotInfo[] enemies = this.unitController.nearbyEnemies(HQ.type().sensorRadiusSquared + 50);
+				for (RobotInfo enemy : enemies) {
+					
+					int distance = currentLocation.distanceSquaredTo(enemy.location);
+					if (distance <= 64) {
 						
-						int distance = currentLocation.distanceSquaredTo(enemy.location);
-						if (distance <= 64) {
+						Direction direction = enemy.location.directionTo(currentLocation);
+						MapLocation attackLocation = enemy.location.add(direction);
+						
+						if (this.robotController.canAttackLocation(attackLocation)) {
 							
-							Direction direction = enemy.location.directionTo(currentLocation);
-							MapLocation attackLocation = enemy.location.add(direction);
-							
-							if (this.robotController.canAttackLocation(attackLocation)) {
-								
-								this.robotController.attackLocation(attackLocation);
-								break;
-								
-							}
+							this.robotController.attackLocation(attackLocation);
+							break;
 							
 						}
 						
@@ -94,23 +122,28 @@ public class HQ extends BattleRobot {
 				}
 				
 			}
-						
-			if (this.robotController.isCoreReady()) {
-				
-				if (this.broadcaster.robotCountFor(Beaver.type()) < 15) {
-					
-					this.trySpawn(Beaver.type());
-					
-				}
-				
-			}
-						
-			this.supplyController.transferSupplyIfPossible();
 			
-		} catch (GameActionException e) {
 		}
 		
-		this.robotController.yield();
+	}
+	
+	private void processSpawning() throws GameActionException {
+		
+		if (this.robotController.isCoreReady()) {
+			
+			if (this.broadcaster.robotCountFor(Beaver.type()) < 15) {
+				
+				this.trySpawn(Beaver.type());
+				
+			}
+			
+		}
+		
+	}
+	
+	private void processSupplyTransfer() throws GameActionException {
+
+		this.supplyController.transferSupplyIfPossible();
 		
 	}
 	

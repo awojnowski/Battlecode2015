@@ -25,6 +25,7 @@ public abstract class Playstyle {
 	public double[] tankRatios;
 	public double[] droneRatios;
 	public double[] launcherRatios;
+	public double[] commanderRatios;
 		
 	public Playstyle() {
 		
@@ -47,6 +48,7 @@ public abstract class Playstyle {
 		this.tankRatios = new double[] {};
 		this.droneRatios = new double[] {};
 		this.launcherRatios = new double[] {};
+		this.commanderRatios = new double[] {};
 		
 	}
 	
@@ -119,7 +121,7 @@ public abstract class Playstyle {
 			
 			if (progress > 9) {
 				
-				// check if we need to build a commander B)
+				// check if we need to build another commander B)
 				if (this.broadcaster.robotCountFor(Commander.type()) == 0) {
 				
 					supplyOre = (int)(oreMined * 0.05);
@@ -158,6 +160,10 @@ public abstract class Playstyle {
 		oreAllocation = Math.min((int)(remainingOre * this.launcherRatios[progress]), (remainingOre - oreUsed));
 		this.broadcaster.incrementBudget(Launcher.type(), oreAllocation);
 		oreUsed += oreAllocation;
+		
+		oreAllocation = Math.min((int)(remainingOre * this.commanderRatios[progress]), (remainingOre - oreUsed));
+		this.broadcaster.incrementBudget(Commander.type(), oreAllocation);
+		oreUsed += oreAllocation;
 
 		this.broadcaster.incrementCivicBudget(Math.max(0, remainingOre - oreUsed));
        
@@ -168,7 +174,25 @@ public abstract class Playstyle {
 	public RobotType nextBuildingType() throws GameActionException {
 		
 		int progress = this.buildOrderProgress();
-		if (progress == Integer.MAX_VALUE) return null;
+		if (progress == Integer.MAX_VALUE) {
+			
+			// we are the end so we can check if we need to build any buildings or whatnot
+			final int tankFactoryOreCost = TankFactory.type().oreCost;
+			if (this.broadcaster.budgetForType(Tank.type()) > 1500 && this.broadcaster.budgetForType(TankFactory.type()) < tankFactoryOreCost) {
+				
+				this.broadcaster.decrementBudget(Tank.type(), tankFactoryOreCost);
+				this.broadcaster.incrementBudget(TankFactory.type(), tankFactoryOreCost);
+				return TankFactory.type();
+				
+			} else if (this.broadcaster.budgetForType(TankFactory.type()) > tankFactoryOreCost) {
+				
+				return TankFactory.type();
+				
+			}
+			
+			return null;
+			
+		}
 				
 		for (int value : this.barracksSpawnOrder) if (value == progress) return Barracks.type();
 		for (int value : this.minerFactorySpawnOrder) if (value == progress) return MinerFactory.type();

@@ -25,7 +25,7 @@ public class Beaver extends BattleRobot {
 				
 		try {
 			
-			//this.robotController.setIndicatorString(1, "Turn: " + this.currentPlaystyle().buildOrderProgress() + " Budgets: Civic: " + this.broadcaster.civicBudget() + " Supply: " + this.broadcaster.budgetForType(SupplyDepot.type()) + " Beavers: " + this.broadcaster.budgetForType(Beaver.type()) + " Miners: " + this.broadcaster.budgetForType(Miner.type()) + " Soldiers: " + this.broadcaster.budgetForType(Soldier.type()) + " Tanks: " + this.broadcaster.budgetForType(Tank.type()) + " Drones: " + this.broadcaster.budgetForType(Drone.type()) + " Launcher: " + this.broadcaster.budgetForType(Launcher.type()));
+			this.robotController.setIndicatorString(1, "Turn: " + this.currentPlaystyle().buildOrderProgress() + " Budget: Civic = " + this.broadcaster.civicBudget() + " Supply Depot = " + this.broadcaster.budgetForType(SupplyDepot.type()));
 			
 			this.attack();
 			

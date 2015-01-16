@@ -19,7 +19,8 @@ public class TrainingField extends BuildableRobot {
 		super.run();
 		
 		try {
-			
+
+			this.robotController.setIndicatorString(1, "Budget: Commander = " + this.broadcaster.budgetForType(Commander.type()));
 			if (this.robotController.isCoreReady()) {
 	
 				this.trySpawn(Commander.type());

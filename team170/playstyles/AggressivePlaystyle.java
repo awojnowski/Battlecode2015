@@ -33,7 +33,7 @@ public class AggressivePlaystyle extends Playstyle {
 		this.technologyInstituteSpawnOrder = new int[] {8};
 		this.trainingFieldSpawnOrder =       new int[] {9};
 		
-		this.civicRatios =       new double[] { 0.80, 0.50, 0.50, 0.40, 0.65, 0.65, 0.40, 0.40, 0.25, 0.25, 0.25, 0.25, 0.10, 0.00 };
+		this.civicRatios =       new double[] { 0.80, 0.50, 0.50, 0.40, 0.65, 0.65, 0.40, 0.40, 0.25, 0.25, 0.25, 0.30, 0.30, 0.00 };
 		this.supplyDepotRatios = new double[] { 0.00, 0.00, 0.02, 0.02, 0.04, 0.06, 0.06, 0.08, 0.08, 0.08, 0.08, 0.10, 0.10, 0.10 };
 		
 		this.beaverRatios =      new double[] { 1.00, 0.40, 0.10, 0.05, 0.05, 0.05, 0.05, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00 };
@@ -42,6 +42,7 @@ public class AggressivePlaystyle extends Playstyle {
 		this.tankRatios =        new double[] { 0.00, 0.00, 0.00, 0.30, 0.30, 0.30, 0.40, 0.50, 0.70, 0.70, 0.70, 0.80, 0.95, 0.95 };
 		this.droneRatios =       new double[] { 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00 };
 		this.launcherRatios =    new double[] { 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00 };
+		this.commanderRatios =   new double[] { 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00 };
 		
 	}
 	

@@ -16,6 +16,8 @@ public class MinerFactory extends BuildableRobot {
 				
 		try {
 			
+			this.robotController.setIndicatorString(1, "Budget: Miner = " + this.broadcaster.budgetForType(Miner.type()));
+			
 			if (this.robotController.isCoreReady()) {
 
 				this.trySpawn(Miner.type());

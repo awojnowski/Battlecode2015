@@ -136,7 +136,7 @@ public abstract class Robot {
 	
 	public Boolean trySpawn(RobotType type) throws GameActionException {
 		
-		for (int i = 1; i < 8; i += 2) {
+		for (int i = 0; i < 8; i ++) {
 			
 			Direction direction = MovementController.directionFromInt(i);
 			if (this.canSpawn(direction, type)) {

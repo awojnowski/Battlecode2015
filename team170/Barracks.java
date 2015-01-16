@@ -16,6 +16,7 @@ public class Barracks extends BuildableRobot {
 			
 		try {
 			
+			this.robotController.setIndicatorString(1, "Budget: Soldier = " + this.broadcaster.budgetForType(Soldier.type()));
 			if (this.robotController.isCoreReady()) {
 
 				this.trySpawn(Soldier.type());

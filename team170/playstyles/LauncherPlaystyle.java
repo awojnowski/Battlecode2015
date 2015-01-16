@@ -24,6 +24,7 @@ public class LauncherPlaystyle extends Playstyle {
 		this.tankRatios =        new double[] { 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00 };
 		this.droneRatios =       new double[] { 0.47, 0.50, 0.30, 0.20, 0.00, 0.00, 0.00, 0.00, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10 };
 		this.launcherRatios =    new double[] { 0.00, 0.00, 0.10, 0.45, 0.65, 0.45, 0.40, 0.60, 0.60, 0.60, 0.85, 0.85, 0.85, 0.85 };
+		this.commanderRatios =   new double[] { 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00 };
 		
 	}
 	
