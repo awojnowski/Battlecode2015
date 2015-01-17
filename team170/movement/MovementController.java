@@ -11,6 +11,7 @@ public class MovementController {
 	// MARK: Instance Variables
 	
     private MapLocation lastPosition;
+    private MapLocation lastLastPosition;
     private int traversalDirection; // either 1 or -1
     private int turnsStuck = 0;
 		
@@ -194,6 +195,12 @@ public class MovementController {
        
         // see if it can move toward it's target
         if (directionToTarget == directionToLastPosition || !this.moveTo(directionToTarget)) {
+        	
+        	if(this.lastLastPosition != null && robotLocation.distanceSquaredTo(this.lastLastPosition) <= 1) { // if just moved in a triangle
+                
+        		this.traversalDirection = -this.traversalDirection;
+                
+        	}
                
             this.robot.robotController.setIndicatorString(2, "I CAN'T move towards target");
             // traverse along obstacle, switching directions if it hits a dead end or outer wall
@@ -206,7 +213,8 @@ public class MovementController {
                 if (!direction.equals(directionToLastPosition)) {
                        
                     if (this.robot.movementController.moveTo(direction)) {
-                           
+                          
+                    	this.lastLastPosition = this.lastPosition;
                         this.lastPosition = robotLocation;
                        
                         return direction;
