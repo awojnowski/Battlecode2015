@@ -77,7 +77,7 @@ public class Beaver extends BattleRobot {
 				
 			}
 			
-			this.supplyController.transferSupplyIfPossible();
+			this.supplyController.transferSupplyIfPossible(false);
 			
 		} catch (GameActionException e) {
 		}

@@ -143,7 +143,7 @@ public class HQ extends BattleRobot {
 	
 	private void processSupplyTransfer() throws GameActionException {
 
-		this.supplyController.transferSupplyIfPossible();
+		this.supplyController.transferSupplyIfPossible(false);
 		
 	}
 	
