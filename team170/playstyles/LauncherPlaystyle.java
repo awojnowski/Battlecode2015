@@ -30,33 +30,6 @@ public class LauncherPlaystyle extends Playstyle {
 	
 	// MARK: Attacking
 	
-	public Boolean canAttackInTowerRange() throws GameActionException {
-
-		int totalLaunchers = this.broadcaster.robotCountFor(Launcher.type());
-		if (totalLaunchers > 20) {
-			
-			return true;
-			
-		} else {
-
-			int clockNumber = Clock.getRoundNum();
-			if ((clockNumber > 1700 && clockNumber < 2000)) {
-				
-				return true;
-				
-			}
-			
-		}
-		return false;
-		
-	}
-	
-	public Boolean canAttackInHQRange(int totalTowers) throws GameActionException {
-		
-		return totalTowers == 0;
-		
-	}
-	
 	public Boolean areDronesRestrictedToMiners() throws GameActionException {
 		
 		int clockNumber = Clock.getRoundNum();

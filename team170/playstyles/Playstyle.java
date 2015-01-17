@@ -54,18 +54,6 @@ public abstract class Playstyle {
 	
 	// MARK: Attacking
 	
-	public Boolean canAttackInTowerRange() throws GameActionException {
-		
-		return true;
-		
-	}
-	
-	public Boolean canAttackInHQRange(int totalTowers) throws GameActionException {
-		
-		return true;
-		
-	}
-	
 	public Boolean areDronesRestrictedToMiners() throws GameActionException {
 		
 		return true;

@@ -199,12 +199,13 @@ public class MovementController {
 	// attempts to move toward a location
 	// depending on the playstyle and unit type, it will avoid towers or other unit types
 	public Boolean moveTo(Direction direction) throws GameActionException {
+
+        if (!this.robot.robotController.canMove(direction)) return false;
 		
 		RobotType type = this.robot.type;
+		Boolean moveAroundHQ = !this.robot.canAttackInHQRange(this.robot.unitController.enemyTowers().length);
 
-		Boolean moveAroundHQ = !this.robot.currentPlaystyle().canAttackInHQRange(this.robot.unitController.enemyTowers().length);
-
-		Boolean moveAroundTowers = !this.robot.currentPlaystyle().canAttackInTowerRange();
+		Boolean moveAroundTowers = !this.robot.canAttackInTowerRange();
 		if (type == Missile.type()) moveAroundTowers = false;
 		if (type == Launcher.type()) moveAroundTowers = true;
 

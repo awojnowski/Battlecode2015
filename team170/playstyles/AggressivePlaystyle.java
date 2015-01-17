@@ -49,35 +49,6 @@ public class AggressivePlaystyle extends Playstyle {
 	
 	// MARK: Attacking
 	
-	public Boolean canAttackInTowerRange() throws GameActionException {
-
-		int totalTanks = this.broadcaster.robotCountFor(Tank.type());
-		
-		int roundNumber = Clock.getRoundNum();
-		int tanksRequired = 50 - (int)Math.round((Math.max(0, roundNumber - 1000) / 500.0) * 20);
-		if (totalTanks > tanksRequired) {
-			
-			return true;
-			
-		} else {
-
-			if ((roundNumber > 1700 && roundNumber < 2000)) {
-				
-				return true;
-				
-			}
-			
-		}
-		return false;
-		
-	}
-	
-	public Boolean canAttackInHQRange(int totalTowers) throws GameActionException {
-		
-		return totalTowers == 0;
-		
-	}
-	
 	public Boolean areDronesRestrictedToMiners() throws GameActionException {
 		
 		int clockNumber = Clock.getRoundNum();
@@ -95,7 +66,7 @@ public class AggressivePlaystyle extends Playstyle {
 			
 			return true;
 			
-		} else if (totalTanks > 70 && !this.broadcaster.hasSeenLaunchers()) {
+		} else if (totalTanks > 35 && !this.broadcaster.hasSeenLaunchers()) {
 			
 			return true;
 			

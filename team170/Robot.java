@@ -66,6 +66,36 @@ public abstract class Robot {
 		
 	}
 	
+	// MARK: Attacking
+	
+	public Boolean canAttackInTowerRange() throws GameActionException {
+
+		int clockNumber = Clock.getRoundNum();
+		if ((clockNumber > 1700 && clockNumber < 2000)) {
+			
+			return true;
+			
+		} else {
+			
+			int militaryEnemies = this.unitController.nearbyMilitaryEnemies().length;
+			int militaryAllies = this.unitController.nearbyMilitaryAllies().length;
+			if (militaryAllies > militaryEnemies * 1.5 && militaryAllies > 10) {
+				
+				return true;
+				
+			}
+			
+		}
+		return false;
+		
+	}
+	
+	public Boolean canAttackInHQRange(int totalTowers) throws GameActionException {
+		
+		return totalTowers == 0;
+		
+	}
+	
 	// MARK: Mining
 	
 	public boolean tryMine(Boolean mineClose) throws GameActionException {

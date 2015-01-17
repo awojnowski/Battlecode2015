@@ -1,6 +1,7 @@
 package team170.locations;
 
 import battlecode.common.*;
+import team170.*;
 
 public class LocationController {
 	
@@ -85,10 +86,11 @@ public class LocationController {
 		MapLocation bestLocation = null;
 		int closestTowerDistance = Integer.MAX_VALUE;
 		
+		MapLocation location = this.currentLocation();
 		MapLocation[] towers = this.enemyTowerLocations();
 		for (MapLocation tower : towers) {
 			
-			int distance = this.enemyHQLocation().distanceSquaredTo(tower);
+			int distance = location.distanceSquaredTo(tower);
 			if (distance < closestTowerDistance) {
 				
 				bestLocation = tower;
@@ -111,6 +113,26 @@ public class LocationController {
 	public MapLocation enemyHQLocation() {
 		
 		return this.robotController.senseEnemyHQLocation();
+		
+	}
+	
+	// MARK: Towers
+	
+	public MapLocation enemyTowerInRange() {
+		
+		MapLocation location = this.currentLocation();
+		MapLocation[] towers = this.enemyTowerLocations();
+		for (MapLocation tower : towers) {
+			
+			int distance = location.distanceSquaredTo(tower);
+			if (distance < Tower.type().attackRadiusSquared) {
+				
+				return tower;
+				
+			}
+			
+		}
+		return null;
 		
 	}
 

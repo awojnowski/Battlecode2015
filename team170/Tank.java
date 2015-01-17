@@ -45,13 +45,29 @@ public class Tank extends BattleRobot {
 							
 						} else {
 							
-							this.mobilize();
-							
-							// mobilize for 5 more turns if we were chasing shit
-							this.turnsChasingShitWhenWeShouldBeMobilizing ++;
-							if (this.turnsChasingShitWhenWeShouldBeMobilizing > 45) {
+							if (!this.canAttackInTowerRange()) {
 								
-								this.turnsChasingShitWhenWeShouldBeMobilizing = 0;
+								MapLocation towerInRange = this.locationController.enemyTowerInRange();
+								if (towerInRange != null) {
+									
+									this.movementController.fleeFrom(towerInRange);
+									shouldMove = false;
+									
+								}
+								
+							}
+							
+							if (shouldMove) {
+								
+								this.mobilize();
+								
+								// mobilize for 5 more turns if we were chasing shit
+								this.turnsChasingShitWhenWeShouldBeMobilizing ++;
+								if (this.turnsChasingShitWhenWeShouldBeMobilizing > 45) {
+									
+									this.turnsChasingShitWhenWeShouldBeMobilizing = 0;
+									
+								}
 								
 							}
 							

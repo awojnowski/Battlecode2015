@@ -1,5 +1,7 @@
 package team170.units;
 
+import java.util.ArrayList;
+
 import battlecode.common.*;
 import team170.*;
 
@@ -55,6 +57,21 @@ public class UnitController {
 		
 	}
 	
+	// MARK: Helpers
+	
+	private RobotInfo[] militaryUnitsFromUnitArray(RobotInfo[] enemies) {
+		
+		ArrayList<RobotInfo> militaryEnemies = new ArrayList<RobotInfo>();
+		for (RobotInfo enemy : enemies) {
+
+			if (!UnitController.isUnitTypeMilitary(enemy.type)) continue;
+			militaryEnemies.add(enemy);
+			
+		}
+		return militaryEnemies.toArray(new RobotInfo[militaryEnemies.size()]);
+		
+	}
+	
 	// MARK: Nearby Units
 
 	public MapLocation[] enemyTowers() throws GameActionException {
@@ -72,6 +89,37 @@ public class UnitController {
 	public RobotInfo[] nearbyEnemies(int sensorRadius) throws GameActionException {
 
 		return this.robot.robotController.senseNearbyRobots(sensorRadius, this.robot.team.opponent());
+		
+	}
+	
+	public RobotInfo[] nearbyMilitaryEnemies() throws GameActionException {
+		
+		return this.nearbyMilitaryEnemies(HQ.type().sensorRadiusSquared);
+		
+	}
+	
+	public RobotInfo[] nearbyMilitaryEnemies(int sensorRadius) throws GameActionException {
+		
+		return this.militaryUnitsFromUnitArray(this.nearbyEnemies(sensorRadius));
+		
+	}
+	
+	public RobotInfo[] nearbyEnemiesWithinTheirAttackRange() throws GameActionException {
+		
+		ArrayList<RobotInfo> dangerousEnemies = new ArrayList<RobotInfo>();
+		
+		MapLocation currentLocation = this.robot.locationController.currentLocation();
+		RobotInfo[] enemies = this.nearbyEnemies(this.robot.type.sensorRadiusSquared);
+		for (RobotInfo enemy : enemies) {
+			
+			if (currentLocation.distanceSquaredTo(enemy.location) <= Math.pow(Math.sqrt(enemy.type.attackRadiusSquared) + 1, 2)) {
+
+				dangerousEnemies.add(enemy);
+				
+			}
+			
+		}
+		return dangerousEnemies.toArray(new RobotInfo[dangerousEnemies.size()]);
 		
 	}
 	
@@ -114,7 +162,25 @@ public class UnitController {
 	
 	public RobotInfo[] nearbyAllies() throws GameActionException {
 		
-		return this.robot.robotController.senseNearbyRobots(this.robot.type.sensorRadiusSquared, this.robot.team);
+		return this.robot.robotController.senseNearbyRobots(HQ.type().sensorRadiusSquared, this.robot.team);
+		
+	}
+	
+	public RobotInfo[] nearbyAllies(int sensorRadius) throws GameActionException {
+		
+		return this.robot.robotController.senseNearbyRobots(sensorRadius, this.robot.team);
+		
+	}
+	
+	public RobotInfo[] nearbyMilitaryAllies() throws GameActionException {
+		
+		return this.nearbyMilitaryAllies(HQ.type().sensorRadiusSquared);
+		
+	}
+	
+	public RobotInfo[] nearbyMilitaryAllies(int sensorRadius) throws GameActionException {
+		
+		return this.militaryUnitsFromUnitArray(this.nearbyAllies(sensorRadius));
 		
 	}
 	

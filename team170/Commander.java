@@ -1,12 +1,11 @@
 package team170;
 
-import battlecode.common.GameActionException;
-import battlecode.common.MapLocation;
-import battlecode.common.RobotController;
-import battlecode.common.RobotInfo;
-import battlecode.common.RobotType;
+import team170.movement.MovementController;
+import battlecode.common.*;
 
 public class Commander extends BattleRobot {
+	
+	private MapLocation moveAwayLocation = null;
 	
 	public Commander(RobotController robotController) {
 		
@@ -20,54 +19,88 @@ public class Commander extends BattleRobot {
 		
 		try {
 			
-			Boolean attacked = attack();
-			if (this.robotController.isCoreReady()) {
+			if (this.isHarassing()) {
 				
-				Boolean shouldMove = !attacked;
-				if (shouldMove) {
+				this.attack();
+				
+				Boolean canMove = true;
+				if (canMove) {
 					
-					if (!this.shouldMobilize()) {
-
-						RobotInfo[] enemiesInTerritory = this.enemiesInTerritory();
-						if (enemiesInTerritory.length > 0) {
-							
-							RobotInfo enemy = this.desiredEnemy(enemiesInTerritory);
-							MapLocation bestLocation = enemy.location;
-							shouldMove = this.movementController.moveToward(bestLocation) == null;
-							
-						}
+					RobotInfo[] enemiesInRange = this.unitController.nearbyEnemiesWithinTheirAttackRange();
+					if (enemiesInRange.length > 0) {
 						
-						// if we haven't moved toward an enemy location then we can go and stick to the plan
-						if (shouldMove) {
-
-							MapLocation rallyLocation = this.locationController.militaryRallyLocation();
-							if (this.locationController.distanceTo(rallyLocation) > 18) {
-
-								this.movementController.moveToward(rallyLocation);
-								
-							} else {
-								
-								this.movementController.moveTo(this.movementController.randomDirection());
-								
-							}
-							
-						}
+						this.moveAway(enemiesInRange);
+						canMove = false;
+						
+					}
+					
+				}
+				
+				if (this.moveAwayLocation != null) {
+					
+					this.robotController.setIndicatorLine(this.robotController.getLocation(), this.moveAwayLocation, 255, 255, 255);
+					this.robotController.setIndicatorString(1, "MOVING AWAY");
+					
+				}
+				
+				if (canMove) {
+					
+					if (this.canFlash() && this.robotController.getFlashCooldown() == 0) {
+						
+						MapLocation currentLocation = this.locationController.currentLocation();
+						Direction direction = currentLocation.directionTo(this.locationController.enemyHQLocation());
+						this.robotController.castFlash(currentLocation.add(direction, 2));
 						
 					} else {
 
-						this.mobilize();
+						canMove = (this.movementController.moveToward(this.locationController.enemyHQLocation()) != null);
 						
 					}
 					
 				}
 				
 			}
+			
 			this.supplyController.transferSupplyIfPossible();
 			
 		} catch (GameActionException exception) {
 		}
 		
 		this.robotController.yield();
+		
+	}
+	
+	// MARK: Getters & Setters
+	
+	private boolean canFlash() {
+		
+		return false;
+		
+	}
+	
+	// MARK: Kiting
+	
+	public void moveAway(RobotInfo[] enemies) throws GameActionException {
+		
+		MapLocation currentLocation = this.locationController.currentLocation();
+		Direction opposite = null;
+		
+		for (RobotInfo enemy : enemies) {
+			
+			opposite = MovementController.directionWithOffset(currentLocation.directionTo(enemy.location), -4);
+			break;
+			
+		}
+		this.moveAwayLocation = currentLocation.add(opposite, 20);
+		this.movementController.moveTo(opposite);
+		
+	}
+	
+	// MARK: Modes
+	
+	private boolean isHarassing() {
+		
+		return (Clock.getRoundNum() < 2000);
 		
 	}
 	
