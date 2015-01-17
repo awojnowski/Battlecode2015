@@ -29,7 +29,7 @@ public abstract class Robot {
 	
 	// playstyles
 	private Playstyle playstyle;
-	
+		
 	// MARK: Main Methods
 	
 	public Robot(RobotController robotController) {

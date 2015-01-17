@@ -1,15 +1,27 @@
 package team170;
 
-import team170.movement.MovementController;
 import battlecode.common.*;
 
 public class Commander extends BattleRobot {
-	
-	private MapLocation moveAwayLocation = null;
+		
+	private boolean isHarassing;
 	
 	public Commander(RobotController robotController) {
 		
 		super(robotController);
+		
+		try {
+			
+			// initially see if we should rush (1 commander per game)
+			if (this.broadcaster.shouldCommanderRush()) {
+				
+				this.isHarassing = true;
+				this.broadcaster.setShouldCommanderRush(false);
+				
+			}
+			
+		}
+		catch (GameActionException e) {}
 				
 	}
 
@@ -20,7 +32,7 @@ public class Commander extends BattleRobot {
 		try {
 			
 			this.attack();
-			
+
 			Boolean canMove = true;
 			if (canMove) {
 				
@@ -33,28 +45,11 @@ public class Commander extends BattleRobot {
 				
 			}
 			
-			if (this.isHarassing()) {
-				
-				if (this.moveAwayLocation != null) {
-					
-					this.robotController.setIndicatorLine(this.robotController.getLocation(), this.moveAwayLocation, 255, 255, 255);
-					this.robotController.setIndicatorString(1, "MOVING AWAY");
-					
-				}
+			if (this.isHarassing) {
 				
 				if (canMove) {
-					
-					if (this.canFlash() && this.robotController.getFlashCooldown() == 0) {
-						
-						MapLocation currentLocation = this.locationController.currentLocation();
-						Direction direction = currentLocation.directionTo(this.locationController.enemyHQLocation());
-						this.robotController.castFlash(currentLocation.add(direction, 2));
-						
-					} else {
 
-						canMove = (this.movementController.moveToward(this.locationController.enemyHQLocation()) != null);
-						
-					}
+					canMove = (this.movementController.moveToward(this.locationController.enemyHQLocation()) != null);
 					
 				}
 				
@@ -105,22 +100,6 @@ public class Commander extends BattleRobot {
 		}
 		
 		this.robotController.yield();
-		
-	}
-	
-	// MARK: Getters & Setters
-	
-	private boolean canFlash() {
-		
-		return false;
-		
-	}
-	
-	// MARK: Modes
-	
-	private boolean isHarassing() {
-		
-		return (Clock.getRoundNum() < 800);
 		
 	}
 	

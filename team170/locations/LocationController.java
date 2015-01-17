@@ -81,6 +81,28 @@ public class LocationController {
 		
 	}
 	
+	public MapLocation innerMostEnemyTowerLocation() {
+		
+		MapLocation closestTower = null;
+		int closestTowerDistance = Integer.MAX_VALUE;
+		
+		MapLocation location = this.currentLocation();
+		MapLocation[] towers = this.enemyTowerLocations();
+		for (MapLocation tower : towers) {
+			
+			int distance = location.distanceSquaredTo(tower);
+			if (distance < closestTowerDistance) {
+				
+				closestTower = tower;
+				closestTowerDistance = distance;
+				
+			}
+			
+		}
+		return closestTower;
+		
+	}
+	
 	public MapLocation bestObjective() {
 		
 		MapLocation bestLocation = null;

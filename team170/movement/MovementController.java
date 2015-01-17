@@ -336,6 +336,12 @@ public class MovementController {
         Boolean canMove = rc.canMove(direction);
         if (!canMove) return false;
         
+        // run some initial checks
+        MapLocation towerLocation = this.robot.locationController.enemyTowerInRange();
+        if (towerLocation != null) moveAroundTowers = false;
+        
+        // start checking if we can move
+        
         MapLocation currentLocation = this.robot.locationController.currentLocation();
         MapLocation moveLocation = currentLocation.add(direction);
         

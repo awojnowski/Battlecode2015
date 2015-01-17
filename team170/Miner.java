@@ -26,8 +26,8 @@ public class Miner extends BattleRobot {
 			
 			if (this.robotController.isCoreReady()) {
 				
-				// check to see if this nigga under attack
-								
+				// check to see if this guy under attack
+												
 				RobotInfo closestEnemy = this.unitController.closestMilitaryAttackerWithinRange();
 				if (closestEnemy != null) {
 					
