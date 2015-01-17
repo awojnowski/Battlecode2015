@@ -104,7 +104,7 @@ public class Beaver extends BattleRobot {
 			if (i % 2 != 0) {
 
 				if (robot == null) continue;
-				if (UnitController.isUnitTypeBuilding(robot.type)) {
+				if (UnitController.isUnitTypeBuilding(robot.type) && robot.type != Tower.type()) {
 					
 					cornersHaveBuilding = true;
 					
