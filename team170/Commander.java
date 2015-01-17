@@ -3,6 +3,7 @@ package team170;
 import battlecode.common.GameActionException;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
+import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
 
 public class Commander extends BattleRobot {
@@ -18,10 +19,8 @@ public class Commander extends BattleRobot {
 		super.run();
 		
 		try {
-									
-			AttackResult attackResult = new AttackResult();
-			Boolean attacked = this.attack(attackResult);
 			
+			Boolean attacked = attack();
 			if (this.robotController.isCoreReady()) {
 				
 				Boolean shouldMove = !attacked;
@@ -29,7 +28,30 @@ public class Commander extends BattleRobot {
 					
 					if (!this.shouldMobilize()) {
 
-						this.move();
+						RobotInfo[] enemiesInTerritory = this.enemiesInTerritory();
+						if (enemiesInTerritory.length > 0) {
+							
+							RobotInfo enemy = this.desiredEnemy(enemiesInTerritory);
+							MapLocation bestLocation = enemy.location;
+							shouldMove = this.movementController.moveToward(bestLocation) == null;
+							
+						}
+						
+						// if we haven't moved toward an enemy location then we can go and stick to the plan
+						if (shouldMove) {
+
+							MapLocation rallyLocation = this.locationController.militaryRallyLocation();
+							if (this.locationController.distanceTo(rallyLocation) > 18) {
+
+								this.movementController.moveToward(rallyLocation);
+								
+							} else {
+								
+								this.movementController.moveTo(this.movementController.randomDirection());
+								
+							}
+							
+						}
 						
 					} else {
 
@@ -46,23 +68,6 @@ public class Commander extends BattleRobot {
 		}
 		
 		this.robotController.yield();
-		
-	}
-	
-	// MARK: Movement
-	
-	private void move() throws GameActionException {
-		
-		MapLocation moveLocation = this.locationController.militaryRallyLocation();
-		if (this.locationController.distanceTo(moveLocation) > 18) {
-
-			this.movementController.moveToward(moveLocation);
-			
-		} else {
-			
-			this.movementController.moveTo(this.movementController.randomDirection());
-			
-		}
 		
 	}
 	

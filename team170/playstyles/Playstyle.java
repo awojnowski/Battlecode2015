@@ -107,25 +107,25 @@ public abstract class Playstyle {
 			
 		}
 		
-		// some later game checks
-		if (progress > 8) {
-						
-			// make sure we have minimum miners at all times
-			if (this.broadcaster.robotCountFor(Miner.type()) < 20) {
-
+		// some game checks
+		if (progress > 3) {
+			
+			// check if we need to build another commander B)
+			if (this.broadcaster.robotCountFor(Commander.type()) == 0) {
+			
 				supplyOre = (int)(oreMined * 0.05);
-				this.broadcaster.incrementBudget(Miner.type(), supplyOre);
+				this.broadcaster.incrementBudget(Commander.type(), supplyOre);
 				remainingOre -= supplyOre;
 				
 			}
-			
-			if (progress > 9) {
-				
-				// check if we need to build another commander B)
-				if (this.broadcaster.robotCountFor(Commander.type()) == 0) {
-				
+
+			if (progress > 8) {
+							
+				// make sure we have minimum miners at all times
+				if (this.broadcaster.robotCountFor(Miner.type()) < 20) {
+
 					supplyOre = (int)(oreMined * 0.05);
-					this.broadcaster.incrementBudget(Commander.type(), supplyOre);
+					this.broadcaster.incrementBudget(Miner.type(), supplyOre);
 					remainingOre -= supplyOre;
 					
 				}
