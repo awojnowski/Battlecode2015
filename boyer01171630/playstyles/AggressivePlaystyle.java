@@ -1,7 +1,7 @@
-package team170.playstyles;
+package boyer01171630.playstyles;
 
 import battlecode.common.*;
-import team170.*;
+import boyer01171630.*;
 
 public class AggressivePlaystyle extends Playstyle {
 	
@@ -37,10 +37,10 @@ public class AggressivePlaystyle extends Playstyle {
 		this.civicRatios =       new double[] { 0.80, 0.50, 0.50, 0.40, 0.65, 0.65, 0.40, 0.40, 0.25, 0.25, 0.25, 0.30, 0.30, 0.00 };
 		this.supplyDepotRatios = new double[] { 0.00, 0.00, 0.02, 0.02, 0.04, 0.06, 0.06, 0.08, 0.08, 0.08, 0.08, 0.10, 0.10, 0.10 };
 		
-		this.beaverRatios =      new double[] { 1.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00 };
-		this.minerRatios =       new double[] { 0.00, 1.00, 0.70, 0.55, 0.70, 0.70, 0.70, 0.70, 0.70, 0.60, 0.50, 0.40, 0.20, 0.10 };
-		this.soldierRatios =     new double[] { 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00 };
-		this.tankRatios =        new double[] { 0.00, 0.00, 0.00, 0.30, 0.30, 0.30, 0.30, 0.30, 0.30, 0.40, 0.50, 0.60, 0.80, 0.90 };
+		this.beaverRatios =      new double[] { 1.00, 0.40, 0.10, 0.05, 0.05, 0.05, 0.05, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00 };
+		this.minerRatios =       new double[] { 0.00, 0.60, 0.60, 0.50, 0.65, 0.65, 0.55, 0.70, 0.70, 0.70, 0.50, 0.30, 0.05, 0.05 };
+		this.soldierRatios =     new double[] { 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.20, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00 };
+		this.tankRatios =        new double[] { 0.00, 0.00, 0.00, 0.30, 0.30, 0.30, 0.20, 0.30, 0.30, 0.30, 0.50, 0.70, 0.95, 0.95 };
 		this.droneRatios =       new double[] { 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00 };
 		this.launcherRatios =    new double[] { 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00 };
 		this.commanderRatios =   new double[] { 0.00, 0.00, 0.30, 0.15, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00 };
