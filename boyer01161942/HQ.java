@@ -1,7 +1,7 @@
-package team170;
+package boyer01161942;
 
 import battlecode.common.*;
-import team170.playstyles.*;
+import boyer01161942.playstyles.*;
 
 public class HQ extends BattleRobot {
 		
