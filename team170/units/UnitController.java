@@ -112,6 +112,7 @@ public class UnitController {
 		RobotInfo[] enemies = this.nearbyEnemies(this.robot.type.sensorRadiusSquared);
 		for (RobotInfo enemy : enemies) {
 			
+			if (enemy.type == Tower.type() || enemy.type == HQ.type()) continue;
 			if (currentLocation.distanceSquaredTo(enemy.location) <= Math.pow(Math.sqrt(enemy.type.attackRadiusSquared) + 1, 2)) {
 
 				dangerousEnemies.add(enemy);

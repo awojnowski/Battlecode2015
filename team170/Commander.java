@@ -19,22 +19,21 @@ public class Commander extends BattleRobot {
 		
 		try {
 			
-			if (this.isHarassing()) {
+			this.attack();
+			
+			Boolean canMove = true;
+			if (canMove) {
 				
-				this.attack();
-				
-				Boolean canMove = true;
-				if (canMove) {
+				RobotInfo[] enemiesInRange = this.unitController.nearbyEnemiesWithinTheirAttackRange();
+				if (enemiesInRange.length > 0) {
 					
-					RobotInfo[] enemiesInRange = this.unitController.nearbyEnemiesWithinTheirAttackRange();
-					if (enemiesInRange.length > 0) {
-						
-						this.moveAway(enemiesInRange);
-						canMove = false;
-						
-					}
+					canMove = (this.movementController.moveAway(enemiesInRange) != null);
 					
 				}
+				
+			}
+			
+			if (this.isHarassing()) {
 				
 				if (this.moveAwayLocation != null) {
 					
@@ -59,6 +58,45 @@ public class Commander extends BattleRobot {
 					
 				}
 				
+			} else {
+				
+				if (!this.shouldMobilize()) {
+					
+					if (canMove) {
+
+						RobotInfo[] enemiesInTerritory = this.enemiesInTerritory();
+						if (enemiesInTerritory.length > 0) {
+							
+							RobotInfo enemy = this.desiredEnemy(enemiesInTerritory);
+							MapLocation bestLocation = enemy.location;
+							canMove = this.movementController.moveToward(bestLocation) == null;
+							
+						}
+						
+					}
+					
+					// if we haven't moved toward an enemy location then we can go and stick to the plan
+					if (canMove) {
+
+						MapLocation rallyLocation = this.locationController.militaryRallyLocation();
+						if (this.locationController.distanceTo(rallyLocation) > 18) {
+
+							this.movementController.moveToward(rallyLocation);
+							
+						} else {
+							
+							this.movementController.moveTo(this.movementController.randomDirection());
+							
+						}
+						
+					}
+					
+				} else {
+
+					this.mobilize();
+					
+				}
+				
 			}
 			
 			this.supplyController.transferSupplyIfPossible();
@@ -78,29 +116,11 @@ public class Commander extends BattleRobot {
 		
 	}
 	
-	// MARK: Kiting
-	
-	public void moveAway(RobotInfo[] enemies) throws GameActionException {
-		
-		MapLocation currentLocation = this.locationController.currentLocation();
-		Direction opposite = null;
-		
-		for (RobotInfo enemy : enemies) {
-			
-			opposite = MovementController.directionWithOffset(currentLocation.directionTo(enemy.location), -4);
-			break;
-			
-		}
-		this.moveAwayLocation = currentLocation.add(opposite, 20);
-		this.movementController.moveTo(opposite);
-		
-	}
-	
 	// MARK: Modes
 	
 	private boolean isHarassing() {
 		
-		return (Clock.getRoundNum() < 2000);
+		return (Clock.getRoundNum() < 800);
 		
 	}
 	

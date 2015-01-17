@@ -7,6 +7,12 @@ import team170.units.UnitController;
 public class MovementController {
 	
 	public Robot robot;
+    
+	// MARK: Instance Variables
+	
+    private MapLocation lastPosition;
+    private int traversalDirection; // either 1 or -1
+    private int turnsStuck = 0;
 		
 	// MARK: Static Variables
 	
@@ -62,101 +68,191 @@ public class MovementController {
 		return this.moveToward(location, true);
 		
 	}
-	
-	// @param allowGreaterDistance whether or not the robot is allowed to move further away in moving toward
-	public Direction moveToward(MapLocation location, Boolean allowGreaterDistance) throws GameActionException {
-		
-		if (location == null) return null; 
-		
-		MapLocation currentLocation = this.robot.locationController.currentLocation();
-		double currentDistance = currentLocation.distanceSquaredTo(location);
-		
-		Direction direction = currentLocation.directionTo(location);
-		int directionInteger = directionToInt(direction);
-		
-		if (moveTo(direction)) {
-			
-			return direction;
-			
-		} else {
-			
-			int[] offsets = {1,2};
-			for (int offset : offsets) {
 
-				Direction directionOne = MovementController.directionFromInt(directionInteger + offset);
-				Direction directionTwo = MovementController.directionFromInt(directionInteger - offset);
-				direction = this.moveTowardDirections(currentLocation, location, directionOne, directionTwo, allowGreaterDistance, currentDistance);
-				if (direction != null) return direction;
-				
-			}
-			
-		}
-		return null;
-		
-	}
+	// @param allowGreaterDistance whether or not the robot is allowed to move further away in moving toward
+    public Direction moveToward(MapLocation location, Boolean allowGreaterDistance) throws GameActionException {
+        
+        int[] offsets = {1,2};
+        return this.moveToward(location, allowGreaterDistance, offsets);
+       
+    }
 	
-	// figures out the better of two directions to go in
-	private Direction moveTowardDirections(MapLocation currentLocation, MapLocation desiredLocation, Direction directionOne, Direction directionTwo, Boolean allowGreaterDistance, double currentDistance) throws GameActionException {
-		
-		Direction direction = null;
-		
-		MapLocation moveLocationOne = currentLocation.add(directionOne);
-		MapLocation moveLocationTwo = currentLocation.add(directionTwo);
-		MapLocation moveLocation = null;
-		
-		int moveLocationInteger = (moveLocationOne.distanceSquaredTo(desiredLocation) <= moveLocationTwo.distanceSquaredTo(desiredLocation)) ? 1 : 2;
-		if (moveLocationInteger == 1) {
-			
-			moveLocation = moveLocationOne;
-			direction = directionOne;
-			
-		} else {
-			
-			moveLocation = moveLocationTwo;
-			direction = directionTwo;
-			
-		}
-		
-		if (!allowGreaterDistance && moveLocation.distanceSquaredTo(desiredLocation) > currentDistance) return null;
-		if (this.moveTo(direction)) {
-			
-			return direction;
-			
-		} else {
-			
-			if (moveLocationInteger == 1) {
-				
-				moveLocation = moveLocationTwo;
-				direction = directionTwo;
-				
-			} else {
-				
-				moveLocation = moveLocationOne;
-				direction = directionOne;
-				
-			}
-			if (!allowGreaterDistance && moveLocation.distanceSquaredTo(desiredLocation) > currentDistance) return null;
-			if (this.moveTo(direction)) {
-				
-				return direction;
-				
-			}
-			
-		}
-		return null;
-		
-	}
+    public Direction moveToward(MapLocation location, Boolean allowGreaterDistance, int[] offsets) throws GameActionException {
+           
+        if (location == null) return null;
+       
+        MapLocation currentLocation = this.robot.locationController.currentLocation();
+        double currentDistance = currentLocation.distanceSquaredTo(location);
+       
+        Direction direction = currentLocation.directionTo(location);
+        int directionInteger = directionToInt(direction);
+       
+        if (this.lastPosition != null && currentLocation.distanceSquaredTo(this.lastPosition) <= 1)
+            this.turnsStuck++;
+               
+        if (this.turnsStuck > 1)
+            return this.moveAroundObstacleToward(location);
+               
+        if (moveTo(direction)) {
+               
+            this.lastPosition = currentLocation;
+            return direction;
+               
+        } else {
+               
+            for (int offset : offsets) {
+
+                Direction directionOne = MovementController.directionFromInt(directionInteger + offset);
+                Direction directionTwo = MovementController.directionFromInt(directionInteger - offset);
+                direction = this.moveTowardDirections(currentLocation, location, directionOne, directionTwo, allowGreaterDistance, currentDistance);
+                if (direction != null) {
+                       
+                    this.lastPosition = currentLocation;
+                    return direction;
+                       
+                }
+                   
+            }
+               
+        }
+       
+        this.turnsStuck++;
+        return null;
+       
+    }
+   
+    // figures out the better of two directions to go in
+    private Direction moveTowardDirections(MapLocation currentLocation, MapLocation desiredLocation, Direction directionOne, Direction directionTwo, Boolean allowGreaterDistance, double currentDistance) throws GameActionException {
+           
+        Direction direction = null;
+       
+        MapLocation moveLocationOne = currentLocation.add(directionOne);
+        MapLocation moveLocationTwo = currentLocation.add(directionTwo);
+        MapLocation moveLocation = null;
+       
+        int moveLocationInteger = (moveLocationOne.distanceSquaredTo(desiredLocation) <= moveLocationTwo.distanceSquaredTo(desiredLocation)) ? 1 : 2;
+        if (moveLocationInteger == 1) {
+               
+            moveLocation = moveLocationOne;
+            direction = directionOne;
+               
+        } else {
+               
+            moveLocation = moveLocationTwo;
+            direction = directionTwo;
+               
+        }
+       
+        if (!allowGreaterDistance && moveLocation.distanceSquaredTo(desiredLocation) > currentDistance) return null;
+        if (this.moveTo(direction)) {
+               
+            return direction;
+               
+        } else {
+               
+            if (moveLocationInteger == 1) {
+                   
+                moveLocation = moveLocationTwo;
+                direction = directionTwo;
+                   
+            } else {
+                   
+                moveLocation = moveLocationOne;
+                direction = directionOne;
+                   
+            }
+            if (!allowGreaterDistance && moveLocation.distanceSquaredTo(desiredLocation) > currentDistance) return null;
+            if (this.moveTo(direction)) {
+                   
+                return direction;
+                   
+            }
+               
+        }
+        return null;
+           
+    }
+   
+    // follows a wall until it can move towards it's initial target, switching directions if it gets stuck
+    public Direction moveAroundObstacleToward(MapLocation location) throws GameActionException {
+           
+        if (this.traversalDirection == 0) { // start with a random traversal direction
+               
+            if (this.robot.random.nextBoolean())
+                this.traversalDirection = -1;
+            else
+                this.traversalDirection = 1;
+               
+        }
+       
+        MapLocation robotLocation = this.robot.locationController.currentLocation();
+        Direction directionToTarget = robotLocation.directionTo(location);
+        Direction directionToLastPosition = this.lastPosition != null ? robotLocation.directionTo(this.lastPosition) : null;
+        int switchedDirection = 0;
+       
+        this.robot.robotController.setIndicatorString(2, "Traversal Direction " + this.traversalDirection + " Dir to target " + directionToTarget + " Dir to LP " + directionToLastPosition);
+       
+        // see if it can move toward it's target
+        if (directionToTarget == directionToLastPosition || !this.moveTo(directionToTarget)) {
+               
+            this.robot.robotController.setIndicatorString(2, "I CAN'T move towards target");
+            // traverse along obstacle, switching directions if it hits a dead end or outer wall
+            for (int i = 1; i < 8  && switchedDirection <= 1; i++) {
+                   
+                Direction direction = MovementController.directionWithOffset(directionToTarget, i * this.traversalDirection);
+                MapLocation nextLocation = robotLocation.add(direction);
+                this.robot.robotController.setIndicatorDot(nextLocation, 255, 255, 255);
+               
+                if (!direction.equals(directionToLastPosition)) {
+                       
+                    if (this.robot.movementController.moveTo(direction)) {
+                           
+                        this.lastPosition = robotLocation;
+                       
+                        return direction;
+                           
+                    } else {
+                   
+                        if (this.robot.robotController.senseTerrainTile(nextLocation).equals(TerrainTile.OFF_MAP)) {
+                               
+                            this.traversalDirection = -this.traversalDirection; // Might need to do additional checks if this switches too often
+                            i = 0;
+                            switchedDirection++;
+                               
+                        }
+                   
+                    }
+                       
+                }
+                   
+            }
+               
+        } else {
+               
+            this.robot.robotController.setIndicatorString(2, "I can move towards target");
+            this.robot.robotController.setIndicatorLine(robotLocation, location, 255, 255, 255);
+            this.turnsStuck = 0;
+            return directionToTarget;
+               
+        }
+       
+        //System.out.println("Didn't find move location.");
+        return null;
+           
+    }
 	
 	public Direction moveAway(RobotInfo[] enemies) throws GameActionException {
 		
 		MapLocation currentLocation = this.robot.locationController.currentLocation();
-		MapLocation location = currentLocation;
+		Direction opposite = null;
+		
 		for (RobotInfo enemy : enemies) {
 			
-			location.add(MovementController.directionWithOffset(currentLocation.directionTo(enemy.location), -4), (int)(10 * (currentLocation.distanceSquaredTo(enemy.location) / 35.0)));
+			opposite = MovementController.directionWithOffset(currentLocation.directionTo(enemy.location), -4);
+			break;
 			
 		}
-		return this.moveToward(location);
+		return this.moveToward(currentLocation.add(opposite, 40));
 		
 	}
 	
