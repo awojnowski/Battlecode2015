@@ -10,18 +10,7 @@ public class Commander extends BattleRobot {
 		
 		super(robotController);
 		
-		try {
-			
-			// initially see if we should rush (1 commander per game)
-			if (this.broadcaster.shouldCommanderRush()) {
-				
-				this.isHarassing = true;
-				this.broadcaster.setShouldCommanderRush(false);
-				
-			}
-			
-		}
-		catch (GameActionException e) {}
+		
 				
 	}
 
