@@ -10,7 +10,7 @@ public class Commander extends BattleRobot {
 		
 		super(robotController);
 		
-		
+		this.isHarassing = true;
 				
 	}
 
@@ -19,6 +19,9 @@ public class Commander extends BattleRobot {
 		super.run();
 		
 		try {
+			
+			int roundNumber = Clock.getRoundNum();
+			if (roundNumber > 800) this.isHarassing = false;
 			
 			this.attack();
 
