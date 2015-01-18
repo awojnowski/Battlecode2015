@@ -7,7 +7,6 @@ import battlecode.common.*;
 public class Beaver extends BattleRobot {
 	
 	public Direction facing;
-	public Boolean isDesignatedBuilder;
 
 	public Beaver(RobotController robotController) {
 		
@@ -15,7 +14,6 @@ public class Beaver extends BattleRobot {
 
 		this.canBeMobilized = false;
 		this.facing = this.movementController.randomDirection();
-		this.isDesignatedBuilder = true;
 		
 	}
 
@@ -31,22 +29,18 @@ public class Beaver extends BattleRobot {
 			
 			if (this.robotController.isCoreReady()) {
 				
-				if (this.isDesignatedBuilder && this.robotController.getHealth() > 10) {
+				Boolean builtBuilding = false;
+				RobotType buildType = this.currentPlaystyle().nextBuildingType();
+				if (buildType != null) {
 					
-					Boolean builtBuilding = false;
-					RobotType buildType = this.currentPlaystyle().nextBuildingType();
-					if (buildType != null) {
-						
-						builtBuilding = this.tryBuild(buildType);
-						
-					}
+					builtBuilding = this.tryBuild(buildType);
 					
-					// try to build some other things
-					if (!builtBuilding) {
+				}
+				
+				// try to build some other things
+				if (!builtBuilding) {
 
-						builtBuilding = this.tryBuild(SupplyDepot.type());
-						
-					}
+					builtBuilding = this.tryBuild(SupplyDepot.type());
 					
 				}
 				
@@ -54,47 +48,41 @@ public class Beaver extends BattleRobot {
 					
 					
 					
-				} else { // no ore underneath
+				} else {
 					
-					if (this.isDesignatedBuilder) {
+					MapLocation hqLocation = this.locationController.HQLocation();
+					Direction directionToHQ = this.locationController.currentLocation().directionTo(hqLocation);
+					Boolean moved = false;
+					
+					int[] diagonalOffsets = {0, 2, -2, 4, 1, -1, 3, -3};
+					int[] cardinalOffsets = {1, -1, 3, -3, 0, 2, -2, 4};
+					int[] offsets;
+					
+					if (directionToHQ.isDiagonal())
+						offsets = diagonalOffsets;
+					else
+						offsets = cardinalOffsets;
+					
+					for (int i = 0; i < offsets.length && !moved; i++) {
 						
-						MapLocation hqLocation = this.locationController.HQLocation();
-						Direction directionToHQ = this.locationController.currentLocation().directionTo(hqLocation);
-						Boolean moved = false;
-						
-						int[] diagonalOffsets = {0, 2, -2, 4, 1, -1, 3, -3};
-						int[] cardinalOffsets = {1, -1, 3, -3, 0, 2, -2, 4};
-						int[] offsets;
-						
-						if (directionToHQ.isDiagonal())
-							offsets = diagonalOffsets;
-						else
-							offsets = cardinalOffsets;
-						
-						for (int i = 0; i < offsets.length && !moved; i++) {
+						Direction direction = MovementController.directionWithOffset(directionToHQ, offsets[i]);
+						if (this.robotController.canMove(direction) && this.shouldMove(direction)) {
 							
-							Direction direction = MovementController.directionWithOffset(directionToHQ, offsets[i]);
-							if (this.robotController.canMove(direction) && this.shouldMove(direction)) {
-								
-								this.robotController.move(direction);
-								moved = true;
-								
-							}
+							this.robotController.move(direction);
+							moved = true;
 							
 						}
 						
-						if (!moved) {
-							
-							RobotInfo[] nearbyAllies = this.unitController.nearbyAllies(1);
-							
-							if (nearbyAllies.length > 1)
-								this.movementController.moveAway(hqLocation);
-							else 
-								this.movementController.moveToward(hqLocation);
-							
-						}
+					}
+					
+					if (!moved) {
 						
-					} else {
+						RobotInfo[] nearbyAllies = this.unitController.nearbyAllies(1);
+						
+						if (nearbyAllies.length > 1)
+							this.movementController.moveAway(hqLocation);
+						else 
+							this.movementController.moveToward(hqLocation);
 						
 					}
 					
@@ -168,7 +156,7 @@ public class Beaver extends BattleRobot {
 			if (i % 2 != 0) {
 
 				if (robot == null) continue;
-				if (UnitController.isUnitTypeBuilding(robot.type) && robot.type != Tower.type()) {
+				if (UnitController.isUnitTypeBuilding(robot.type)) {
 					
 					cornersHaveBuilding = true;
 					
