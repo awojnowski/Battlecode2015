@@ -66,7 +66,7 @@ public class AggressivePlaystyle extends Playstyle {
 			
 			return true;
 			
-		} else if (totalTanks > 15 && this.broadcaster.hasSeenLaunchers()) {
+		} else if (totalTanks > 25 && this.broadcaster.hasSeenLaunchers()) {
 			
 			return true;
 			

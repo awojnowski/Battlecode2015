@@ -79,7 +79,7 @@ public abstract class Robot {
 			
 			int militaryEnemies = this.unitController.nearbyMilitaryEnemies().length;
 			int militaryAllies = this.unitController.nearbyMilitaryAllies().length;
-			if (militaryAllies > militaryEnemies * 1.5 && militaryAllies > 10) {
+			if (militaryAllies > militaryEnemies * 1.2 && militaryAllies > 7) {
 				
 				return true;
 				

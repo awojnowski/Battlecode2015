@@ -111,9 +111,14 @@ public class BattleRobot extends Robot {
 					
 				} else {
 					
-					if (chosenEnemy.health > enemy.health) {
+					if (enemy.type == Missile.type() && chosenEnemy.type == Missile.type() ||
+						enemy.type != Missile.type()) {
 						
-						chosenEnemy = enemy;
+						if (chosenEnemy.health > enemy.health) {
+							
+							chosenEnemy = enemy;
+							
+						}
 						
 					}
 					
