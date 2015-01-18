@@ -10,10 +10,12 @@ public class MovementController {
     
 	// MARK: Instance Variables
 	
-    private MapLocation lastPosition;
-    private MapLocation lastLastPosition;
+    private MapLocation lastPosition;     // used for pathfinding, doesn't update if they don't move
+    private MapLocation lastLastPosition; // used for pathfinding, doesn't update if they don't move
     private int traversalDirection; // either 1 or -1
     private int turnsStuck = 0;
+    private MapLocation actualLastPosition;
+    private int turnsStuckWhilePathfinding = 0;
 		
 	// MARK: Static Variables
 	
@@ -88,7 +90,7 @@ public class MovementController {
         Direction direction = currentLocation.directionTo(location);
         int directionInteger = directionToInt(direction);
        
-        if (this.lastPosition != null && currentLocation.distanceSquaredTo(this.lastPosition) <= 1)
+        if (this.actualLastPosition != null && currentLocation.distanceSquaredTo(this.actualLastPosition) <= 1)
             this.turnsStuck++;
                
         if (this.turnsStuck > 1)
@@ -96,7 +98,7 @@ public class MovementController {
                
         if (moveTo(direction)) {
                
-            this.lastPosition = currentLocation;
+            this.actualLastPosition = currentLocation;
             return direction;
                
         } else {
@@ -108,7 +110,7 @@ public class MovementController {
                 direction = this.moveTowardDirections(currentLocation, location, directionOne, directionTwo, allowGreaterDistance, currentDistance);
                 if (direction != null) {
                        
-                    this.lastPosition = currentLocation;
+                    this.actualLastPosition = currentLocation;
                     return direction;
                        
                 }
@@ -187,6 +189,7 @@ public class MovementController {
         }
        
         MapLocation robotLocation = this.robot.locationController.currentLocation();
+        this.actualLastPosition = robotLocation;
         Direction directionToTarget = robotLocation.directionTo(location);
         Direction directionToLastPosition = this.lastPosition != null ? robotLocation.directionTo(this.lastPosition) : null;
         int switchedDirection = 0;
@@ -196,26 +199,29 @@ public class MovementController {
         // see if it can move toward it's target
         if (directionToTarget == directionToLastPosition || !this.moveTo(directionToTarget)) {
         	
-        	if (this.lastLastPosition != null && robotLocation.distanceSquaredTo(this.lastLastPosition) <= 1) { // if just moved in a triangle
+        	if (this.lastLastPosition != null && robotLocation.distanceSquaredTo(this.lastLastPosition) <= 1 && this.turnsStuckWhilePathfinding == 0) { // if just moved in a triangle
                 
         		this.traversalDirection = -this.traversalDirection;
                 
         	}
                
             this.robot.robotController.setIndicatorString(2, "I CAN'T move towards target");
-            // traverse along obstacle, switching directions if it hits a dead end or outer wall
+            
+            // traverse along obstacle, switching directions if it hits a loop around or outer wall
             for (int i = 1; i < 8  && switchedDirection <= 1; i++) {
                    
                 Direction direction = MovementController.directionWithOffset(directionToTarget, i * this.traversalDirection);
                 MapLocation nextLocation = robotLocation.add(direction);
                 this.robot.robotController.setIndicatorDot(nextLocation, 255, 255, 255);
                
-                if (!direction.equals(directionToLastPosition)) {
+                if (!direction.equals(directionToLastPosition) || this.turnsStuckWhilePathfinding > 1) {
                        
                     if (this.robot.movementController.moveTo(direction)) {
                           
                     	this.lastLastPosition = this.lastPosition;
                         this.lastPosition = robotLocation;
+                        if (this.turnsStuckWhilePathfinding > 0)
+                        	this.turnsStuckWhilePathfinding -= 1;
                        
                         return direction;
                            
@@ -233,6 +239,13 @@ public class MovementController {
                        
                 }
                    
+            }
+            
+            // check if didn't move (dead end)
+            if (robotLocation.equals(this.actualLastPosition)) {
+            	
+            	this.turnsStuckWhilePathfinding++;
+            	
             }
                
         } else {
