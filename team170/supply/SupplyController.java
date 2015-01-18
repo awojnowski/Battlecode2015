@@ -26,7 +26,6 @@ public class SupplyController {
 		double supplyLevel = this.robot.robotController.getSupplyLevel();
 		double minimumSupplyLevel = this.minimumSupplyForType(this.robot.type);
 		if (supplyLevel < minimumSupplyLevel) return;
-		final double transferableSupply = supplyLevel - minimumSupplyLevel;
 		
 		double lowestSupply = supplyLevel;
 		
@@ -47,7 +46,17 @@ public class SupplyController {
 
 		if (targetLocation != null) {
 
-			this.robot.robotController.transferSupplies((int)(transferableSupply / 2), targetLocation);
+			double transferableSupply = supplyLevel - minimumSupplyLevel;
+			if (this.robot.type == HQ.type()) {
+				
+				// give it all away
+				
+			} else {
+				
+				transferableSupply = transferableSupply / 2;
+				
+			}
+			this.robot.robotController.transferSupplies((int)transferableSupply, targetLocation);
 			
 		}
 		

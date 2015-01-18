@@ -17,7 +17,7 @@ public class TechnologyInstitute extends BuildableRobot {
 		try {
 
 			RobotInfo[] nearbyEnemies = this.unitController.nearbyMilitaryEnemies(200);
-			if (nearbyEnemies.length > 0 && Clock.getRoundNum() < 500) {
+			if (nearbyEnemies.length > 1 && Clock.getRoundNum() < 500) {
 				
 				this.broadcaster.setEnemyTeamRushing(true);
 				
