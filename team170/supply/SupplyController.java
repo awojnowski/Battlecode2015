@@ -57,6 +57,7 @@ public class SupplyController {
 	
 	private Boolean canTypeReceiveSupply(RobotType type) {
 		
+		if (Clock.getRoundNum() > 100 && type == Beaver.type()) return false;
 		return type.needsSupply();
 		
 	}

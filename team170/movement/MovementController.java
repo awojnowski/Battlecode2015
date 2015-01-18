@@ -252,14 +252,23 @@ public class MovementController {
 	public Direction moveAway(RobotInfo[] enemies) throws GameActionException {
 		
 		MapLocation currentLocation = this.robot.locationController.currentLocation();
-		Direction opposite = null;
+		
+		RobotInfo closestEnemy = null;
+		double closestDistance = Double.MAX_VALUE;
 		
 		for (RobotInfo enemy : enemies) {
 			
-			opposite = MovementController.directionWithOffset(currentLocation.directionTo(enemy.location), -4);
-			break;
+			double distance = currentLocation.distanceSquaredTo(enemy.location);
+			if (distance < closestDistance) {
+				
+				closestEnemy = enemy;
+				closestDistance = distance;
+				
+			}
 			
 		}
+		
+		Direction opposite = MovementController.directionWithOffset(currentLocation.directionTo(closestEnemy.location), -4);
 		return this.moveToward(currentLocation.add(opposite, 40));
 		
 	}
@@ -267,7 +276,7 @@ public class MovementController {
 	// moves away from a location using the moveTo method (and its implications)
 	public Direction moveAway(MapLocation location) throws GameActionException {
 		
-		if (location == null) return null; 
+		if (location == null) return null;
 		
 		MapLocation currentLocation = this.robot.locationController.currentLocation();
 		Direction direction = currentLocation.directionTo(location);

@@ -58,7 +58,7 @@ public class Miner extends BattleRobot {
 						
 					} else {
 						
-						if (this.tryMine(true)) {
+						if (this.tryMine()) {
 							
 							this.miningTurns ++;
 							

@@ -98,13 +98,12 @@ public abstract class Robot {
 	
 	// MARK: Mining
 	
-	public boolean tryMine(Boolean mineClose) throws GameActionException {
+	public boolean tryMine() throws GameActionException {
 
 		if (this.type != RobotType.BEAVER && this.type != RobotType.MINER) return false;
 		
 		if (!this.robotController.isCoreReady()) return false;
 		if (this.robotController.senseOre(this.robotController.getLocation()) == 0) return false;
-		if (this.locationController.distanceTo(this.locationController.HQLocation()) <= 2 && !mineClose) return false;
 		if (!this.robotController.canMine()) return false;
 		
 		this.robotController.mine();

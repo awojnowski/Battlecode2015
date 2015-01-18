@@ -23,7 +23,8 @@ public class Beaver extends BattleRobot {
 				
 		try {
 			
-			this.robotController.setIndicatorString(1, "Turn: " + this.currentPlaystyle().buildOrderProgress() + " Budget: Civic = " + this.broadcaster.civicBudget() + " Supply Depot = " + this.broadcaster.budgetForType(SupplyDepot.type()));
+			final int roundProgress = this.currentPlaystyle().buildOrderProgress();
+			this.robotController.setIndicatorString(1, "Turn: " + roundProgress + " Budget: Civic = " + this.broadcaster.civicBudget() + " Supply Depot = " + this.broadcaster.budgetForType(SupplyDepot.type()));
 			
 			this.attack();
 			
@@ -44,7 +45,7 @@ public class Beaver extends BattleRobot {
 					
 				}
 				
-				if (this.tryMine(false)) {
+				if (roundProgress < 3 && this.tryMine()) {
 					
 					
 					

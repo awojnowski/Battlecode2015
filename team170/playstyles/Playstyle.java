@@ -87,7 +87,7 @@ public abstract class Playstyle {
 		remainingOre -= supplyOre;
 		
 		// make sure we have minimum beavers at all times
-		if (this.broadcaster.robotCountFor(Beaver.type()) < 2) {
+		if (this.broadcaster.robotCountFor(Beaver.type()) < 3 && this.beaverRatios[progress] == 0.0) {
 
 			supplyOre = (int)(oreMined * 0.20);
 			this.broadcaster.incrementBudget(Beaver.type(), supplyOre);
