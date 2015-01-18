@@ -83,6 +83,13 @@ public class AggressivePlaystyle extends Playstyle {
 		
 	}
 	
+	public Boolean shouldBlitzkrieg() {
+		
+		int clockNumber = Clock.getRoundNum();
+		return clockNumber > 1700;
+		
+	}
+	
 	// MARK: Static Helpers
 
 	public int identifierI() { return 2; }

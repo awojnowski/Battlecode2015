@@ -20,15 +20,19 @@ public class Tank extends BattleRobot {
 		super.run();
 		
 		try {
-						
-			AttackResult attackResult = new AttackResult();
-			Boolean attacked = this.attack(attackResult);
+			
+			if (this.robotController.isWeaponReady()) {
+				
+				AttackResult attackResult = new AttackResult();
+				this.attack(attackResult);
+				
+			}
 			
 			if (this.robotController.isCoreReady()) {
 				
-				Boolean shouldMove = !attacked;
-				if (shouldMove) {
+				if (this.unitController.nearbyAttackableEnemies().length == 0 || this.currentPlaystyle().shouldBlitzkrieg()) {
 					
+					// only move if we have no enemies to 
 					if (!this.shouldMobilize()) {
 						
 						if (!this.moveTowardEnemiesInTerritory()) {
@@ -45,6 +49,7 @@ public class Tank extends BattleRobot {
 							
 						} else {
 							
+							boolean shouldMove = true;
 							if (!this.canAttackInTowerRange()) {
 								
 								MapLocation towerInRange = this.locationController.enemyTowerInRange();

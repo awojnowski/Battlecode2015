@@ -254,6 +254,12 @@ public abstract class Playstyle {
 		
 	}
 	
+	public Boolean shouldBlitzkrieg() {
+		
+		return false;
+		
+	}
+	
 	// MARK: Static Helpers
 
 	public int identifierI() { return -1; }
