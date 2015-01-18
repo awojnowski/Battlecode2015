@@ -194,12 +194,8 @@ public class BattleRobot extends Robot {
 		MapLocation objective = this.locationController.bestObjective();
 		if (objective != null) {
 
-			if (this.locationController.currentLocation().distanceSquaredTo(objective) > 10) {
-
-				this.movementController.moveToward(objective);
-				
-			}
-			
+			this.movementController.moveToward(objective);
+							
 		}
 		
 	}

@@ -16,10 +16,12 @@ public class Barracks extends BuildableRobot {
 			
 		try {
 			
-			this.robotController.setIndicatorString(1, "Budget: Soldier = " + this.broadcaster.budgetForType(Soldier.type()));
+			this.robotController.setIndicatorString(1, "Budget: Soldier = " + this.broadcaster.budgetForType(Soldier.type()) + " Basher = " + this.broadcaster.budgetForType(Basher.type()));
+			if (this.broadcaster.hasSeenLaunchers()) this.robotController.setIndicatorString(2, "DEFCON 1 LAUNCHES HAVE BEEN SPOTTED");
 			if (this.robotController.isCoreReady()) {
 
 				this.trySpawn(Soldier.type());
+				this.trySpawn(Basher.type());
 				
 			}
 										

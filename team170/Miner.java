@@ -22,53 +22,21 @@ public class Miner extends BattleRobot {
 				
 		try {
 			
-			this.attack();
+			if (this.robotController.isWeaponReady()) {
+				
+				this.attack();
+				
+			}
 			
 			if (this.robotController.isCoreReady()) {
 				
-				// check to see if this guy under attack
-												
-				RobotInfo closestEnemy = this.unitController.closestMilitaryAttackerWithinRange();
-				if (closestEnemy != null) {
+				if (this.currentPlaystyle().shouldGoAllOut()) {
 					
-					Boolean moved = false;
-					if (this.unitController.nearbyAllies().length >= 3 && this.unitController.nearbyEnemies().length < 3) {
-						
-						moved = this.movementController.moveToward(closestEnemy.location) != null;
-						
-					} else {
-						
-						moved = this.movementController.fleeFrom(closestEnemy.location) != null;
-						
-					}
-					if (moved) { 
-						
-						this.miningTurns = 0;
-						this.facing = this.movementController.randomDirection();
-						
-					}
+					this.doAttackerThings();
 					
 				} else {
-					
-					// nah he gucci
-										
-					if (this.miningTurns > 5) {
-						
-						this.move();
-						
-					} else {
-						
-						if (this.tryMine()) {
-							
-							this.miningTurns ++;
-							
-						} else {
 
-							this.move();
-							
-						}
-						
-					}
+					this.doMinerThings();
 					
 				}
 				
@@ -83,9 +51,67 @@ public class Miner extends BattleRobot {
 		
 	}
 	
+	// MARK: Styles
+	
+	private void doMinerThings() throws GameActionException {
+		
+		// check to see if this guy under attack
+		
+		RobotInfo closestEnemy = this.unitController.closestMilitaryAttackerWithinRange();
+		if (closestEnemy != null) {
+			
+			Boolean moved = false;
+			if (this.unitController.nearbyAllies().length >= 3 && this.unitController.nearbyEnemies().length < 3) {
+				
+				moved = this.movementController.moveToward(closestEnemy.location) != null;
+				
+			} else {
+				
+				moved = this.movementController.fleeFrom(closestEnemy.location) != null;
+				
+			}
+			if (moved) { 
+				
+				this.miningTurns = 0;
+				this.facing = this.movementController.randomDirection();
+				
+			}
+			
+		} else {
+			
+			// nah he gucci
+								
+			if (this.miningTurns > 5) {
+				
+				this.move();
+				
+			} else {
+				
+				if (this.tryMine()) {
+					
+					this.miningTurns ++;
+					
+				} else {
+
+					this.move();
+					
+				}
+				
+			}
+			
+		}
+		
+	}
+	
+	private void doAttackerThings() throws GameActionException {
+		
+		this.mobilize();
+		
+	}
+	
 	// MARK: Movement
 	
-	public void move() throws GameActionException {
+	private void move() throws GameActionException {
 		
 		if (!this.moveToBestOre(this.facing)) {
 

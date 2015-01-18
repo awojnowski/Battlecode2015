@@ -90,6 +90,13 @@ public class AggressivePlaystyle extends Playstyle {
 		
 	}
 	
+	public Boolean shouldGoAllOut() {
+
+		int clockNumber = Clock.getRoundNum();
+		return clockNumber > 1850;
+		
+	}
+	
 	// MARK: Static Helpers
 
 	public int identifierI() { return 2; }

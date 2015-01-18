@@ -65,7 +65,21 @@ public class Tank extends BattleRobot {
 							
 							if (shouldMove) {
 								
-								this.mobilize();
+								MapLocation objective = this.locationController.bestObjective();
+								if (objective != null) {
+
+									// check to see if we have a formation around it
+									if (this.locationController.currentLocation().distanceSquaredTo(objective) > 10) {
+
+										this.mobilize();
+										
+									}
+									
+								} else {
+									
+									this.mobilize();
+									
+								}
 								
 								// mobilize for 5 more turns if we were chasing shit
 								this.turnsChasingShitWhenWeShouldBeMobilizing ++;

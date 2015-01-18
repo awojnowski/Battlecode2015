@@ -26,6 +26,10 @@ public class RobotPlayer {
 			
 			robot = new Soldier(robotController);
 			
+		} else if (robotController.getType() == Basher.type()) {
+			
+			robot = new Basher(robotController);
+			
 		} else if (robotController.getType() == Barracks.type()) {
 			
 			robot = new Barracks(robotController);

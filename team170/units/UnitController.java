@@ -92,6 +92,27 @@ public class UnitController {
 		
 	}
 	
+	public RobotInfo[] nearbyEnemies(RobotType type) throws GameActionException {
+		
+		return this.nearbyEnemies(type, HQ.type().sensorRadiusSquared);
+		
+	}
+	
+	public RobotInfo[] nearbyEnemies(RobotType type, int sensorRadius) throws GameActionException {
+		
+		ArrayList<RobotInfo> nearbyEnemies = new ArrayList<RobotInfo>();
+		
+		RobotInfo[] enemies = this.nearbyEnemies(sensorRadius);
+		for (RobotInfo enemy : enemies) {
+			
+			if (enemy.type != type) continue;
+			nearbyEnemies.add(enemy);
+			
+		}
+		return nearbyEnemies.toArray(new RobotInfo[nearbyEnemies.size()]);
+		
+	}
+	
 	public RobotInfo[] nearbyMilitaryEnemies() throws GameActionException {
 		
 		return this.nearbyMilitaryEnemies(HQ.type().sensorRadiusSquared);

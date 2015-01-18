@@ -118,6 +118,14 @@ public abstract class Playstyle {
 					
 				}
 				
+				if (this.broadcaster.hasSeenLaunchers()) {
+
+					supplyOre = (int)(oreMined * 0.05);
+					this.broadcaster.incrementBudget(Basher.type(), supplyOre);
+					remainingOre -= supplyOre;
+					
+				}
+								
 			}
 			
 		}
@@ -255,6 +263,12 @@ public abstract class Playstyle {
 	}
 	
 	public Boolean shouldBlitzkrieg() {
+		
+		return false;
+		
+	}
+	
+	public Boolean shouldGoAllOut() {
 		
 		return false;
 		

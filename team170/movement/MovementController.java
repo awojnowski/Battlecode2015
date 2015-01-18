@@ -323,7 +323,7 @@ public class MovementController {
 		if (type == Launcher.type()) moveAroundTowers = true;
 
 		Boolean moveAroundMilitary = false;
-		if (UnitController.isUnitTypeMiner(type)) moveAroundMilitary = true;
+		if (UnitController.isUnitTypeMiner(type) && !this.robot.currentPlaystyle().shouldGoAllOut()) moveAroundMilitary = true;
 		else if (type == Drone.type()) moveAroundMilitary = true;
 		else if (type == Launcher.type()) moveAroundMilitary = true;
 		
