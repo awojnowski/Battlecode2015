@@ -62,7 +62,14 @@ public class Beaver extends BattleRobot {
 						Direction directionToHQ = this.locationController.currentLocation().directionTo(hqLocation);
 						Boolean moved = false;
 						
-						int[] offsets = {0, 1, -1, 2, -2, 3, -3, 4};
+						int[] diagonalOffsets = {0, 2, -2, 4, 1, -1, 3, -3};
+						int[] cardinalOffsets = {1, -1, 3, -3, 0, 2, -2, 4};
+						int[] offsets;
+						
+						if (directionToHQ.isDiagonal())
+							offsets = diagonalOffsets;
+						else
+							offsets = cardinalOffsets;
 						
 						for (int i = 0; i < offsets.length && !moved; i++) {
 							
