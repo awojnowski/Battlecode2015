@@ -70,6 +70,8 @@ public class BattleRobot extends Robot {
 	
 	public RobotInfo desiredEnemy(RobotInfo[] enemies) throws GameActionException {
 		
+		if (enemies.length == 0) return null;
+		
 		// prioritize the HQ
 		
 		for (RobotInfo enemy : enemies) {
@@ -192,7 +194,11 @@ public class BattleRobot extends Robot {
 		MapLocation objective = this.locationController.bestObjective();
 		if (objective != null) {
 
-			this.movementController.moveToward(objective);
+			if (this.locationController.currentLocation().distanceSquaredTo(objective) > 10) {
+
+				this.movementController.moveToward(objective);
+				
+			}
 			
 		}
 		

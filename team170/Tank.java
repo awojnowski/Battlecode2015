@@ -30,7 +30,8 @@ public class Tank extends BattleRobot {
 			
 			if (this.robotController.isCoreReady()) {
 				
-				if (this.unitController.nearbyAttackableEnemies().length == 0 || this.currentPlaystyle().shouldBlitzkrieg()) {
+				RobotInfo[] nearbyAttackableEnemies = this.unitController.nearbyAttackableEnemies(); 
+				if (nearbyAttackableEnemies.length == 0 || this.currentPlaystyle().shouldBlitzkrieg()) {
 					
 					// only move if we have no enemies to 
 					if (!this.shouldMobilize()) {
