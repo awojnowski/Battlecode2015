@@ -21,6 +21,13 @@ public class Tank extends BattleRobot {
 		
 		try {
 			
+			String indicatorString = "";
+			if (this.shouldMobilize()) indicatorString += " Should Mobilize | ";
+			if (this.currentPlaystyle().shouldBlitzkrieg()) indicatorString += " Blitzing | ";
+			indicatorString += " Chase while mob. for " + this.turnsChasingShitWhenWeShouldBeMobilizing + " turns | ";
+			
+			this.robotController.setIndicatorString(1, indicatorString);
+			
 			if (this.robotController.isWeaponReady()) {
 				
 				AttackResult attackResult = new AttackResult();

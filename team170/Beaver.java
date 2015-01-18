@@ -45,45 +45,49 @@ public class Beaver extends BattleRobot {
 					
 				}
 				
-				if (roundProgress < 3 && this.tryMine()) {
+				if (!builtBuilding) {
 					
-					
-					
-				} else {
-					
-					MapLocation hqLocation = this.locationController.HQLocation();
-					Direction directionToHQ = this.locationController.currentLocation().directionTo(hqLocation);
-					Boolean moved = false;
-					
-					int[] diagonalOffsets = {0, 2, -2, 4, 1, -1, 3, -3};
-					int[] cardinalOffsets = {1, -1, 3, -3, 0, 2, -2, 4};
-					int[] offsets;
-					
-					if (directionToHQ.isDiagonal())
-						offsets = diagonalOffsets;
-					else
-						offsets = cardinalOffsets;
-					
-					for (int i = 0; i < offsets.length && !moved; i++) {
+					if (roundProgress < 3 && this.tryMine()) {
 						
-						Direction direction = MovementController.directionWithOffset(directionToHQ, offsets[i]);
-						if (this.robotController.canMove(direction) && this.shouldMove(direction)) {
+						
+						
+					} else {
+						
+						MapLocation hqLocation = this.locationController.HQLocation();
+						Direction directionToHQ = this.locationController.currentLocation().directionTo(hqLocation);
+						Boolean moved = false;
+						
+						int[] diagonalOffsets = {0, 2, -2, 4, 1, -1, 3, -3};
+						int[] cardinalOffsets = {1, -1, 3, -3, 0, 2, -2, 4};
+						int[] offsets;
+						
+						if (directionToHQ.isDiagonal())
+							offsets = diagonalOffsets;
+						else
+							offsets = cardinalOffsets;
+						
+						for (int i = 0; i < offsets.length && !moved; i++) {
 							
-							this.robotController.move(direction);
-							moved = true;
+							Direction direction = MovementController.directionWithOffset(directionToHQ, offsets[i]);
+							if (this.robotController.canMove(direction) && this.shouldMove(direction)) {
+								
+								this.robotController.move(direction);
+								moved = true;
+								
+							}
 							
 						}
 						
-					}
-					
-					if (!moved) {
-						
-						RobotInfo[] nearbyAllies = this.unitController.nearbyAllies(1);
-						
-						if (nearbyAllies.length > 1)
-							this.movementController.moveAway(hqLocation);
-						else 
-							this.movementController.moveToward(hqLocation);
+						if (!moved) {
+							
+							RobotInfo[] nearbyAllies = this.unitController.nearbyAllies(1);
+							
+							if (nearbyAllies.length > 1)
+								this.movementController.moveAway(hqLocation);
+							else 
+								this.movementController.moveToward(hqLocation);
+							
+						}
 						
 					}
 					
@@ -108,22 +112,18 @@ public class Beaver extends BattleRobot {
 		int adjacentBuildingCount = 0;
 		int adjacentUnbuildableLocations = 0;
 		
-		for (int i = 0; i < 8; i++) {
+		for (int i = 0; i < 8; i += 2) {
 			
 			MapLocation adjacentTile = location.add(MovementController.directionFromInt(i));
 			RobotInfo robot = this.robotController.senseRobotAtLocation(adjacentTile);
 			
-			if (i % 2 == 0) {
-
-				if (robot != null && UnitController.isUnitTypeBuilding(robot.type)) {
-					
-					adjacentBuildingCount++;
-					
-				} else if (!this.robotController.senseTerrainTile(adjacentTile).isTraversable()) { // || !canBuildAtLocation(location)) { - uses too many bytecodes
-					
-					adjacentUnbuildableLocations++;
-					
-				}
+			if (robot != null && UnitController.isUnitTypeBuilding(robot.type)) {
+				
+				adjacentBuildingCount++;
+				
+			} else if (!this.robotController.senseTerrainTile(adjacentTile).isTraversable()) { // || !canBuildAtLocation(location)) { - uses too many bytecodes
+				
+				adjacentUnbuildableLocations++;
 				
 			}
 			
