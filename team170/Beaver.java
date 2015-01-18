@@ -57,15 +57,36 @@ public class Beaver extends BattleRobot {
 				} else { // no ore underneath
 					
 					if (this.isDesignatedBuilder) {
-
+							
 						MapLocation hqLocation = this.locationController.HQLocation();
-						if (this.locationController.distanceTo(hqLocation) > 81) {
-
-							this.movementController.moveToward(hqLocation);
+						Direction directionToHQ = this.locationController.currentLocation().directionTo(hqLocation);
+						Boolean moved = false;
+						
+						int[] offsets = {0, 1, -1, 2, -2, 3, -3, 4};
+						
+						for (int i = 0; i < offsets.length && !moved; i++) {
 							
-						} else {
+							Direction direction = MovementController.directionWithOffset(directionToHQ, offsets[i]);
+							if (this.robotController.canMove(direction) && this.shouldMove(direction)) {
+								
+								this.robotController.move(direction);
+								moved = true;
+								
+							}
 							
-							this.movementController.moveTo(this.movementController.randomDirection());
+						}
+						
+						if (!moved) {
+							
+							if (this.locationController.distanceTo(hqLocation) > 81) {
+	
+								this.movementController.moveToward(hqLocation);
+								
+							} else {
+								
+								this.movementController.moveTo(this.movementController.randomDirection());
+								
+							}
 							
 						}
 						
@@ -86,6 +107,39 @@ public class Beaver extends BattleRobot {
 		
 	}
 	
+	// Checks positions around potential location and sees if it can build if it moved there
+	private Boolean shouldMove(Direction direction) throws GameActionException {
+		
+		MapLocation location = this.locationController.currentLocation().add(direction);
+		
+		int adjacentBuildingCount = 0;
+		int adjacentUnbuildableLocations = 0;
+		
+		for (int i = 0; i < 8; i++) {
+			
+			MapLocation adjacentTile = location.add(MovementController.directionFromInt(i));
+			RobotInfo robot = this.robotController.senseRobotAtLocation(adjacentTile);
+			
+			if (i % 2 == 0) {
+
+				if (robot != null && UnitController.isUnitTypeBuilding(robot.type)) {
+					
+					adjacentBuildingCount++;
+					
+				} else if (!this.robotController.senseTerrainTile(adjacentTile).isTraversable()) { // || !canBuildAtLocation(location)) { - uses too many bytecodes
+					
+					adjacentUnbuildableLocations++;
+					
+				}
+				
+			}
+			
+		}
+		
+		return adjacentBuildingCount > 0 && adjacentBuildingCount + adjacentUnbuildableLocations < 4;
+		
+	}
+	
 	// MARK: Building
 	
 	public Boolean canBuild(MapLocation location, Direction direction, RobotType type) throws GameActionException {
@@ -93,6 +147,12 @@ public class Beaver extends BattleRobot {
 		if (type.oreCost > this.broadcaster.budgetForType(type)) return false;
 		if (!this.robotController.hasBuildRequirements(type)) return false;
 		if (!this.robotController.canBuild(direction, type)) return false;
+		
+		return this.canBuildAtLocation(location);
+		
+	}
+	
+	private Boolean canBuildAtLocation (MapLocation location) throws GameActionException {
 		
 		Boolean edgesHaveBuilding = false;
 		Boolean cornersHaveBuilding = false;

@@ -196,7 +196,7 @@ public class MovementController {
         // see if it can move toward it's target
         if (directionToTarget == directionToLastPosition || !this.moveTo(directionToTarget)) {
         	
-        	if(this.lastLastPosition != null && robotLocation.distanceSquaredTo(this.lastLastPosition) <= 1) { // if just moved in a triangle
+        	if (this.lastLastPosition != null && robotLocation.distanceSquaredTo(this.lastLastPosition) <= 1) { // if just moved in a triangle
                 
         		this.traversalDirection = -this.traversalDirection;
                 
