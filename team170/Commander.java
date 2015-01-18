@@ -20,73 +20,87 @@ public class Commander extends BattleRobot {
 		
 		try {
 			
+			// run some checks against harassment
+			
+			if (this.broadcaster.isEnemyTeamRushing()) this.isHarassing = false;
+			
 			int roundNumber = Clock.getRoundNum();
 			if (roundNumber > 800) this.isHarassing = false;
 			
-			this.attack();
-
-			Boolean canMove = true;
-			if (canMove) {
+			// harassment is A-ok
+			
+			if (this.robotController.isWeaponReady()) {
 				
-				RobotInfo[] enemiesInRange = this.unitController.nearbyEnemiesWithinTheirAttackRange();
-				if (enemiesInRange.length > 0) {
-					
-					canMove = (this.movementController.moveAway(enemiesInRange) != null);
-					
-				}
+				this.attack();
 				
 			}
 			
-			if (this.isHarassing) {
+			if (this.robotController.isCoreReady()) {
 				
+				Boolean canMove = true;
 				if (canMove) {
-
-					canMove = (this.movementController.moveToward(this.locationController.enemyHQLocation()) != null);
 					
-				}
-				
-			} else {
-				
-				if (!this.shouldMobilize()) {
-					
-					if (canMove) {
-
-						RobotInfo[] enemiesInTerritory = this.enemiesInTerritory();
-						if (enemiesInTerritory.length > 0) {
-							
-							RobotInfo enemy = this.desiredEnemy(enemiesInTerritory);
-							MapLocation bestLocation = enemy.location;
-							canMove = this.movementController.moveToward(bestLocation) == null;
-							
-						}
+					RobotInfo[] enemiesInRange = this.unitController.nearbyEnemiesWithinTheirAttackRange();
+					if (enemiesInRange.length > 0) {
+						
+						canMove = (this.movementController.moveAway(enemiesInRange) != null);
 						
 					}
 					
-					// if we haven't moved toward an enemy location then we can go and stick to the plan
+				}
+				
+				if (this.isHarassing) {
+					
 					if (canMove) {
 
-						MapLocation rallyLocation = this.locationController.militaryRallyLocation();
-						if (this.locationController.distanceTo(rallyLocation) > 18) {
-
-							this.movementController.moveToward(rallyLocation);
-							
-						} else {
-							
-							this.movementController.moveTo(this.movementController.randomDirection());
-							
-						}
+						canMove = (this.movementController.moveToward(this.locationController.enemyHQLocation()) != null);
 						
 					}
 					
 				} else {
+					
+					if (!this.shouldMobilize()) {
+						
+						if (canMove) {
 
-					this.mobilize();
+							RobotInfo[] enemiesInTerritory = this.enemiesInTerritory();
+							if (enemiesInTerritory.length > 0) {
+								
+								RobotInfo enemy = this.desiredEnemy(enemiesInTerritory);
+								MapLocation bestLocation = enemy.location;
+								canMove = this.movementController.moveToward(bestLocation) == null;
+								
+							}
+							
+						}
+						
+						// if we haven't moved toward an enemy location then we can go and stick to the plan
+						if (canMove) {
+
+							MapLocation rallyLocation = this.locationController.militaryRallyLocation();
+							if (this.locationController.distanceTo(rallyLocation) > 18) {
+
+								this.movementController.moveToward(rallyLocation);
+								
+							} else {
+								
+								this.movementController.moveTo(this.movementController.randomDirection());
+								
+							}
+							
+						}
+						
+					} else {
+
+						this.mobilize();
+						
+					}
 					
 				}
 				
+				this.supplyController.transferSupplyIfPossible();
+				
 			}
-			
-			this.supplyController.transferSupplyIfPossible();
 			
 		} catch (GameActionException exception) {
 		}

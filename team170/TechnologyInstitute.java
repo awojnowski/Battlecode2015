@@ -1,7 +1,6 @@
 package team170;
 
-import battlecode.common.RobotController;
-import battlecode.common.RobotType;
+import battlecode.common.*;
 
 public class TechnologyInstitute extends BuildableRobot {
 
@@ -15,7 +14,18 @@ public class TechnologyInstitute extends BuildableRobot {
 		
 		super.run();
 		
-		
+		try {
+
+			RobotInfo[] nearbyEnemies = this.unitController.nearbyMilitaryEnemies(200);
+			if (nearbyEnemies.length > 0 && Clock.getRoundNum() < 500) {
+				
+				this.broadcaster.setEnemyTeamRushing(true);
+				
+			}
+			
+		}
+		catch (GameActionException exception) {
+		}
 		
 		this.robotController.yield();
 		

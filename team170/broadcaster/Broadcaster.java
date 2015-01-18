@@ -15,6 +15,7 @@ public class Broadcaster {
 	private static final int ROBOTS_SPAWNED_INDEX = 7; // amount of robots SPAWNED (spawned_index + building_index)
 	private static final int MISSILE_DIRECTION_INDEX = 8; // the direction that the next spawned missile should go in
 	private static final int SPOTTED_LAUNCHERS = 9; // whether launchers have been encountered this game or not
+	private static final int IS_ENEMY_TEAM_RUSHING = 69; // whether the enemy team is rushing or not
 	
 	private static final int ROBOTS_STARTING_INDEX = 100; // amount of robots reported this turn (tally)
 	private static final int ROBOTS_COPY_INDEX = 200; // robot types reported last turn
@@ -241,6 +242,20 @@ public class Broadcaster {
 		
 		if (!UnitController.isUnitTypeBuilding(type)) return 0;
 		return this.readBroadcast(ROBOTS_BUILDING_INDEX + this.incrementForRobot(type));
+		
+	}
+	
+	// MARK: Rushing
+	
+	public void setEnemyTeamRushing(boolean rushing) throws GameActionException {
+		
+		this.broadcast(IS_ENEMY_TEAM_RUSHING, rushing ? 1 : 0);
+		
+	}
+	
+	public boolean isEnemyTeamRushing() throws GameActionException {
+		
+		return this.readBroadcast(IS_ENEMY_TEAM_RUSHING) == 0 ? false : true;
 		
 	}
 	
