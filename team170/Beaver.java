@@ -57,7 +57,7 @@ public class Beaver extends BattleRobot {
 				} else { // no ore underneath
 					
 					if (this.isDesignatedBuilder) {
-							
+						
 						MapLocation hqLocation = this.locationController.HQLocation();
 						Direction directionToHQ = this.locationController.currentLocation().directionTo(hqLocation);
 						Boolean moved = false;
@@ -78,15 +78,12 @@ public class Beaver extends BattleRobot {
 						
 						if (!moved) {
 							
-							if (this.locationController.distanceTo(hqLocation) > 81) {
-	
+							RobotInfo[] nearbyAllies = this.unitController.nearbyAllies(1);
+							
+							if (nearbyAllies.length > 1)
+								this.movementController.moveAway(hqLocation);
+							else 
 								this.movementController.moveToward(hqLocation);
-								
-							} else {
-								
-								this.movementController.moveTo(this.movementController.randomDirection());
-								
-							}
 							
 						}
 						
