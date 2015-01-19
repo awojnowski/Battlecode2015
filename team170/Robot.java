@@ -78,7 +78,7 @@ public abstract class Robot {
 		} else {
 			
 			int militaryEnemies = this.unitController.nearbyMilitaryEnemies().length;
-			int militaryAllies = this.unitController.nearbyMilitaryAllies().length;
+			int militaryAllies = this.unitController.nearbyMilitaryAllies(150).length; // 150 to see around the tower
 			if (militaryAllies > militaryEnemies * 1.2 && militaryAllies > 7) {
 				
 				return true;

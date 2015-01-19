@@ -15,13 +15,15 @@ public class TechnologyInstitute extends BuildableRobot {
 		super.run();
 		
 		try {
-
+			
 			RobotInfo[] nearbyEnemies = this.unitController.nearbyMilitaryEnemies(200);
 			if (nearbyEnemies.length > 1 && Clock.getRoundNum() < 500) {
 				
 				this.broadcaster.setEnemyTeamRushing(true);
 				
 			}
+			
+			this.trySpawn(Computer.type());
 			
 		}
 		catch (GameActionException exception) {

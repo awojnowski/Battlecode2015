@@ -14,6 +14,28 @@ public class LocationController {
 		return this.robotController.getLocation().distanceSquaredTo(location);
 		
 	}
+	
+	// MARK: Location Helpers
+	
+	public static RobotInfo closestUnitTo(MapLocation location, RobotInfo[] units) {
+		
+		RobotInfo closest = null;
+		int closestDistance = Integer.MAX_VALUE;
+		
+		for (RobotInfo unit : units) {
+			
+			int distance = location.distanceSquaredTo(unit.location);
+			if (distance < closestDistance) {
+				
+				closest = unit;
+				closestDistance = distance;
+				
+			}
+			
+		}
+		return closest;
+		
+	}
 
 	// MARK: Locations
 	

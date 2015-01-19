@@ -15,9 +15,7 @@ public class AerospaceLab extends BuildableRobot {
 		super.run();
 				
 		try {
-			
-			this.robotController.setIndicatorString(1, "Budget: Launchers = " + this.broadcaster.budgetForType(Launcher.type()));
-			
+						
 			if (this.robotController.isCoreReady()) {
 
 				this.trySpawn(Launcher.type());

@@ -86,6 +86,10 @@ public class RobotPlayer {
 			
 			robot = new Commander(robotController);
 			
+		} else if (robotController.getType() == Computer.type()) {
+			
+			robot = new Computer(robotController);
+			
 		}
 		
 		// run the robot

@@ -173,13 +173,29 @@ public class UnitController {
 		return closest;
 		
 	}
-	
+
 	public RobotInfo[] nearbyAttackableEnemies() throws GameActionException {
+		
+		return this.nearbyAttackableEnemies(true);
+		
+	}
+	
+	public RobotInfo[] nearbyAttackableEnemies(boolean includeMissiles) throws GameActionException {
 		
 		int attackRadius = this.robot.type.attackRadiusSquared;
 		if (this.robot.type == HQ.type()) attackRadius = HQ.friendlyAttackRadiusSquared(this.robot.locationController.enemyTowerLocations().length);
-		return this.robot.robotController.senseNearbyRobots(attackRadius, this.robot.team.opponent());
 		
+		ArrayList<RobotInfo> nearbyEnemies = new ArrayList<RobotInfo>();
+		
+		RobotInfo[] enemies = this.robot.robotController.senseNearbyRobots(attackRadius, this.robot.team.opponent());
+		for (RobotInfo enemy : enemies) {
+			
+			if (!includeMissiles && enemy.type == Missile.type()) continue;
+			nearbyEnemies.add(enemy);
+			
+		}
+		return nearbyEnemies.toArray(new RobotInfo[nearbyEnemies.size()]);
+				
 	}
 	
 	public RobotInfo[] nearbyAllies() throws GameActionException {

@@ -98,6 +98,16 @@ public abstract class Playstyle {
 		// some game checks
 		if (progress > 3) {
 			
+			// do we need a computer?
+			if (this.broadcaster.robotCountFor(Computer.type()) == 0) {
+			
+				supplyOre = Math.min(remainingOre, 10);
+				this.broadcaster.incrementBudget(Computer.type(), supplyOre);
+				remainingOre -= supplyOre;
+				System.out.println("Adding " + supplyOre);
+				
+			}
+
 			// check if we need to build another commander B)
 			if (this.broadcaster.robotCountFor(Commander.type()) == 0) {
 			
@@ -262,7 +272,7 @@ public abstract class Playstyle {
 		
 	}
 	
-	public Boolean shouldBlitzkrieg() {
+	public Boolean shouldBlitzkrieg() throws GameActionException {
 		
 		return false;
 		

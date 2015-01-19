@@ -23,9 +23,6 @@ public class Beaver extends BattleRobot {
 				
 		try {
 			
-			final int roundProgress = this.currentPlaystyle().buildOrderProgress();
-			this.robotController.setIndicatorString(1, "Turn: " + roundProgress + " Budget: Civic = " + this.broadcaster.civicBudget() + " Supply Depot = " + this.broadcaster.budgetForType(SupplyDepot.type()));
-			
 			this.attack();
 			
 			if (this.robotController.isCoreReady()) {
@@ -46,7 +43,8 @@ public class Beaver extends BattleRobot {
 				}
 				
 				if (!builtBuilding) {
-					
+
+					final int roundProgress = this.currentPlaystyle().buildOrderProgress();
 					if (roundProgress < 3 && this.tryMine()) {
 						
 						

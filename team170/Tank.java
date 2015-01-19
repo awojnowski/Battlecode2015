@@ -21,13 +21,6 @@ public class Tank extends BattleRobot {
 		
 		try {
 			
-			String indicatorString = "";
-			if (this.shouldMobilize()) indicatorString += " Should Mobilize | ";
-			if (this.currentPlaystyle().shouldBlitzkrieg()) indicatorString += " Blitzing | ";
-			indicatorString += " Chase while mob. for " + this.turnsChasingShitWhenWeShouldBeMobilizing + " turns | ";
-			
-			this.robotController.setIndicatorString(1, indicatorString);
-			
 			if (this.robotController.isWeaponReady()) {
 				
 				AttackResult attackResult = new AttackResult();
@@ -37,7 +30,7 @@ public class Tank extends BattleRobot {
 			
 			if (this.robotController.isCoreReady()) {
 				
-				RobotInfo[] nearbyAttackableEnemies = this.unitController.nearbyAttackableEnemies(); 
+				RobotInfo[] nearbyAttackableEnemies = this.unitController.nearbyAttackableEnemies(true); 
 				if (nearbyAttackableEnemies.length == 0 || this.currentPlaystyle().shouldBlitzkrieg()) {
 					
 					// only move if we have no enemies to 
@@ -133,8 +126,7 @@ public class Tank extends BattleRobot {
 		if (enemies.length > 0) {
 			
 			RobotInfo enemy = this.desiredEnemy(enemies);
-			MapLocation bestLocation = enemy.location;
-			return this.movementController.moveToward(bestLocation) == null;
+			return this.movementController.moveToward(enemy.location) == null;
 			
 		}
 		return false;
