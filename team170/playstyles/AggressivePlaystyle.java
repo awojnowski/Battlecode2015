@@ -35,7 +35,7 @@ public class AggressivePlaystyle extends Playstyle {
 		this.trainingFieldSpawnOrder =       new int[] {3};
 		
 		this.civicRatios =       new double[] { 0.80, 0.45, 0.50, 0.60, 0.70, 0.70, 0.40, 0.40, 0.25, 0.25, 0.25, 0.30, 0.30, 0.00 };
-		this.supplyDepotRatios = new double[] { 0.00, 0.00, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.04, 0.04, 0.20 };
+		this.supplyDepotRatios = new double[] { 0.00, 0.00, 0.02, 0.02, 0.04, 0.06, 0.06, 0.08, 0.08, 0.08, 0.08, 0.10, 0.10, 0.10 };
 		
 		this.beaverRatios =      new double[] { 1.00, 0.20, 0.15, 0.05, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00 };
 		this.minerRatios =       new double[] { 0.00, 0.80, 0.60, 0.80, 0.80, 0.80, 0.60, 0.60, 0.50, 0.50, 0.50, 0.40, 0.20, 0.10 };
