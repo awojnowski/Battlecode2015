@@ -20,8 +20,8 @@ public class HQ extends BattleRobot {
 		this.oreMinedTurns = ORE_MINED_HOLD_TURNS;
 
 		try {
-			this.broadcaster.setCurrentPlaystyle(AggressivePlaystyle.identifierS());
-			//this.broadcaster.setCurrentPlaystyle(LauncherPlaystyle.identifierS());
+			//this.broadcaster.setCurrentPlaystyle(AggressivePlaystyle.identifierS());
+			this.broadcaster.setCurrentPlaystyle(LauncherPlaystyle.identifierS());
 
 		} catch (GameActionException e) {}
 		

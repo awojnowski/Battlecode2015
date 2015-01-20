@@ -25,9 +25,34 @@ public class Missile extends Robot {
 
 	public void run() {
 		
-		super.run();
+		//super.run();
 		
 		try {
+			
+			RobotInfo closest = null;
+			double distance = Double.MAX_VALUE;
+			
+			MapLocation currentLocation = this.robotController.getLocation();
+			RobotInfo[] enemies = this.robotController.senseNearbyRobots(24, this.robotController.getTeam().opponent());
+			for (RobotInfo enemy : enemies) {
+				
+				if (enemy.type == RobotType.MISSILE) continue;
+				
+				double enemyDistance = currentLocation.distanceSquaredTo(enemy.location);
+				if (enemyDistance < distance) {
+					
+					closest = enemy;
+					distance = enemyDistance;
+					
+				}
+				
+			}
+			
+			if (closest != null) { 
+
+				this.direction = this.locationController.currentLocation().directionTo(closest.location);
+				
+			}
 
 			if (this.robotController.canMove(this.direction)) {
 				

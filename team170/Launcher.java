@@ -16,37 +16,40 @@ public class Launcher extends BattleRobot {
 			
 			try {
 				
-				if (this.robotController.getMissileCount() > 2) {
-
+				final int missileCount = this.robotController.getMissileCount();
+				if (missileCount > 0) {
+					
 					RobotInfo[] nearbyEnemies = this.unitController.nearbyEnemies();
 					RobotInfo desiredEnemy = this.desiredEnemy(nearbyEnemies);
 					if (desiredEnemy != null) {
 						
-						Direction direction = this.locationController.currentLocation().directionTo(desiredEnemy.location);
-						if (this.robotController.canLaunch(direction)) {
+						this.fireMissileAtLocation(desiredEnemy.location);
+						
+					} else {
+
+						MapLocation objective = this.locationController.bestObjective();
+						if (this.locationController.currentLocation().distanceSquaredTo(objective) < 50) {
 							
-							this.broadcaster.setNextMissileDirection(direction);
-							this.robotController.launchMissile(direction);
+							this.fireMissileAtLocation(objective);
 							
 						}
 						
 					}
 					
 				}
-				
 							
 				if (this.robotController.isCoreReady()) {
 					
 					Boolean shouldMove = true;
 					if (shouldMove) {
 
-						RobotInfo[] dangerousEnemies = this.nearbyDangerousEnemies(25, 25);
-						if (dangerousEnemies != null && dangerousEnemies.length > 0) {
+						RobotInfo enemy = this.unitController.closestNearbyEnemy(missileCount == 0 ? 70 : 35);
+						if (enemy != null) {
 							
-							this.movementController.moveAway(dangerousEnemies);
-							shouldMove = false;
+							this.movementController.moveAway(enemy.location);
+							shouldMove = false;								
 							
-						}						
+						}	
 						
 					}
 					
@@ -94,6 +97,20 @@ public class Launcher extends BattleRobot {
 			catch (GameActionException exception) {}
 		
 		this.robotController.yield();
+		
+	}
+	
+	// MARK: Missiles
+	
+	private void fireMissileAtLocation(MapLocation location) throws GameActionException {
+		
+		Direction direction = this.locationController.currentLocation().directionTo(location);
+		if (this.robotController.canLaunch(direction)) {
+			
+			this.broadcaster.setNextMissileDirection(direction);
+			this.robotController.launchMissile(direction);
+			
+		}
 		
 	}
 	

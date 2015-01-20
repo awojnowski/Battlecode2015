@@ -38,6 +38,12 @@ public class Beaver extends BattleRobot {
 				// try to build some other things
 				if (!builtBuilding) {
 
+					builtBuilding = this.tryBuild(RobotType.HANDWASHSTATION);
+					
+				}
+				
+				if (!builtBuilding) {
+
 					builtBuilding = this.tryBuild(SupplyDepot.type());
 					
 				}

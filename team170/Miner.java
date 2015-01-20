@@ -81,7 +81,8 @@ public class Miner extends BattleRobot {
 			
 			// nah he gucci
 			
-			if (this.miningTurns > 5) {
+			double ore = this.robotController.senseOre(this.robotController.getLocation());
+			if (ore < 5 || this.miningTurns > 5) {
 				
 				this.move();
 				
@@ -132,7 +133,8 @@ public class Miner extends BattleRobot {
         MapLocation robotLocation = this.robotController.getLocation();
         MapLocation bestOreLocation = null;
         
-        double mostOre = 0.0;
+        final double thresholdOre = 4.999;
+        double mostOre = thresholdOre;
         int safestDirection = MovementController.directionToInt(initialDirection);
         int[] offsets = { 0, -1, 1, -2, 2, -3, 3, 4 };
        
@@ -151,7 +153,7 @@ public class Miner extends BattleRobot {
                
         }
        
-        if (mostOre > 0) {
+        if (mostOre > thresholdOre) {
                
             this.movementController.moveToward(bestOreLocation);
             return true;

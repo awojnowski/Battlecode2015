@@ -104,7 +104,7 @@ public abstract class Playstyle {
 		if (progress > 3) {
 			
 			// do we need a computer?
-			if (this.broadcaster.robotCountFor(Computer.type()) == 0 && this.broadcaster.robotCountFor(TechnologyInstitute.type()) > 0) {
+			if (this.broadcaster.robotCountFor(TechnologyInstitute.type()) > 0 && this.broadcaster.robotCountFor(Computer.type()) == 0) {
 			
 				supplyOre = Math.min(remainingOre, 10);
 				this.broadcaster.incrementBudget(Computer.type(), supplyOre);
@@ -133,7 +133,7 @@ public abstract class Playstyle {
 					
 				}
 				
-				if (this.broadcaster.hasSeenLaunchers()) {
+				if (this.broadcaster.robotCountFor(Barracks.type()) > 0 && this.broadcaster.hasSeenLaunchers()) {
 
 					supplyOre = (int)(oreMined * 0.05);
 					this.broadcaster.incrementBudget(Basher.type(), supplyOre);
@@ -185,6 +185,7 @@ public abstract class Playstyle {
 	public RobotType nextBuildingType() throws GameActionException {
 		
 		int progress = this.buildOrderProgress();
+		
 		if (progress == Integer.MAX_VALUE) {
 			
 			// we are the end so we can check if we need to build any buildings or whatnot
@@ -198,6 +199,19 @@ public abstract class Playstyle {
 			} else if (this.broadcaster.budgetForType(TankFactory.type()) > tankFactoryOreCost) {
 				
 				return TankFactory.type();
+				
+			}
+			
+			final int aerospaceLabOreCost = AerospaceLab.type().oreCost;
+			if (this.broadcaster.budgetForType(Launcher.type()) > 1500 && this.broadcaster.budgetForType(AerospaceLab.type()) < aerospaceLabOreCost) {
+				
+				this.broadcaster.decrementBudget(Launcher.type(), aerospaceLabOreCost);
+				this.broadcaster.incrementBudget(AerospaceLab.type(), aerospaceLabOreCost);
+				return AerospaceLab.type();
+				
+			} else if (this.broadcaster.budgetForType(AerospaceLab.type()) > aerospaceLabOreCost) {
+				
+				return AerospaceLab.type();
 				
 			}
 			
