@@ -80,8 +80,8 @@ public class Miner extends BattleRobot {
 		} else {
 			
 			// nah he gucci
-								
-			if (this.miningTurns > 3) {
+			
+			if (this.miningTurns > 5) {
 				
 				this.move();
 				

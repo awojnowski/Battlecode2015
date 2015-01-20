@@ -104,7 +104,7 @@ public abstract class Playstyle {
 		if (progress > 3) {
 			
 			// do we need a computer?
-			if (this.broadcaster.robotCountFor(Computer.type()) == 0) {
+			if (this.broadcaster.robotCountFor(Computer.type()) == 0 && this.broadcaster.robotCountFor(TechnologyInstitute.type()) > 0) {
 			
 				supplyOre = Math.min(remainingOre, 10);
 				this.broadcaster.incrementBudget(Computer.type(), supplyOre);
