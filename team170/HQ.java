@@ -22,7 +22,8 @@ public class HQ extends BattleRobot {
 
 		try {
 			//this.broadcaster.setCurrentPlaystyle(AggressivePlaystyle.identifierS());
-			this.broadcaster.setCurrentPlaystyle(LauncherPlaystyle.identifierS());
+			//this.broadcaster.setCurrentPlaystyle(LauncherPlaystyle.identifierS());
+			this.broadcaster.setCurrentPlaystyle(FinalPlaystyle.identifierS());
 			
 		} catch (GameActionException e) {}
 		

@@ -120,6 +120,7 @@ public abstract class Robot {
 		int playstyleIdentifier = this.broadcaster.currentPlaystyle();
 		if (playstyleIdentifier == AggressivePlaystyle.identifierS()) playstyle = new AggressivePlaystyle();
 		if (playstyleIdentifier == LauncherPlaystyle.identifierS()) playstyle = new LauncherPlaystyle();
+		if (playstyleIdentifier == FinalPlaystyle.identifierS()) playstyle = new FinalPlaystyle();
 		
 		if (playstyle != null) {
 			
