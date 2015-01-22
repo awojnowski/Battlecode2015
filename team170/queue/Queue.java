@@ -32,27 +32,33 @@ public class Queue {
 		
 		if (this.count() <= 0) return Integer.MAX_VALUE;
 
-		int value = this.broadcaster.readBroadcast(this.nextQueueIndex() - this.count());
+		int value = this.peek();
 		this.setCount(this.count() - 1);
 		return value;
 		
 	}
 	
+	public int peek() throws GameActionException {
+		
+		return this.broadcaster.readBroadcast(this.nextQueueIndex() - this.count());
+		
+	}
+	
 	// MARK: Offsets
 	
-	public void incrementQueueOffset() throws GameActionException {
+	private void incrementQueueOffset() throws GameActionException {
 
 		this.broadcaster.broadcast(this.startingIndex + this.queueOffset, this.broadcaster.readBroadcast(this.startingIndex + this.queueOffset) + 1);
 		
 	}
 	
-	public int queueOffset() throws GameActionException {
+	private int queueOffset() throws GameActionException {
 		
 		return this.broadcaster.readBroadcast(this.startingIndex + this.queueOffset);
 		
 	}
 	
-	public int nextQueueIndex() throws GameActionException {
+	private int nextQueueIndex() throws GameActionException {
 
 		return this.startingIndex + this.queueIndex + this.queueOffset();
 		
@@ -60,7 +66,7 @@ public class Queue {
 	
 	// MARK: Getters & Setters
 	
-	public void setCount(int count) throws GameActionException {
+	private void setCount(int count) throws GameActionException {
 
 		this.broadcaster.broadcast(this.startingIndex + this.countOffset, count);
 		
