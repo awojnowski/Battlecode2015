@@ -1,6 +1,6 @@
-package team170;
+package boyer01191013_soldierrush;
 
-import team170.movement.*;
+import boyer01191013_soldierrush.movement.*;
 import battlecode.common.*;
 
 public class Miner extends BattleRobot {
@@ -80,9 +80,8 @@ public class Miner extends BattleRobot {
 		} else {
 			
 			// nah he gucci
-			
-			double ore = this.robotController.senseOre(this.robotController.getLocation());
-			if (ore < 3 || this.miningTurns > 5) {
+								
+			if (this.miningTurns > 3) {
 				
 				this.move();
 				
@@ -133,8 +132,7 @@ public class Miner extends BattleRobot {
         MapLocation robotLocation = this.robotController.getLocation();
         MapLocation bestOreLocation = null;
         
-        final double thresholdOre = 2.999;
-        double mostOre = thresholdOre;
+        double mostOre = 0.0;
         int safestDirection = MovementController.directionToInt(initialDirection);
         int[] offsets = { 0, -1, 1, -2, 2, -3, 3, 4 };
        
@@ -153,7 +151,7 @@ public class Miner extends BattleRobot {
                
         }
        
-        if (mostOre > thresholdOre) {
+        if (mostOre > 0) {
                
             this.movementController.moveToward(bestOreLocation);
             return true;

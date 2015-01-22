@@ -1,8 +1,7 @@
-package team170;
+package boyer01201307_launcher;
 
 import battlecode.common.*;
-import team170.playstyles.*;
-import team170.queue.BuildingQueue;
+import boyer01201307_launcher.playstyles.*;
 
 public class HQ extends BattleRobot {
 		
@@ -23,7 +22,7 @@ public class HQ extends BattleRobot {
 		try {
 			//this.broadcaster.setCurrentPlaystyle(AggressivePlaystyle.identifierS());
 			this.broadcaster.setCurrentPlaystyle(LauncherPlaystyle.identifierS());
-			
+
 		} catch (GameActionException e) {}
 		
 	}

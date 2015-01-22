@@ -1,8 +1,7 @@
-package team170;
+package boyer01201005;
 
 import battlecode.common.*;
-import team170.playstyles.*;
-import team170.queue.BuildingQueue;
+import boyer01201005.playstyles.*;
 
 public class HQ extends BattleRobot {
 		
@@ -21,9 +20,9 @@ public class HQ extends BattleRobot {
 		this.oreMinedTurns = ORE_MINED_HOLD_TURNS;
 
 		try {
-			//this.broadcaster.setCurrentPlaystyle(AggressivePlaystyle.identifierS());
-			this.broadcaster.setCurrentPlaystyle(LauncherPlaystyle.identifierS());
-			
+			this.broadcaster.setCurrentPlaystyle(AggressivePlaystyle.identifierS());
+			//this.broadcaster.setCurrentPlaystyle(LauncherPlaystyle.identifierS());
+
 		} catch (GameActionException e) {}
 		
 	}
