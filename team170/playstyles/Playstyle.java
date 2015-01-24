@@ -62,17 +62,17 @@ public abstract class Playstyle {
 	
 	// MARK: Budgeting
 	
-	public void updateBudgeting(int oreMined) throws GameActionException {
+	public void updateBudgeting(int turns, int oreMined) throws GameActionException {
 		
 		int buildOrderProgress = this.buildOrderProgress();
 		if (buildOrderProgress == Integer.MAX_VALUE) buildOrderProgress = this.civicRatios.length;
 		buildOrderProgress --;
 		
-		this.updateBudgetingForBuildOrderProgress(oreMined, buildOrderProgress);		
+		this.updateBudgetingForBuildOrderProgress(turns, oreMined, buildOrderProgress);		
 		
 	}
 	
-	public void updateBudgetingForBuildOrderProgress(int oreMined, int progress) throws GameActionException {
+	public void updateBudgetingForBuildOrderProgress(int turns, int oreMined, int progress) throws GameActionException {
 		
 		int remainingOre = oreMined;
 		
@@ -90,6 +90,47 @@ public abstract class Playstyle {
 			remainingOre -= supplyOre;
 			
 		}
+		
+		this.processTopLevelBudgeting(progress, oreMined, remainingOre);
+		
+		// calculate unit ratios
+		int oreUsed = 0;
+		
+		int oreAllocation = Math.min((int)(remainingOre * this.beaverRatios[progress]), (remainingOre - oreUsed));
+		this.broadcaster.incrementBudget(Beaver.type(), oreAllocation);
+		oreUsed += oreAllocation;
+		
+		oreAllocation = Math.min((int)(remainingOre * this.minerRatios[progress]), (remainingOre - oreUsed));
+		this.broadcaster.incrementBudget(Miner.type(), oreAllocation);
+		oreUsed += oreAllocation;
+		
+		oreAllocation = Math.min((int)(remainingOre * this.soldierRatios[progress]), (remainingOre - oreUsed));
+		this.broadcaster.incrementBudget(Soldier.type(), oreAllocation);
+		oreUsed += oreAllocation;
+		
+		oreAllocation = Math.min((int)(remainingOre * this.tankRatios[progress]), (remainingOre - oreUsed));
+		this.broadcaster.incrementBudget(Tank.type(), oreAllocation);
+		oreUsed += oreAllocation;
+		
+		oreAllocation = Math.min((int)(remainingOre * this.droneRatios[progress]), (remainingOre - oreUsed));
+		this.broadcaster.incrementBudget(Drone.type(), oreAllocation);
+		oreUsed += oreAllocation;
+		
+		oreAllocation = Math.min((int)(remainingOre * this.launcherRatios[progress]), (remainingOre - oreUsed));
+		this.broadcaster.incrementBudget(Launcher.type(), oreAllocation);
+		oreUsed += oreAllocation;
+		
+		oreAllocation = Math.min((int)(remainingOre * this.commanderRatios[progress]), (remainingOre - oreUsed));
+		this.broadcaster.incrementBudget(Commander.type(), oreAllocation);
+		oreUsed += oreAllocation;
+
+		this.broadcaster.incrementCivicBudget(Math.max(0, remainingOre - oreUsed));
+       
+	}
+	
+	public int processTopLevelBudgeting(int progress, int oreMined, int remainingOre) throws GameActionException {
+		
+		int supplyOre;
 		
 		// make sure we have minimum beavers at all times
 		if (this.broadcaster.robotCountFor(Beaver.type()) < 3 && this.beaverRatios[progress] == 0.0) {
@@ -144,40 +185,8 @@ public abstract class Playstyle {
 			}
 			
 		}
+		return remainingOre;
 		
-		// calculate unit ratios
-		int oreUsed = 0;
-		
-		int oreAllocation = Math.min((int)(remainingOre * this.beaverRatios[progress]), (remainingOre - oreUsed));
-		this.broadcaster.incrementBudget(Beaver.type(), oreAllocation);
-		oreUsed += oreAllocation;
-		
-		oreAllocation = Math.min((int)(remainingOre * this.minerRatios[progress]), (remainingOre - oreUsed));
-		this.broadcaster.incrementBudget(Miner.type(), oreAllocation);
-		oreUsed += oreAllocation;
-		
-		oreAllocation = Math.min((int)(remainingOre * this.soldierRatios[progress]), (remainingOre - oreUsed));
-		this.broadcaster.incrementBudget(Soldier.type(), oreAllocation);
-		oreUsed += oreAllocation;
-		
-		oreAllocation = Math.min((int)(remainingOre * this.tankRatios[progress]), (remainingOre - oreUsed));
-		this.broadcaster.incrementBudget(Tank.type(), oreAllocation);
-		oreUsed += oreAllocation;
-		
-		oreAllocation = Math.min((int)(remainingOre * this.droneRatios[progress]), (remainingOre - oreUsed));
-		this.broadcaster.incrementBudget(Drone.type(), oreAllocation);
-		oreUsed += oreAllocation;
-		
-		oreAllocation = Math.min((int)(remainingOre * this.launcherRatios[progress]), (remainingOre - oreUsed));
-		this.broadcaster.incrementBudget(Launcher.type(), oreAllocation);
-		oreUsed += oreAllocation;
-		
-		oreAllocation = Math.min((int)(remainingOre * this.commanderRatios[progress]), (remainingOre - oreUsed));
-		this.broadcaster.incrementBudget(Commander.type(), oreAllocation);
-		oreUsed += oreAllocation;
-
-		this.broadcaster.incrementCivicBudget(Math.max(0, remainingOre - oreUsed));
-       
 	}
 	
 	// MARK: Buildings

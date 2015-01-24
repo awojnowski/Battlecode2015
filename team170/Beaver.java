@@ -1,19 +1,19 @@
 package team170;
 
 import team170.movement.MovementController;
+import team170.queue.BuildingQueue;
 import team170.units.UnitController;
 import battlecode.common.*;
 
 public class Beaver extends BattleRobot {
 	
-	public Direction facing;
+	private BuildingQueue buildingQueue;
 
 	public Beaver(RobotController robotController) {
 		
 		super(robotController);
 
 		this.canBeMobilized = false;
-		this.facing = this.movementController.randomDirection();
 		
 	}
 
@@ -29,22 +29,33 @@ public class Beaver extends BattleRobot {
 				
 				Boolean builtBuilding = false;
 				RobotType buildType = this.currentPlaystyle().nextBuildingType();
+				
+				// try build the recommended build order building
+				
 				if (buildType != null) {
-					
-					builtBuilding = this.tryBuild(buildType);
+
+					if (this.canBuild(buildType, true))
+						builtBuilding = this.tryBuild(buildType, true);
 					
 				}
 				
-				// try to build some other things
+				// otherwise let's build some other buildings!
+				
 				if (!builtBuilding) {
 
-					builtBuilding = this.tryBuild(RobotType.HANDWASHSTATION);
+					buildType = SupplyDepot.type();
+					if (this.canBuild(buildType, false))
+						builtBuilding = this.tryBuild(buildType, false);
 					
 				}
 				
 				if (!builtBuilding) {
-
-					builtBuilding = this.tryBuild(SupplyDepot.type());
+					
+					if (this.broadcaster.robotCountFor(Barracks.type()) * 2 >= this.broadcaster.robotCountFor(AerospaceLab.type())) buildType = AerospaceLab.type();
+					else buildType = Barracks.type();
+					
+					if (this.canBuild(buildType, true))
+						builtBuilding = this.tryBuild(buildType, true);
 					
 				}
 				
@@ -139,17 +150,23 @@ public class Beaver extends BattleRobot {
 	
 	// MARK: Building
 	
-	public Boolean canBuild(MapLocation location, Direction direction, RobotType type) throws GameActionException {
+	private Boolean canBuild(RobotType type, boolean isCivic) throws GameActionException {
 		
-		if (type.oreCost > this.broadcaster.budgetForType(type)) return false;
+		if (type.oreCost > (isCivic ? this.broadcaster.civicBudget() : this.broadcaster.budgetForType(type))) return false;
 		if (!this.robotController.hasBuildRequirements(type)) return false;
-		if (!this.robotController.canBuild(direction, type)) return false;
+		return true;
 		
+	}
+	
+	private Boolean canBuild(MapLocation location, Direction direction, RobotType type, boolean isCivic) throws GameActionException {
+
+		if (!this.canBuild(type, isCivic)) return false;
+		if (!this.robotController.canBuild(direction, type)) return false;
 		return this.canBuildAtLocation(location);
 		
 	}
 	
-	private Boolean canBuildAtLocation (MapLocation location) throws GameActionException {
+	private Boolean canBuildAtLocation(MapLocation location) throws GameActionException {
 		
 		Boolean edgesHaveBuilding = false;
 		Boolean cornersHaveBuilding = false;
@@ -183,16 +200,18 @@ public class Beaver extends BattleRobot {
 		
 	}
 	
-	public Boolean tryBuild(RobotType type) throws GameActionException {
+	private Boolean tryBuild(RobotType type, boolean isCivic) throws GameActionException {
+		
+		if (!this.canBuild(type, isCivic)) return false;
 		
 		MapLocation currentLocation = this.locationController.currentLocation();		
 		for (int i = 0; i < 8; i++) {
 			
 			Direction direction = MovementController.directionFromInt(i);
 			MapLocation location = currentLocation.add(direction);
-			if (this.canBuild(location, direction, type)) {
+			if (this.canBuild(location, direction, type, isCivic)) {
 
-				this.build(direction, type);
+				this.build(direction, type, isCivic);
 				return true;
 				
 			}
@@ -202,10 +221,15 @@ public class Beaver extends BattleRobot {
 		
 	}
 	
-	public void build(Direction direction, RobotType type) throws GameActionException {
+	private void build(Direction direction, RobotType type, boolean isCivic) throws GameActionException {
 		
 		this.robotController.build(direction, type);
-		this.broadcaster.decrementBudget(type, type.oreCost);
+		
+		if (isCivic)
+			this.broadcaster.decrementCivicBudget(type.oreCost);
+		else
+			this.broadcaster.decrementBudget(type, type.oreCost);
+		
 		this.broadcaster.beginBuildingRobot(type);
 		this.broadcaster.incrementSpentOre(type.oreCost);
 				

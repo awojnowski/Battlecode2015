@@ -72,34 +72,27 @@ public class Broadcaster {
 		
 	}
 	
-	public int budgetIndexForRobotType(RobotType type) {
-		
-		if (this.isRobotTypeCivic(type)) return 50;
-		return incrementForRobot(type);
-		
-	}
-	
 	public int budgetForType(RobotType type) throws GameActionException {
 		
-		return this.readBroadcast(ROBOTS_BUDGET_INDEX + budgetIndexForRobotType(type));
+		return this.readBroadcast(ROBOTS_BUDGET_INDEX + incrementForRobot(type));
 		
 	}
 	
 	public void setBudget(RobotType type, int budget) throws GameActionException {
 
-		this.broadcast(ROBOTS_BUDGET_INDEX + budgetIndexForRobotType(type), Math.max(0, budget));
+		this.broadcast(ROBOTS_BUDGET_INDEX + incrementForRobot(type), Math.max(0, budget));
 		
 	}
 	
 	public void incrementBudget(RobotType type, int increment) throws GameActionException {
 
-		this.setBudget(type, this.readBroadcast(ROBOTS_BUDGET_INDEX + budgetIndexForRobotType(type)) + increment);
+		this.setBudget(type, this.readBroadcast(ROBOTS_BUDGET_INDEX + incrementForRobot(type)) + increment);
 		
 	}
 	
 	public void decrementBudget(RobotType type, int decrement) throws GameActionException {
 
-		this.setBudget(type, this.readBroadcast(ROBOTS_BUDGET_INDEX + budgetIndexForRobotType(type)) - decrement);
+		this.setBudget(type, this.readBroadcast(ROBOTS_BUDGET_INDEX + incrementForRobot(type)) - decrement);
 		
 	}
 	
@@ -107,19 +100,19 @@ public class Broadcaster {
 	
 	public int civicBudget() throws GameActionException {
 		
-		return this.budgetForType(RobotType.HQ);
+		return this.budgetForType(RobotType.HANDWASHSTATION);
 		
 	}
 	
 	public void incrementCivicBudget(int increment) throws GameActionException {
 		
-		this.incrementBudget(RobotType.HQ, increment);
+		this.incrementBudget(RobotType.HANDWASHSTATION, increment);
 		
 	}
 	
 	public void decrementCivicBudget(int decrement) throws GameActionException {
 		
-		this.decrementBudget(RobotType.HQ, decrement);
+		this.decrementBudget(RobotType.HANDWASHSTATION, decrement);
 		
 	}
 	
@@ -176,8 +169,15 @@ public class Broadcaster {
 	
 	public int robotCountFor(RobotType type) throws GameActionException {
 		
+		return this.robotCountFor(type, true);
+		
+	}
+	
+	// @param includeBuilding include robots that are in the process of being built
+	public int robotCountFor(RobotType type, boolean includeBuilding) throws GameActionException {
+		
 		int count = this.livingRobotCountFor(type);
-		if (UnitController.isUnitTypeBuilding(type)) count += this.buildingRobotCountFor(type);
+		if (includeBuilding && UnitController.isUnitTypeBuilding(type)) count += this.buildingRobotCountFor(type);
 		return count;
 		
 	}

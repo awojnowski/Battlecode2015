@@ -36,7 +36,8 @@ public class Soldier extends BattleRobot {
 						// if we haven't moved toward an enemy location then we can go and stick to the plan
 						if (shouldMove) {
 
-							MapLocation rallyLocation = this.locationController.militaryRallyLocation();
+							MapLocation rallyLocation = this.locationController.enemyHQLocation();
+							if (Clock.getRoundNum() > 450) rallyLocation = this.locationController.militaryRallyLocation();
 							if (this.locationController.distanceTo(rallyLocation) > 18) {
 
 								this.movementController.moveToward(rallyLocation);

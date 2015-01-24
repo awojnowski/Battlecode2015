@@ -6,7 +6,7 @@ public class BuildingQueue extends Queue {
 		
 		super();
 		
-		
+		this.startingIndex = 24000;
 		
 	}
 

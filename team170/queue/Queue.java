@@ -39,7 +39,8 @@ public class Queue {
 	}
 	
 	public int peek() throws GameActionException {
-		
+
+		if (this.count() <= 0) return Integer.MAX_VALUE;
 		return this.broadcaster.readBroadcast(this.nextQueueIndex() - this.count());
 		
 	}

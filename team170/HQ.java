@@ -43,7 +43,25 @@ public class HQ extends BattleRobot {
 		
 		try {
 			
-			this.robotController.setIndicatorString(1, "Budget: Beavers = " + this.broadcaster.budgetForType(Beaver.type()));
+			String indicatorString = "";
+			indicatorString += "Turn: " + this.currentPlaystyle().buildOrderProgress() + " ";
+			indicatorString += "Budgets: ";
+			indicatorString += "Civic = " + this.broadcaster.civicBudget() + " ";
+			indicatorString += "Supply Depot = " + this.broadcaster.budgetForType(SupplyDepot.type()) + " ";
+			indicatorString += "Miner Factory = " + this.broadcaster.budgetForType(MinerFactory.type()) + " ";
+			indicatorString += "Tank Factory = " + this.broadcaster.budgetForType(TankFactory.type()) + " ";
+			this.robotController.setIndicatorString(1, indicatorString);
+			
+			indicatorString = "";
+			indicatorString += "Beaver = " + this.broadcaster.budgetForType(Beaver.type()) + " ";
+			indicatorString += "Miner = " + this.broadcaster.budgetForType(Miner.type()) + " ";
+			indicatorString += "Commander = " + this.broadcaster.budgetForType(Commander.type()) + " ";
+			indicatorString += "Soldier = " + this.broadcaster.budgetForType(Soldier.type()) + " ";
+			indicatorString += "Basher = " + this.broadcaster.budgetForType(Basher.type()) + " ";
+			indicatorString += "Tank = " + this.broadcaster.budgetForType(Tank.type()) + " ";
+			indicatorString += "Launcher = " + this.broadcaster.budgetForType(Launcher.type()) + " ";
+			indicatorString += "Drone = " + this.broadcaster.budgetForType(Drone.type()) + " ";
+			this.robotController.setIndicatorString(2, indicatorString);
 			
 			if (!updatedBudgeting) {
 				
@@ -83,7 +101,7 @@ public class HQ extends BattleRobot {
 		// update the budgets if necessary
 		if (this.oreMinedTurns > ORE_MINED_HOLD_TURNS) {
 			
-			this.currentPlaystyle().updateBudgeting(this.oreMined);
+			this.currentPlaystyle().updateBudgeting(this.oreMinedTurns, this.oreMined);
 			
 			this.oreMined = 0;
 			this.oreMinedTurns = 0;

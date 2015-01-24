@@ -1,6 +1,7 @@
 package team170;
 
 import battlecode.common.*;
+import team170.movement.*;
 
 public class Missile extends Robot {
 	
@@ -48,15 +49,30 @@ public class Missile extends Robot {
 				
 			}
 			
+			if (distance <= 2) {
+				
+				this.robotController.explode();
+				return;
+				
+			}
+			
 			if (closest != null) { 
 
 				this.direction = this.locationController.currentLocation().directionTo(closest.location);
 				
 			}
-
+			
 			if (this.robotController.canMove(this.direction)) {
 				
 				this.robotController.move(this.direction);
+				
+			} else if (this.robotController.canMove(MovementController.directionWithOffset(this.direction, -1))) {
+				
+				this.robotController.move(MovementController.directionWithOffset(this.direction, -1));
+				
+			} else if (this.robotController.canMove(MovementController.directionWithOffset(this.direction, 1))) {
+				
+				this.robotController.move(MovementController.directionWithOffset(this.direction, 1));
 				
 			}
 			
