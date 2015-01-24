@@ -240,6 +240,13 @@ public abstract class Playstyle {
 		
 	}
 	
+	// if the build order is done and we still have money, what should be built?
+	public RobotType nextBuildOrderExpansionBuilding() {
+		
+		return null;
+		
+	}
+	
 	public int buildOrderProgress() throws GameActionException {
 		
 		int lowestNumber = Integer.MAX_VALUE;

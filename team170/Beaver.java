@@ -1,6 +1,7 @@
 package team170;
 
 import team170.movement.MovementController;
+import team170.playstyles.Playstyle;
 import team170.queue.BuildingQueue;
 import team170.units.UnitController;
 import battlecode.common.*;
@@ -27,8 +28,10 @@ public class Beaver extends BattleRobot {
 			
 			if (this.robotController.isCoreReady()) {
 				
+				Playstyle playstyle = this.currentPlaystyle();
+				
 				Boolean builtBuilding = false;
-				RobotType buildType = this.currentPlaystyle().nextBuildingType();
+				RobotType buildType = playstyle.nextBuildingType();
 				
 				// try build the recommended build order building
 				
@@ -39,8 +42,19 @@ public class Beaver extends BattleRobot {
 					
 				}
 				
-				// otherwise let's build some other buildings!
+				// otherwise let's build a build order expansion building
+				if (!builtBuilding) {
+					
+					buildType = playstyle.nextBuildOrderExpansionBuilding();	
+					if (buildType != null) {
+						if (this.canBuild(buildType, true))
+							builtBuilding = this.tryBuild(buildType, true);
+						
+					}
+					
+				}
 				
+				// that didn't work... how about a supply depot?
 				if (!builtBuilding) {
 
 					buildType = SupplyDepot.type();
@@ -49,17 +63,10 @@ public class Beaver extends BattleRobot {
 					
 				}
 				
-				if (!builtBuilding) {
-					
-					buildType = AerospaceLab.type();					
-					if (this.canBuild(buildType, true))
-						builtBuilding = this.tryBuild(buildType, true);
-					
-				}
-				
+				// fine fuk you
 				if (!builtBuilding) {
 
-					final int roundProgress = this.currentPlaystyle().buildOrderProgress();
+					final int roundProgress = playstyle.buildOrderProgress();
 					if (roundProgress < 3 && this.tryMine()) {
 						
 						

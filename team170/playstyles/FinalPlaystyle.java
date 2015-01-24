@@ -66,7 +66,7 @@ public class FinalPlaystyle extends Playstyle {
 		this.broadcaster.incrementBudget(Launcher.type(), (int)(launcherOreAllocation * multiplier));
 		
 		remainingOre -= total * multiplier;
-		if (remainingOre > 40) {
+		if (remainingOre > 40 && oreMined < 500 /* first turn */) {
 			
 			beaverOreAllocation = 10;
 			this.broadcaster.incrementBudget(Beaver.type(), beaverOreAllocation);
@@ -84,6 +84,14 @@ public class FinalPlaystyle extends Playstyle {
 		int clockNumber = Clock.getRoundNum();
 		if (clockNumber > 800) return true;
 		return false;
+		
+	}
+	
+	// Buildings
+	
+	public RobotType nextBuildOrderExpansionBuilding() {
+		
+		return AerospaceLab.type();
 		
 	}
 	

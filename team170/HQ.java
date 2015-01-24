@@ -2,7 +2,6 @@ package team170;
 
 import battlecode.common.*;
 import team170.playstyles.*;
-import team170.queue.BuildingQueue;
 
 public class HQ extends BattleRobot {
 		
@@ -97,7 +96,7 @@ public class HQ extends BattleRobot {
 		
 		this.oreMined += oreMined;
 		this.oreMinedTurns += 1;
-		
+				
 		// update the budgets if necessary
 		if (this.oreMinedTurns > ORE_MINED_HOLD_TURNS) {
 			
