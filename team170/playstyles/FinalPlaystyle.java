@@ -57,20 +57,24 @@ public class FinalPlaystyle extends Playstyle {
 		}
 		
 		// miners
+		final int minerFactories = this.broadcaster.robotCountFor(MinerFactory.type());
 		int minerOreAllocation = 0;
-		if (this.broadcaster.robotCountFor(MinerFactory.type(), false) > 0 && this.broadcaster.robotCountFor(Miner.type()) < 28) {
+		if (minerFactories > 0 && this.broadcaster.robotCountFor(Miner.type()) < 28) {
 
 			minerOreAllocation = (60 / (20 / turns));
+			if (this.broadcaster.budgetForType(Miner.type()) >= minerFactories * 60) minerOreAllocation = 0;
 			
 		}
 		
 		// soldiers
 		final int barracks = this.broadcaster.robotCountFor(Barracks.type(), false);
 		int soldierOreAllocation = barracks * (60 / (20 / turns));
+		if (this.broadcaster.budgetForType(Soldier.type()) >= barracks * 60) soldierOreAllocation = 0;
 
 		// launchers
 		final int aerospaceLabs = this.broadcaster.robotCountFor(AerospaceLab.type(), false);
 		int launcherOreAllocation =  aerospaceLabs * (400 / (100 / turns));
+		if (this.broadcaster.budgetForType(Launcher.type()) >= aerospaceLabs * 400) launcherOreAllocation = 0;
 		
 		int total = beaverOreAllocation + minerOreAllocation + soldierOreAllocation + launcherOreAllocation;
 		double multiplier = (total > remainingOre) ? remainingOre / (float)total : 1.0;
