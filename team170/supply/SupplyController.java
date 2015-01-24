@@ -11,18 +11,6 @@ public class SupplyController {
 	
 	public void transferSupplyIfPossible() throws GameActionException {
 		
-		this.transferSupplyIfPossible(true);
-		
-	}
-	
-	public void transferSupplyIfPossible(boolean checkNearbyEnemies) throws GameActionException {
-		
-		if (checkNearbyEnemies) {
-
-			if (this.robot.unitController.nearbyMilitaryEnemies().length < 5) return;
-			
-		}
-		
 		double supplyLevel = this.robot.robotController.getSupplyLevel();
 		double minimumSupplyLevel = this.minimumSupplyForType(this.robot.type);
 		if (supplyLevel < minimumSupplyLevel) return;

@@ -8,20 +8,15 @@ public class FinalPlaystyle extends Playstyle {
 	
 	public FinalPlaystyle() {
 		
-		this.barracksSpawnOrder =            new int[] {2};
+		this.barracksSpawnOrder =            new int[] {};
 		this.minerFactorySpawnOrder =        new int[] {1};
 		this.tankFactorySpawnOrder  =        new int[] {};
-		this.helipadSpawnOrder =             new int[] {3};
-		this.aerospaceLabSpawnOrder =        new int[] {4};
+		this.helipadSpawnOrder =             new int[] {2};
+		this.aerospaceLabSpawnOrder =        new int[] {3};
 		this.technologyInstituteSpawnOrder = new int[] {};
 		this.trainingFieldSpawnOrder =       new int[] {};
 		
-		this.civicRatios =       new double[] { 0.00, 0.00, 0.00, 0.00, 0.00 };
-		
-		this.minerRatios =         new double[] { 0.00, 0.00, 0.00, 0.00, 0.00 };
-		this.soldierRatios =       new double[] { 0.00, 0.00, 0.00, 0.00, 0.67 };
-		this.droneRatios =         new double[] { 0.00, 0.00, 0.00, 0.00, 0.00 };
-		this.launcherRatios =      new double[] { 0.00, 0.00, 0.00, 0.00, 0.33 };
+		this.civicRatios =       new double[] { 0.00, 0.00, 0.00, 0.00 };
 		
 	}
 	
@@ -46,45 +41,38 @@ public class FinalPlaystyle extends Playstyle {
 			
 			beaverOreAllocation = 100;
 			
-		} else {
-			
-			if (this.broadcaster.civicBudget() + this.broadcaster.budgetForType(SupplyDepot.type()) > 400) {
-				
-				beaverOreAllocation = 5;
-				
-			}
-			
 		}
 		
 		// miners
 		final int minerFactories = this.broadcaster.robotCountFor(MinerFactory.type());
 		int minerOreAllocation = 0;
-		if (minerFactories > 0 && this.broadcaster.robotCountFor(Miner.type()) < 28) {
+		if (minerFactories > 0 && this.broadcaster.robotCountFor(Miner.type()) < 30) {
 
 			minerOreAllocation = (60 / (20 / turns));
 			if (this.broadcaster.budgetForType(Miner.type()) >= minerFactories * 60) minerOreAllocation = 0;
 			
 		}
-		
-		// soldiers
-		final int barracks = this.broadcaster.robotCountFor(Barracks.type(), false);
-		int soldierOreAllocation = barracks * (60 / (20 / turns));
-		if (this.broadcaster.budgetForType(Soldier.type()) >= barracks * 60) soldierOreAllocation = 0;
 
 		// launchers
 		final int aerospaceLabs = this.broadcaster.robotCountFor(AerospaceLab.type(), false);
 		int launcherOreAllocation =  aerospaceLabs * (400 / (100 / turns));
 		if (this.broadcaster.budgetForType(Launcher.type()) >= aerospaceLabs * 400) launcherOreAllocation = 0;
 		
-		int total = beaverOreAllocation + minerOreAllocation + soldierOreAllocation + launcherOreAllocation;
+		int total = beaverOreAllocation + minerOreAllocation + launcherOreAllocation;
 		double multiplier = (total > remainingOre) ? remainingOre / (float)total : 1.0;
 
 		this.broadcaster.incrementBudget(Beaver.type(), (int)(beaverOreAllocation * multiplier));
 		this.broadcaster.incrementBudget(Miner.type(), (int)(minerOreAllocation * multiplier));
-		this.broadcaster.incrementBudget(Soldier.type(), (int)(soldierOreAllocation * multiplier));
 		this.broadcaster.incrementBudget(Launcher.type(), (int)(launcherOreAllocation * multiplier));
 		
 		remainingOre -= total * multiplier;
+		if (remainingOre > 40) {
+			
+			beaverOreAllocation = 10;
+			this.broadcaster.incrementBudget(Beaver.type(), beaverOreAllocation);
+			remainingOre -= beaverOreAllocation;
+			
+		}
 		this.broadcaster.incrementCivicBudget(remainingOre);
 		
 	}

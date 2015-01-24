@@ -51,9 +51,7 @@ public class Beaver extends BattleRobot {
 				
 				if (!builtBuilding) {
 					
-					if (this.broadcaster.robotCountFor(Barracks.type()) * 2 >= this.broadcaster.robotCountFor(AerospaceLab.type())) buildType = AerospaceLab.type();
-					else buildType = Barracks.type();
-					
+					buildType = AerospaceLab.type();					
 					if (this.canBuild(buildType, true))
 						builtBuilding = this.tryBuild(buildType, true);
 					
@@ -110,7 +108,7 @@ public class Beaver extends BattleRobot {
 				
 			}
 			
-			this.supplyController.transferSupplyIfPossible(false);
+			this.supplyController.transferSupplyIfPossible();
 			
 		} catch (GameActionException e) {
 		}

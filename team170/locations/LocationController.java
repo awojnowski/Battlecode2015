@@ -144,7 +144,8 @@ public class LocationController {
 			
 		}
 		
-		if (bestLocation == null) {
+		// if there are no towers or if the closest tower is further than the HQ, go to the HQ
+		if (bestLocation == null || closestTowerDistance >= this.distanceTo(this.enemyHQLocation())) {
 			
 			bestLocation = this.enemyHQLocation();
 			
