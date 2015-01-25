@@ -188,7 +188,7 @@ public class BattleRobot extends Robot {
 		if (!this.canBeMobilized) return false;
 
 		int roundNum = Clock.getRoundNum();
-		return this.currentPlaystyle().canMobilizeForClockNumber(roundNum);
+		return this.currentPlaystyle().canMobilizeForClockNumber(roundNum, this.robotController.getRoundLimit());
 		
 	}
 	

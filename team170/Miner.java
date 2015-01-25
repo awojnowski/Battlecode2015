@@ -30,7 +30,7 @@ public class Miner extends BattleRobot {
 			
 			if (this.robotController.isCoreReady()) {
 				
-				if (this.currentPlaystyle().shouldGoAllOut()) {
+				if (this.currentPlaystyle().shouldGoAllOut(this.robotController.getRoundLimit())) {
 					
 					this.doAttackerThings();
 					

@@ -301,19 +301,19 @@ public abstract class Playstyle {
 	
 	// MARK: Mobilizing
 	
-	public Boolean canMobilizeForClockNumber(int clockNumber) throws GameActionException {
+	public Boolean canMobilizeForClockNumber(int clockNumber, int roundLimit) throws GameActionException {
 		
 		return false;
 		
 	}
 	
-	public Boolean shouldBlitzkrieg() throws GameActionException {
+	public Boolean shouldBlitzkrieg(int roundLimit) throws GameActionException {
 		
 		return false;
 		
 	}
 	
-	public Boolean shouldGoAllOut() {
+	public Boolean shouldGoAllOut(int roundLimit) {
 		
 		return false;
 		

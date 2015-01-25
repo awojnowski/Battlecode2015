@@ -78,7 +78,7 @@ public class AggressivePlaystyle extends Playstyle {
 	
 	// MARK: Mobilizing
 	
-	public Boolean canMobilizeForClockNumber(int clockNumber) throws GameActionException {
+	public Boolean canMobilizeForClockNumber(int clockNumber, int roundLimit) throws GameActionException {
 				
 		int totalTanks = this.broadcaster.robotCountFor(Tank.type());
 		if (this.broadcaster.hasSeenLaunchers()) {
@@ -102,14 +102,14 @@ public class AggressivePlaystyle extends Playstyle {
 		
 	}
 	
-	public Boolean shouldBlitzkrieg() throws GameActionException {
+	public Boolean shouldBlitzkrieg(int roundLimit) throws GameActionException {
 		
 		int clockNumber = Clock.getRoundNum();
 		return clockNumber > 1700 || this.broadcaster.hasSeenLaunchers();
 		
 	}
 	
-	public Boolean shouldGoAllOut() {
+	public Boolean shouldGoAllOut(int roundLimit) {
 
 		int clockNumber = Clock.getRoundNum();
 		return clockNumber > 1850;

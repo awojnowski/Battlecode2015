@@ -97,7 +97,7 @@ public class FinalPlaystyle extends Playstyle {
 	
 	// MARK: Mobilizing
 	
-	public Boolean canMobilizeForClockNumber(int clockNumber) throws GameActionException {
+	public Boolean canMobilizeForClockNumber(int clockNumber, int roundLimit) throws GameActionException {
 		
 		int totalLaunchers = this.broadcaster.robotCountFor(Launcher.type());
 		if (this.broadcaster.hasSeenLaunchers()) {
@@ -106,7 +106,7 @@ public class FinalPlaystyle extends Playstyle {
 			
 		} else {
 			
-			if (clockNumber > 1700 && clockNumber < 2000) {
+			if (clockNumber > roundLimit - 300) {
 				
 				return true;
 				
@@ -121,17 +121,17 @@ public class FinalPlaystyle extends Playstyle {
 		
 	}
 	
-	public Boolean shouldBlitzkrieg() throws GameActionException {
+	public Boolean shouldBlitzkrieg(int roundLimit) throws GameActionException {
 		
 		int clockNumber = Clock.getRoundNum();
-		return clockNumber > 1700;
+		return clockNumber > roundLimit - 300;
 		
 	}
 	
-	public Boolean shouldGoAllOut() {
+	public Boolean shouldGoAllOut(int roundLimit) {
 
 		int clockNumber = Clock.getRoundNum();
-		return clockNumber > 1850;
+		return clockNumber > roundLimit - 150;
 		
 	}
 	
