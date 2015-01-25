@@ -5,8 +5,13 @@ import battlecode.common.*;
 
 public class Miner extends BattleRobot {
 	
+	private final int idealThreshold = 15; // because the miner always mines for 5 turns, it will mine at max rate for all 5 turns
+	
 	public Direction facing;
 	private int miningTurns;
+	private int miningThreshold = this.idealThreshold;
+	private int movementsWithoutMining;
+	private double totalOreSeen = 0.0;
 
 	public Miner(RobotController robotController) {
 		
@@ -19,6 +24,7 @@ public class Miner extends BattleRobot {
 	public void run() {
 		
 		super.run();
+		this.robotController.setIndicatorString(1, "Mining Threshold: " + this.miningThreshold + " Movements Without Mining: " + this.movementsWithoutMining);
 				
 		try {
 			
@@ -87,8 +93,16 @@ public class Miner extends BattleRobot {
 			
 			// nah he gucci
 			
-			double ore = this.robotController.senseOre(this.robotController.getLocation());
-			if (ore < 3 || this.miningTurns > 5) {
+			double currentOre = this.robotController.senseOre(this.locationController.currentLocation());
+			
+			if (this.miningTurns > 5 || (this.miningTurns == 0 && currentOre < this.miningThreshold)) { // only mine good stuff but always mine for 5 turns
+				
+				if (this.miningTurns == 0 && currentOre > 0) {
+					
+					this.movementsWithoutMining ++;
+					this.totalOreSeen += currentOre;
+					
+				}
 				
 				this.move();
 				
@@ -97,6 +111,13 @@ public class Miner extends BattleRobot {
 				if (this.tryMine()) {
 					
 					this.miningTurns ++;
+					
+					if (currentOre >= this.idealThreshold) { // if the miner finds good ore
+						
+						this.movementsWithoutMining = 0;
+						this.miningThreshold = this.idealThreshold;
+						
+					}
 					
 				} else {
 
@@ -130,7 +151,16 @@ public class Miner extends BattleRobot {
 			this.movementController.moveTo(facing);
 			
 		}
+			
 		this.miningTurns = 0;
+		
+		if (this.movementsWithoutMining >= 20) { // if the miner has moved 20 times without mining
+			
+			this.miningThreshold = (int)(this.totalOreSeen / this.movementsWithoutMining);
+			this.movementsWithoutMining = 0;
+			this.totalOreSeen = 0.0;
+			
+		}
 		
 	}
 	
@@ -139,8 +169,12 @@ public class Miner extends BattleRobot {
         MapLocation robotLocation = this.robotController.getLocation();
         MapLocation bestOreLocation = null;
         
-        final double thresholdOre = 2.999;
-        double mostOre = thresholdOre;
+        double oreThreshold = this.miningThreshold - 0.001;
+        
+        if (oreThreshold <= 0) // don't want the miners thinking they found a good spot at 0 ore
+        	oreThreshold = 0.001;
+        
+        double mostOre = oreThreshold;
         int safestDirection = MovementController.directionToInt(initialDirection);
         int[] offsets = { 0, -1, 1, -2, 2, -3, 3, 4 };
        
@@ -159,7 +193,7 @@ public class Miner extends BattleRobot {
                
         }
        
-        if (mostOre > thresholdOre) {
+        if (mostOre > oreThreshold) {
                
             this.movementController.moveToward(bestOreLocation);
             return true;
