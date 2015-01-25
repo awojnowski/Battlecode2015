@@ -28,8 +28,12 @@ public class FinalPlaystyle extends Playstyle {
 		// check if we need to take some for the supply depots
 		if (progress >= this.civicRatios.length - 1) {
 			
-			this.broadcaster.incrementBudget(RobotType.SUPPLYDEPOT, (int)(remainingOre * 0.1));
-			remainingOre *= 0.9;
+			if (this.broadcaster.budgetForType(RobotType.SUPPLYDEPOT) < 250) {
+				
+				this.broadcaster.incrementBudget(RobotType.SUPPLYDEPOT, (int)(remainingOre * 0.1));
+				remainingOre *= 0.9;
+				
+			}
 			
 		}
 		
@@ -59,7 +63,7 @@ public class FinalPlaystyle extends Playstyle {
 		
 		// drones
 		int droneOreAllocation = 0;
-		if (Clock.getRoundNum() > 800 && this.broadcaster.robotCountFor(Drone.type()) == 0) {
+		if (Clock.getRoundNum() > 600 && this.broadcaster.robotCountFor(Drone.type()) == 0) {
 			
 			droneOreAllocation = 8;
 			

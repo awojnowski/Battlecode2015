@@ -18,33 +18,43 @@ public class SupplyController {
 		double lowestSupply = supplyLevel;
 		
 		RobotInfo[] allies = this.robot.unitController.nearbyAllies(GameConstants.SUPPLY_TRANSFER_RADIUS_SQUARED);
-		MapLocation targetLocation = null;
+		RobotInfo targetAlly = null;
 		for (RobotInfo ally : allies) {
 			
 			// check if this type can receive supply
-			if (!this.canTypeReceiveSupply(ally.type)) continue;			
+			if (!this.canTypeReceiveSupply(ally.type)) continue;
+			if (this.robot.type == Drone.type() && ally.supplyLevel > 0) continue;
 			if (ally.supplyLevel < lowestSupply) {
 				
 				lowestSupply = ally.supplyLevel;
-				targetLocation = ally.location;
+				targetAlly = ally;
 				
 			}
 			
 		}
 
-		if (targetLocation != null) {
+		if (targetAlly != null) {
 
 			double transferableSupply = supplyLevel - minimumSupplyLevel;
 			if (this.robot.type == HQ.type()) {
 				
-				// give it all away
+				// check if we have a supply drone so we limit supply to other units
+				if (this.robot.broadcaster.robotCountFor(Drone.type()) > 0 && targetAlly.type != Drone.type()) {
+					
+					transferableSupply = 1000;
+					
+				}
+				
+			} else if (this.robot.type == Drone.type()) {
+				
+				transferableSupply = Math.max(transferableSupply, 1000);
 				
 			} else {
 				
 				transferableSupply = transferableSupply / 2;
 				
 			}
-			this.robot.robotController.transferSupplies((int)transferableSupply, targetLocation);
+			this.robot.robotController.transferSupplies((int)transferableSupply, targetAlly.location);
 			
 		}
 		
@@ -55,6 +65,12 @@ public class SupplyController {
 	private Boolean canTypeReceiveSupply(RobotType type) {
 		
 		if (Clock.getRoundNum() > 100 && type == Beaver.type()) return false;
+		if (type == Drone.type()) {
+			
+			if (this.robot.type == HQ.type()) return true;
+			return false;
+			
+		}
 		return type.needsSupply();
 		
 	}
