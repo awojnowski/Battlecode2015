@@ -2,14 +2,11 @@ package team170;
 
 import team170.movement.MovementController;
 import team170.playstyles.Playstyle;
-import team170.queue.BuildingQueue;
 import team170.units.UnitController;
 import battlecode.common.*;
 
 public class Beaver extends BattleRobot {
 	
-	private BuildingQueue buildingQueue;
-
 	public Beaver(RobotController robotController) {
 		
 		super(robotController);
@@ -121,6 +118,12 @@ public class Beaver extends BattleRobot {
 		}
 		
 		this.robotController.yield();
+		
+	}
+	
+	public Boolean canMoveInMilitaryRange() throws GameActionException {
+		
+		return false;
 		
 	}
 	

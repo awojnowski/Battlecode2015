@@ -51,6 +51,12 @@ public class Miner extends BattleRobot {
 		
 	}
 	
+	public Boolean canMoveInMilitaryRange() throws GameActionException {
+		
+		return this.currentPlaystyle().shouldGoAllOut(this.robotController.getRoundLimit());
+		
+	}
+	
 	// MARK: Styles
 	
 	private void doMinerThings() throws GameActionException {

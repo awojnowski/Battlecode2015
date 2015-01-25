@@ -83,6 +83,24 @@ public class Missile extends Robot {
 		
 	}
 	
+	public Boolean canMoveInTowerRange() throws GameActionException {
+
+		return true;
+		
+	}
+	
+	public Boolean canMoveInHQRange(int totalTowers) throws GameActionException {
+		
+		return true;
+		
+	}
+	
+	public Boolean canMoveInMilitaryRange() throws GameActionException {
+		
+		return true;
+		
+	}
+	
 	// MARK: Static Helpers
 	
 	public static RobotType type() {

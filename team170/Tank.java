@@ -31,7 +31,7 @@ public class Tank extends BattleRobot {
 			if (this.robotController.isCoreReady()) {
 				
 				RobotInfo[] nearbyAttackableEnemies = this.unitController.nearbyAttackableEnemies(true); 
-				if (nearbyAttackableEnemies.length == 0 || this.currentPlaystyle().shouldBlitzkrieg()) {
+				if (nearbyAttackableEnemies.length == 0 || this.currentPlaystyle().shouldBlitzkrieg(this.robotController.getRoundLimit())) {
 					
 					// only move if we have no enemies to 
 					if (!this.shouldMobilize()) {
@@ -51,7 +51,7 @@ public class Tank extends BattleRobot {
 						} else {
 							
 							boolean shouldMove = true;
-							if (!this.canAttackInTowerRange()) {
+							if (!this.canMoveInTowerRange()) {
 								
 								MapLocation towerInRange = this.locationController.enemyTowerInRange();
 								if (towerInRange != null) {

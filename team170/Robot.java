@@ -68,7 +68,7 @@ public abstract class Robot {
 	
 	// MARK: Attacking
 	
-	public Boolean canAttackInTowerRange() throws GameActionException {
+	public Boolean canMoveInTowerRange() throws GameActionException {
 
 		int clockNumber = Clock.getRoundNum();
 		if ((clockNumber > 1700 && clockNumber < 2000)) {
@@ -90,9 +90,15 @@ public abstract class Robot {
 		
 	}
 	
-	public Boolean canAttackInHQRange(int totalTowers) throws GameActionException {
+	public Boolean canMoveInHQRange(int totalTowers) throws GameActionException {
 		
 		return totalTowers == 0;
+		
+	}
+	
+	public Boolean canMoveInMilitaryRange() throws GameActionException {
+		
+		return true;
 		
 	}
 	

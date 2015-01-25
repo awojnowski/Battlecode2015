@@ -100,6 +100,24 @@ public class Launcher extends BattleRobot {
 		
 	}
 	
+	public Boolean canMoveInTowerRange() throws GameActionException {
+
+		return false;
+		
+	}
+	
+	public Boolean canMoveInHQRange(int totalTowers) throws GameActionException {
+		
+		return false;
+		
+	}
+	
+	public Boolean canMoveInMilitaryRange() throws GameActionException {
+		
+		return true;
+		
+	}
+	
 	// MARK: Missiles
 	
 	private void fireMissileAtLocation(MapLocation location) throws GameActionException {

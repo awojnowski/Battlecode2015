@@ -2,7 +2,6 @@ package team170.playstyles;
 
 import battlecode.common.*;
 import team170.*;
-import team170.queue.BuildingQueue;
 
 public class FinalPlaystyle extends Playstyle {
 	
@@ -55,15 +54,24 @@ public class FinalPlaystyle extends Playstyle {
 
 		// launchers
 		final int aerospaceLabs = this.broadcaster.robotCountFor(AerospaceLab.type(), false);
-		int launcherOreAllocation =  aerospaceLabs * (400 / (100 / turns));
+		int launcherOreAllocation = aerospaceLabs * (400 / (100 / turns));
 		if (this.broadcaster.budgetForType(Launcher.type()) >= aerospaceLabs * 400) launcherOreAllocation = 0;
 		
-		int total = beaverOreAllocation + minerOreAllocation + launcherOreAllocation;
+		// drones
+		int droneOreAllocation = 0;
+		if (Clock.getRoundNum() > 800 && this.broadcaster.robotCountFor(Drone.type()) == 0) {
+			
+			droneOreAllocation = 8;
+			
+		}
+		
+		int total = beaverOreAllocation + minerOreAllocation + launcherOreAllocation + droneOreAllocation;
 		double multiplier = (total > remainingOre) ? remainingOre / (float)total : 1.0;
 
 		this.broadcaster.incrementBudget(Beaver.type(), (int)(beaverOreAllocation * multiplier));
 		this.broadcaster.incrementBudget(Miner.type(), (int)(minerOreAllocation * multiplier));
 		this.broadcaster.incrementBudget(Launcher.type(), (int)(launcherOreAllocation * multiplier));
+		this.broadcaster.incrementBudget(Drone.type(), (int)(droneOreAllocation * multiplier));
 		
 		remainingOre -= total * multiplier;
 		if (remainingOre > 40 && oreMined < 500 /* first turn */) {

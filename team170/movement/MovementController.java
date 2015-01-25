@@ -327,18 +327,10 @@ public class MovementController {
 	public Boolean moveTo(Direction direction) throws GameActionException {
 
         if (!this.robot.robotController.canMove(direction)) return false;
-		
-		RobotType type = this.robot.type;
-		Boolean moveAroundHQ = !this.robot.canAttackInHQRange(this.robot.unitController.enemyTowers().length);
-
-		Boolean moveAroundTowers = !this.robot.canAttackInTowerRange();
-		if (type == Missile.type()) moveAroundTowers = false;
-		if (type == Launcher.type()) moveAroundTowers = true;
-
-		Boolean moveAroundMilitary = false;
-		if (UnitController.isUnitTypeMiner(type) && !this.robot.currentPlaystyle().shouldGoAllOut(this.robot.robotController.getRoundLimit())) moveAroundMilitary = true;
-		else if (type == Drone.type()) moveAroundMilitary = true;
-		else if (type == Launcher.type()) moveAroundMilitary = true;
+				
+		Boolean moveAroundHQ = !this.robot.canMoveInHQRange(this.robot.unitController.enemyTowers().length);
+		Boolean moveAroundTowers = !this.robot.canMoveInTowerRange();
+		Boolean moveAroundMilitary = !this.robot.canMoveInMilitaryRange();
 		
 		if (this.canMoveSafely(direction, moveAroundHQ, moveAroundTowers, moveAroundMilitary)) {
 			
