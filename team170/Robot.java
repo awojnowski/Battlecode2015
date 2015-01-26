@@ -34,6 +34,14 @@ public abstract class Robot {
 	
 	public Robot(RobotController robotController) {
 		
+		this(robotController, true);
+		
+	}
+	
+	public Robot(RobotController robotController, boolean setup) {
+		
+		if (!setup) return; 
+		
 		this.broadcaster = new Broadcaster();
 		this.locationController = new LocationController();
 		this.movementController = new MovementController();

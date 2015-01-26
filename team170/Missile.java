@@ -1,15 +1,21 @@
 package team170;
 
 import battlecode.common.*;
+import team170.broadcaster.Broadcaster;
 import team170.movement.*;
 
 public class Missile extends Robot {
 	
 	private Direction direction;
+	private int turns = 0;
 
 	public Missile(RobotController robotController) {
 		
-		super(robotController);
+		super(robotController, false);
+		
+		this.broadcaster = new Broadcaster();
+		this.broadcaster.robotController = robotController;
+		this.robotController = robotController;
 		
 		try {
 			
@@ -30,7 +36,9 @@ public class Missile extends Robot {
 		
 		try {
 			
-			RobotInfo closest = null;
+			final int turnsRemaining = 5 - turns;
+			
+			MapLocation closest = null;
 			double distance = Double.MAX_VALUE;
 			
 			MapLocation currentLocation = this.robotController.getLocation();
@@ -40,9 +48,24 @@ public class Missile extends Robot {
 				if (enemy.type == RobotType.MISSILE) continue;
 				
 				double enemyDistance = currentLocation.distanceSquaredTo(enemy.location);
+				
+				// we want to prioritize towers
+				if (enemy.type == Tower.type()) {
+					
+					if (enemyDistance < Math.pow(turnsRemaining, 2)) {
+						
+						closest = enemy.location;
+						distance = enemyDistance;
+						break;
+						
+					}
+					
+				}
+				
+				// otherwise see if it is closest
 				if (enemyDistance < distance) {
 					
-					closest = enemy;
+					closest = enemy.location;
 					distance = enemyDistance;
 					
 				}
@@ -56,11 +79,12 @@ public class Missile extends Robot {
 				
 			}
 			
-			if (closest != null) { 
+			if (closest == null) { 
 
-				this.direction = this.locationController.currentLocation().directionTo(closest.location);
+				closest = this.robotController.senseEnemyHQLocation();
 				
 			}
+			this.direction = currentLocation.directionTo(closest);
 			
 			if (this.robotController.canMove(this.direction)) {
 				
@@ -79,6 +103,7 @@ public class Missile extends Robot {
 		}
 		catch (GameActionException e) {}
 		
+		this.turns ++;
 		this.robotController.yield();
 		
 	}
