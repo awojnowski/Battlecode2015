@@ -57,7 +57,7 @@ public class FinalPlaystyle extends Playstyle {
 		}
 
 		// launchers
-		final int aerospaceLabs = this.broadcaster.robotCountFor(AerospaceLab.type(), false);
+		final int aerospaceLabs = this.broadcaster.robotCountFor(AerospaceLab.type());
 		int launcherOreAllocation = aerospaceLabs * (400 / (100 / turns));
 		if (this.broadcaster.budgetForType(Launcher.type()) >= aerospaceLabs * 400) launcherOreAllocation = 0;
 		

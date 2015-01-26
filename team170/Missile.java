@@ -36,55 +36,59 @@ public class Missile extends Robot {
 		
 		try {
 			
-			final int turnsRemaining = 5 - turns;
-			
-			MapLocation closest = null;
-			double distance = Double.MAX_VALUE;
-			
-			MapLocation currentLocation = this.robotController.getLocation();
-			RobotInfo[] enemies = this.robotController.senseNearbyRobots(24, this.robotController.getTeam().opponent());
-			for (RobotInfo enemy : enemies) {
+			if (this.turns > 0) {
+
+				final int turnsRemaining = 5 - this.turns;
 				
-				if (enemy.type == RobotType.MISSILE) continue;
+				MapLocation closest = null;
+				double distance = Double.MAX_VALUE;
 				
-				double enemyDistance = currentLocation.distanceSquaredTo(enemy.location);
-				
-				// we want to prioritize towers
-				if (enemy.type == Tower.type()) {
+				MapLocation currentLocation = this.robotController.getLocation();
+				RobotInfo[] enemies = this.robotController.senseNearbyRobots(24, this.robotController.getTeam().opponent());
+				for (RobotInfo enemy : enemies) {
 					
-					if (enemyDistance < Math.pow(turnsRemaining, 2)) {
+					if (enemy.type == RobotType.MISSILE) continue;
+					
+					double enemyDistance = currentLocation.distanceSquaredTo(enemy.location);
+					
+					// we want to prioritize towers
+					if (enemy.type == Tower.type()) {
+						
+						if (enemyDistance < Math.pow(turnsRemaining, 2)) {
+							
+							closest = enemy.location;
+							distance = enemyDistance;
+							break;
+							
+						}
+						
+					}
+					
+					// otherwise see if it is closest
+					if (enemyDistance < distance) {
 						
 						closest = enemy.location;
 						distance = enemyDistance;
-						break;
 						
 					}
 					
 				}
 				
-				// otherwise see if it is closest
-				if (enemyDistance < distance) {
+				if (distance <= 2) {
 					
-					closest = enemy.location;
-					distance = enemyDistance;
+					this.robotController.explode();
+					return;
 					
 				}
 				
-			}
-			
-			if (distance <= 2) {
-				
-				this.robotController.explode();
-				return;
-				
-			}
-			
-			if (closest == null) { 
+				if (closest == null) { 
 
-				closest = this.robotController.senseEnemyHQLocation();
+					closest = this.robotController.senseEnemyHQLocation();
+					
+				}
+				this.direction = currentLocation.directionTo(closest);
 				
 			}
-			this.direction = currentLocation.directionTo(closest);
 			
 			if (this.robotController.canMove(this.direction)) {
 				
