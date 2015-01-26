@@ -193,9 +193,7 @@ public class MovementController {
         Direction directionToTarget = robotLocation.directionTo(location);
         Direction directionToLastPosition = this.lastPosition != null ? robotLocation.directionTo(this.lastPosition) : null;
         int switchedDirection = 0;
-       
-        this.robot.robotController.setIndicatorString(2, "Traversal Direction " + this.traversalDirection + " Dir to target " + directionToTarget + " Dir to LP " + directionToLastPosition);
-       
+              
         // see if it can move toward it's target
         if (directionToTarget == directionToLastPosition || !this.moveTo(directionToTarget)) {
         	
@@ -204,9 +202,7 @@ public class MovementController {
         		this.traversalDirection = -this.traversalDirection;
                 
         	}
-               
-            this.robot.robotController.setIndicatorString(2, "I CAN'T move towards target");
-            
+                           
             // traverse along obstacle, switching directions if it hits a loop around or outer wall
             for (int i = 1; i < 8  && switchedDirection <= 1; i++) {
                    
@@ -250,9 +246,7 @@ public class MovementController {
                
         } else {
                
-            this.robot.robotController.setIndicatorString(2, "I can move towards target");
-            this.robot.robotController.setIndicatorLine(robotLocation, location, 255, 255, 255);
-            this.turnsStuck = 0;
+        	this.turnsStuck = 0;
             return directionToTarget;
                
         }

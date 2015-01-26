@@ -1,32 +1,55 @@
 package team170;
 
-import team170.movement.*;
+import team170.broadcaster.Broadcaster;
 import battlecode.common.*;
 
 public class Miner extends BattleRobot {
 	
-	private final int idealThreshold = 15; // because the miner always mines for 5 turns, it will mine at max rate for all 5 turns
+	private MapLocation desiredOreLocation = null;
+	private double desiredOreTotal = 0;
 	
-	public Direction facing;
-	private int miningTurns;
-	private int miningThreshold = this.idealThreshold;
-	private int movementsWithoutMining;
-	private double totalOreSeen = 0.0;
-
 	public Miner(RobotController robotController) {
 		
 		super(robotController);
 		
-		this.facing = this.movementController.randomDirection();
+		if (this.desiredOreLocation == null) {
+			
+			try {
+
+				OreLocationResult result = this.bestOreLocation(100);
+				if (result != null) {
+					
+					this.desiredOreLocation = result.location;
+					this.desiredOreTotal = result.ore;
+					
+				}
+				
+			} catch (GameActionException e) {
+			}
+			
+		}
 		
 	}
 
 	public void run() {
 		
 		super.run();
-		this.robotController.setIndicatorString(1, "Mining Threshold: " + this.miningThreshold + " Movements Without Mining: " + this.movementsWithoutMining);
 				
 		try {
+			
+			// try find some good ore nearby
+			if (this.desiredOreLocation == null) {
+				
+				this.scanForBetterOreLocation(50, this.locationController.currentLocation());
+				
+			}
+			
+			// write the line to the best ore
+			if (this.desiredOreLocation != null) {
+				
+				this.robotController.setIndicatorLine(this.robotController.getLocation(), this.desiredOreLocation, 255, 255, 0);
+				
+			}
 			
 			if (this.robotController.isWeaponReady()) {
 				
@@ -67,62 +90,30 @@ public class Miner extends BattleRobot {
 	
 	private void doMinerThings() throws GameActionException {
 		
-		// check to see if this guy under attack
-		
-		RobotInfo closestEnemy = this.unitController.closestMilitaryAttackerWithinRange();
-		if (closestEnemy != null) {
+		RobotInfo enemy = this.unitController.closestMilitaryAttackerWithinRange();
+		if (enemy != null) {
 			
-			Boolean moved = false;
-			if (this.unitController.nearbyAllies().length >= 3 && this.unitController.nearbyEnemies().length < 3) {
-				
-				moved = this.movementController.moveToward(closestEnemy.location) != null;
-				
-			} else {
-				
-				moved = this.movementController.fleeFrom(closestEnemy.location) != null;
-				
-			}
-			if (moved) { 
-				
-				this.miningTurns = 0;
-				this.facing = this.movementController.randomDirection();
-				
-			}
+			if (this.movementController.fleeFrom(enemy.location)) return;
 			
-		} else {
-			
-			// nah he gucci
-			
-			double currentOre = this.robotController.senseOre(this.locationController.currentLocation());
-			if (this.miningTurns > 5 || currentOre == 0) { // only mine good stuff but always mine for 5 turns
-				
-				if (this.miningTurns == 0 && currentOre > 0) {
-					
-					this.movementsWithoutMining ++;
-					this.totalOreSeen += currentOre;
-					
-				}
-				
-				this.move();
-				
-			} else {
-				
-				if (this.tryMine()) {
-					
-					this.miningTurns ++;
-					
-					if (currentOre >= this.idealThreshold) { // if the miner finds good ore
-						
-						this.movementsWithoutMining = 0;
-						this.miningThreshold = this.idealThreshold;
-						
-					}
-					
-				} else {
+		}
 
-					this.move();
+		if (this.desiredOreLocation != null) {
+
+			MapLocation currentLocation = this.robotController.getLocation();
+			if (currentLocation.equals(this.desiredOreLocation)) {
+				
+				final double minimumOre = this.desiredOreTotal * 0.2; 
+				if (this.robotController.senseOre(this.desiredOreLocation) < minimumOre || !this.tryMine()) {
+					
+					this.desiredOreLocation = null;
+					this.desiredOreTotal = 0;
 					
 				}
+				
+			} else {
+				
+				this.scanForBetterOreLocation(9, currentLocation);
+				this.movementController.moveToward(this.desiredOreLocation);
 				
 			}
 			
@@ -136,71 +127,203 @@ public class Miner extends BattleRobot {
 		
 	}
 	
-	// MARK: Movement
+	// MARK: Mining
 	
-	private void move() throws GameActionException {
+	private void scanForBetterOreLocation(int radius, MapLocation location) throws GameActionException {
 		
-		if (!this.moveToBestOre(this.facing)) {
+		// check to see if we can go to a better ore location
+		
+		OreDensityResult densityResult = this.currentBestOreDensity();
+		OreLocationResult oreLocationResult = this.bestOreLocation(radius);
+		if (oreLocationResult != null) {
+			
+			if (oreLocationResult.ore > this.desiredOreTotal ||
+				(oreLocationResult.ore == this.desiredOreTotal && location.distanceSquaredTo(oreLocationResult.location) < location.distanceSquaredTo(this.desiredOreLocation))) {
 
-			while (!this.movementController.canMoveSafely(this.facing, true, true, true)) {
+				this.desiredOreLocation = oreLocationResult.location;
+				this.desiredOreTotal = oreLocationResult.ore;
+				
+				if (densityResult != null && densityResult.density > this.desiredOreTotal * 2) {
 					
-				this.facing = this.movementController.randomDirection();
+					this.desiredOreLocation = densityResult.location;
+					this.desiredOreTotal = densityResult.density;
 					
+				}
+				
 			}
-			this.movementController.moveTo(facing);
 			
-		}
+		} else {
 			
-		this.miningTurns = 0;
-		
-		if (this.movementsWithoutMining >= 20) { // if the miner has moved 20 times without mining
-			
-			this.miningThreshold = (int)(this.totalOreSeen / this.movementsWithoutMining);
-			this.movementsWithoutMining = 0;
-			this.totalOreSeen = 0.0;
+			if (densityResult != null) {
+				
+				this.desiredOreLocation = densityResult.location;
+				this.desiredOreTotal = densityResult.density;
+				
+			}
 			
 		}
 		
 	}
 	
-    public Boolean moveToBestOre(Direction initialDirection) throws GameActionException {
-               
-        MapLocation robotLocation = this.robotController.getLocation();
-        MapLocation bestOreLocation = null;
-        
-        double oreThreshold = 0.001;
-        
-        if (oreThreshold <= 0) // don't want the miners thinking they found a good spot at 0 ore
-        	oreThreshold = 0.001;
-        
-        double mostOre = oreThreshold;
-        int safestDirection = MovementController.directionToInt(initialDirection);
-        int[] offsets = { 0, -1, 1, -2, 2, -3, 3, 4 };
-       
-        for (int offset: offsets) {
+	private class OreLocationResult {
+		MapLocation location;
+		double ore;
+		double density;
+	}
+	
+	private OreLocationResult bestOreLocation(int radius) throws GameActionException {
+		
+		double bestOre = 0;
+		int squares = 0;
+		double totalOre = 0;
+		MapLocation bestLocation = null;
 
-        	Direction currDirection = MovementController.directionFromInt(safestDirection + offset);
-        	MapLocation currLocation = robotLocation.add(currDirection);
-        	double currOre = this.robotController.senseOre(currLocation);
-           
-            if (currOre > mostOre && this.movementController.canMoveSafely(currDirection, true, true, true)) {
-                   
-                bestOreLocation = currLocation;
-                mostOre = currOre;
-                   
-            }
-               
-        }
-       
-        if (mostOre > oreThreshold) {
-               
-            this.movementController.moveToward(bestOreLocation);
-            return true;
-               
-        }
-        return false;
-       
-    }
+		MapLocation currentLocation = this.robotController.getLocation();
+		MapLocation[] towerLocations = this.locationController.enemyTowerLocations();
+		MapLocation[] mapLocations = MapLocation.getAllMapLocationsWithinRadiusSq(currentLocation, radius);
+		for (MapLocation location : mapLocations) {
+			
+			TerrainTile tile = this.robotController.senseTerrainTile(location);
+			if (tile != TerrainTile.NORMAL) continue;
+			
+			// check to see if its ore is good
+			
+			double ore = this.robotController.senseOre(location);
+			totalOre += ore;
+			squares ++;
+			
+			if (ore > bestOre) {
+
+				if (!this.isOreLocationValid(location, towerLocations)) continue;
+				bestOre = ore;
+				bestLocation = location;
+				
+			} else if (ore == bestOre && bestLocation != null) {
+				
+				// check to see if this new ore location is closer
+				if (currentLocation.distanceSquaredTo(location) < currentLocation.distanceSquaredTo(bestLocation)) {
+
+					if (!this.isOreLocationValid(location, towerLocations)) continue;
+					bestLocation = location;
+					
+				}
+				
+			}
+			
+		}
+		
+		OreLocationResult result = null;
+		if (bestLocation != null) {
+			
+			result = new OreLocationResult();
+			result.location = bestLocation;
+			result.ore = bestOre;
+			result.density = totalOre / squares;
+			
+			this.broadcastOreDensity(result.density, result.location);
+			this.robotController.setIndicatorString(1, "Ore density: " + result.density);
+			
+		}
+		return result;
+		
+	}
+	
+	private boolean isOreLocationValid(MapLocation location, MapLocation[] towerLocations) {
+		
+		// check to make sure it's not in enemy tower range or HQ range
+		
+		boolean inTowerRange = false;
+		for (MapLocation towerLocation : towerLocations) {
+			
+			if (location.distanceSquaredTo(towerLocation) <= Tower.type().attackRadiusSquared) {
+				
+				inTowerRange = true;
+				continue;
+				
+			}
+			
+		}
+		if (location.distanceSquaredTo(this.locationController.enemyHQLocation()) <= HQ.enemyAttackRadiusSquared(towerLocations.length)) {
+			
+			inTowerRange = true;
+			
+		}
+		if (inTowerRange) return false;
+		
+		// check to make sure another unit isn't on the square
+		
+		boolean onRobot = false;
+		try {
+			
+			RobotInfo robot = this.robotController.senseRobotAtLocation(location);
+			if (robot != null) onRobot = true;
+			
+		}
+		catch (GameActionException exception) {	
+			
+		}
+		if (onRobot) return false;
+		
+		return true;
+		
+	}
+	
+	// MARK: Ore Broadcast
+
+	private static int ORE_BROADCAST_CHANNEL = 18739;
+	
+	private static class OreDensityResult {
+		int turn;
+		double density;
+		MapLocation location;
+		
+		public void write(Broadcaster broadcaster) throws GameActionException {
+			
+			broadcaster.broadcast(ORE_BROADCAST_CHANNEL + 0, (int)(this.density * 10000));
+			broadcaster.broadcast(ORE_BROADCAST_CHANNEL + 1, this.turn);
+			broadcaster.broadcast(ORE_BROADCAST_CHANNEL + 2, this.location.x);
+			broadcaster.broadcast(ORE_BROADCAST_CHANNEL + 3, this.location.y);
+			
+		}
+		
+		public static OreDensityResult currentWrittenDensityResult(Broadcaster broadcaster) throws GameActionException {
+			
+			OreDensityResult result = new OreDensityResult();
+			double d = broadcaster.readBroadcast(ORE_BROADCAST_CHANNEL + 0) / 10000.0;
+			int t    = broadcaster.readBroadcast(ORE_BROADCAST_CHANNEL + 1);
+			int x    = broadcaster.readBroadcast(ORE_BROADCAST_CHANNEL + 2);
+			int y    = broadcaster.readBroadcast(ORE_BROADCAST_CHANNEL + 3);
+			if (d == 0) return null;
+			
+			result.density = d;
+			result.turn = t;
+			result.location = new MapLocation(x, y);
+			return result;
+			
+		}
+	}
+	
+	private OreDensityResult currentBestOreDensity() throws GameActionException {
+		
+		return OreDensityResult.currentWrittenDensityResult(this.broadcaster);
+		
+	}
+	
+	private void broadcastOreDensity(double density, MapLocation location) throws GameActionException {
+		
+		OreDensityResult result = new OreDensityResult();
+		result.turn = Clock.getRoundNum();
+		result.density = density;
+		result.location = location;
+		
+		OreDensityResult existingResult = new OreDensityResult();
+		
+		final int expirationTurns = 30; // amount of turns that a better result will expire in
+		if (existingResult.density > density && existingResult.turn > result.turn - expirationTurns) return;
+			
+		result.write(this.broadcaster);
+		
+	}
 	
 	// MARK: Static Helpers
 		
