@@ -94,8 +94,7 @@ public class Miner extends BattleRobot {
 			// nah he gucci
 			
 			double currentOre = this.robotController.senseOre(this.locationController.currentLocation());
-			
-			if (this.miningTurns > 5 || (this.miningTurns == 0 && currentOre < this.miningThreshold)) { // only mine good stuff but always mine for 5 turns
+			if (this.miningTurns > 5 || currentOre == 0) { // only mine good stuff but always mine for 5 turns
 				
 				if (this.miningTurns == 0 && currentOre > 0) {
 					
@@ -169,7 +168,7 @@ public class Miner extends BattleRobot {
         MapLocation robotLocation = this.robotController.getLocation();
         MapLocation bestOreLocation = null;
         
-        double oreThreshold = this.miningThreshold - 0.001;
+        double oreThreshold = 0.001;
         
         if (oreThreshold <= 0) // don't want the miners thinking they found a good spot at 0 ore
         	oreThreshold = 0.001;
