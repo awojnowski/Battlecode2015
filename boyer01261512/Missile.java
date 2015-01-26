@@ -1,8 +1,8 @@
-package team170;
+package boyer01261512;
 
 import battlecode.common.*;
-import team170.broadcaster.Broadcaster;
-import team170.movement.*;
+import boyer01261512.broadcaster.Broadcaster;
+import boyer01261512.movement.*;
 
 public class Missile extends Robot {
 	
