@@ -184,10 +184,11 @@ public class Miner extends BattleRobot {
 			
 		} else {
 			
-			if (densityResult != null) {
+			if (densityResult != null && densityResult.density - this.desiredOreTotal > 4 && densityResult.density > this.desiredOreTotal * 1.5) {
 				
 				this.desiredOreLocation = densityResult.location;
-				this.desiredOreTotal = densityResult.density;
+				this.desiredOreCurrent = densityResult.density;
+				this.desiredOreTotal = this.desiredOreCurrent;
 				
 			}
 			
