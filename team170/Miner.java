@@ -373,10 +373,12 @@ public class Miner extends BattleRobot {
 		
 		if (ore == 0) return ore;
 		
+		double roundRatio = Clock.getRoundNum() / this.robotController.getRoundLimit();
+		
 		double distanceToMidpoint = location.distanceSquaredTo(this.midpoint());
 		double distanceToMiner = location.distanceSquaredTo(this.robotController.getLocation());
-		
-		double ranking = (distanceToMidpoint * ore) / distanceToMiner;
+				
+		double ranking = ((distanceToMidpoint / 5) * ore) / (distanceToMiner / 0.5 + (roundRatio * 0.5));
 		return ranking;
 		
 	}
