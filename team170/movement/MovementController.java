@@ -195,6 +195,10 @@ public class MovementController {
         Direction directionToLastPositionOffset1 = directionToLastPosition != null ? MovementController.directionWithOffset(directionToLastPosition, 1) : null;
         Direction directionToLastPositionOffset2 = directionToLastPosition != null ? MovementController.directionWithOffset(directionToLastPosition, -1) : null;
         int switchedDirection = 0;
+        
+        // fix for miners circling their target ore
+        if (robotLocation.distanceSquaredTo(location) <= 1)
+        	this.moveTo(directionToTarget);
               
         // see if it can move toward it's target
         if (directionToTarget == directionToLastPosition || directionToTarget == directionToLastPositionOffset1 || directionToTarget == directionToLastPositionOffset2 || !this.moveTo(directionToTarget)) {
