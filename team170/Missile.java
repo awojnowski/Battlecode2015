@@ -46,7 +46,7 @@ public class Missile extends Robot {
 				MapLocation currentLocation = this.robotController.getLocation();
 				
 				RobotInfo[] enemies = this.robotController.senseNearbyRobots(24, this.robotController.getTeam().opponent());
-				if (enemies.length == 0) this.robotController.disintegrate();
+				if (enemies.length == 0 && this.turns > 2) this.robotController.disintegrate();
 				
 				for (RobotInfo enemy : enemies) {
 					
@@ -80,12 +80,11 @@ public class Missile extends Robot {
 					
 				}
 				
-				if (closest == null) { 
-
-					closest = this.robotController.senseEnemyHQLocation();
+				if (closest != null) {
+					
+					this.direction = currentLocation.directionTo(closest);
 					
 				}
-				this.direction = currentLocation.directionTo(closest);
 				
 			}
 			
