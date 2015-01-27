@@ -6,6 +6,7 @@ import battlecode.common.*;
 public class Miner extends BattleRobot {
 	
 	private MapLocation desiredOreLocation = null;
+	private double desiredOreCurrent = 0;
 	private double desiredOreTotal = 0;
 	
 	public Miner(RobotController robotController) {
@@ -38,16 +39,42 @@ public class Miner extends BattleRobot {
 		try {
 			
 			// try find some good ore nearby
+			MapLocation currentLocation = this.robotController.getLocation();
 			if (this.desiredOreLocation == null) {
 				
-				this.scanForBetterOreLocation(50, this.locationController.currentLocation());
+				this.scanForBetterOreLocation(50, currentLocation);
 				
 			}
+
+			this.robotController.setIndicatorString(1, "Current ore: " + this.robotController.senseOre(currentLocation));
 			
-			// write the line to the best ore
+			// run some checks on our desired ore location
 			if (this.desiredOreLocation != null) {
 				
-				this.robotController.setIndicatorLine(this.robotController.getLocation(), this.desiredOreLocation, 255, 255, 0);
+				this.desiredOreCurrent = this.robotController.senseOre(this.desiredOreLocation);
+				
+				if (currentLocation.distanceSquaredTo(this.desiredOreLocation) <= this.type.sensorRadiusSquared) {
+					
+					RobotInfo robot = this.robotController.senseRobotAtLocation(this.desiredOreLocation) ;
+					if (robot != null && robot.ID != this.robotController.getID()) {
+						
+						this.desiredOreLocation = null;
+						this.desiredOreCurrent = 0;
+						this.desiredOreTotal = 0;
+						
+					}
+					
+				}
+				
+			}
+
+			if (this.desiredOreLocation != null) {
+				
+				this.robotController.setIndicatorLine(currentLocation, this.desiredOreLocation, 255, 255, 0);
+				
+			} else {
+				
+				this.robotController.setIndicatorString(2, "");
 				
 			}
 			
@@ -106,6 +133,7 @@ public class Miner extends BattleRobot {
 				if (this.robotController.senseOre(this.desiredOreLocation) < minimumOre || !this.tryMine()) {
 					
 					this.desiredOreLocation = null;
+					this.desiredOreCurrent = 0;
 					this.desiredOreTotal = 0;
 					
 				}
@@ -141,12 +169,14 @@ public class Miner extends BattleRobot {
 				(oreLocationResult.ore == this.desiredOreTotal && location.distanceSquaredTo(oreLocationResult.location) < location.distanceSquaredTo(this.desiredOreLocation))) {
 
 				this.desiredOreLocation = oreLocationResult.location;
-				this.desiredOreTotal = oreLocationResult.ore;
+				this.desiredOreCurrent = oreLocationResult.ore;
+				this.desiredOreTotal = this.desiredOreCurrent;
 				
 				if (densityResult != null && densityResult.density - this.desiredOreTotal > 4 && densityResult.density > this.desiredOreTotal * 1.5) {
 					
 					this.desiredOreLocation = densityResult.location;
-					this.desiredOreTotal = densityResult.density;
+					this.desiredOreCurrent = densityResult.density;
+					this.desiredOreTotal = this.desiredOreCurrent;
 					
 				}
 				
