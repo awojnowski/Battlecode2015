@@ -162,11 +162,19 @@ public class Miner extends BattleRobot {
 		// check to see if we can go to a better ore location
 		
 		OreDensityResult densityResult = this.currentBestOreDensity();
+		double rankedDensityOreIndex = 0;
+		if (densityResult != null) rankedDensityOreIndex = this.rankedOreIndex(densityResult.density, densityResult.location);
+		
 		OreLocationResult oreLocationResult = this.bestOreLocation(radius);
+		double rankedOreLocationIndex = 0;
+		if (oreLocationResult != null) rankedOreLocationIndex = this.rankedOreIndex(oreLocationResult.density, oreLocationResult.location);
+		
+		double rankedDesiredOreIndex = this.rankedOreIndex(this.desiredOreTotal, this.desiredOreLocation);
+		
 		if (oreLocationResult != null) {
 			
-			if (oreLocationResult.ore > this.desiredOreTotal ||
-				(oreLocationResult.ore == this.desiredOreTotal && location.distanceSquaredTo(oreLocationResult.location) < location.distanceSquaredTo(this.desiredOreLocation))) {
+			if (rankedOreLocationIndex > rankedDesiredOreIndex ||
+				(rankedOreLocationIndex == rankedDesiredOreIndex && location.distanceSquaredTo(oreLocationResult.location) < location.distanceSquaredTo(this.desiredOreLocation))) {
 
 				this.desiredOreLocation = oreLocationResult.location;
 				this.desiredOreCurrent = oreLocationResult.ore;
@@ -205,6 +213,7 @@ public class Miner extends BattleRobot {
 	private OreLocationResult bestOreLocation(int radius) throws GameActionException {
 		
 		double bestOre = 0;
+		double bestRank = 0;
 		int squares = 0;
 		double totalOre = 0;
 		MapLocation bestLocation = null;
@@ -220,16 +229,18 @@ public class Miner extends BattleRobot {
 			// check to see if its ore is good
 			
 			double ore = this.robotController.senseOre(location);
+			double rank = this.rankedOreIndex(ore, location);
 			totalOre += ore;
 			squares ++;
 			
-			if (ore > bestOre) {
+			if (rank > bestRank) {
 
 				if (!this.isOreLocationValid(location, towerLocations)) continue;
+				bestRank = rank;
 				bestOre = ore;
 				bestLocation = location;
 				
-			} else if (ore == bestOre && bestLocation != null) {
+			} else if (rank == bestRank && bestLocation != null) {
 				
 				// check to see if this new ore location is closer
 				if (currentLocation.distanceSquaredTo(location) < currentLocation.distanceSquaredTo(bestLocation)) {
@@ -356,8 +367,38 @@ public class Miner extends BattleRobot {
 		
 	}
 	
-	// MARK: Static Helpers
+	// Ore Ranking
+	
+	private double rankedOreIndex(double ore, MapLocation location) {
 		
+		if (ore == 0) return ore;
+		
+		double distanceToMidpoint = location.distanceSquaredTo(this.midpoint());
+		double distanceToMiner = location.distanceSquaredTo(this.robotController.getLocation());
+		
+		double ranking = (distanceToMidpoint * ore) / distanceToMiner;
+		return ranking;
+		
+	}
+	
+	// Getters & Setters
+	
+	private MapLocation midpoint = null;
+	private MapLocation midpoint() {
+		
+		if (this.midpoint == null) {
+			
+			MapLocation HQLocation = this.locationController.HQLocation();
+			MapLocation EnemyHQLocation = this.locationController.enemyHQLocation();
+			this.midpoint = new MapLocation((HQLocation.x + EnemyHQLocation.x) / 2,(HQLocation.y + EnemyHQLocation.y) / 2);
+			
+		}
+		return this.midpoint;
+		
+	}
+	
+	// MARK: Static Helpers
+	
 	public static RobotType type() {
 		return RobotType.MINER;
 	}
