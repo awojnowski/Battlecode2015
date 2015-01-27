@@ -7,6 +7,9 @@ import battlecode.common.*;
 
 public class Beaver extends BattleRobot {
 	
+	private int invalidBuildLocations = 0;
+	private int previousInvalidBuildLocations = 0;
+	
 	public Beaver(RobotController robotController) {
 		
 		super(robotController);
@@ -18,6 +21,8 @@ public class Beaver extends BattleRobot {
 	public void run() {
 		
 		super.run();
+		
+		this.robotController.setIndicatorString(1, "Bad Builds: " + this.invalidBuildLocations);
 				
 		try {
 			
@@ -69,10 +74,18 @@ public class Beaver extends BattleRobot {
 						
 						
 					} else {
-						
+
 						MapLocation hqLocation = this.locationController.HQLocation();
 						Direction directionToHQ = this.locationController.currentLocation().directionTo(hqLocation);
 						Boolean moved = false;
+						
+						if (this.invalidBuildLocations > 40 && this.invalidBuildLocations - this.previousInvalidBuildLocations > 0) { // This guy is really stuck and wants to build
+
+							this.movementController.moveAway(hqLocation);
+							moved = true;
+							this.previousInvalidBuildLocations = this.invalidBuildLocations;
+							
+						}
 						
 						int[] diagonalOffsets = {0, 2, -2, 4, 1, -1, 3, -3};
 						int[] cardinalOffsets = {1, -1, 3, -3, 0, 2, -2, 4};
@@ -144,7 +157,7 @@ public class Beaver extends BattleRobot {
 				
 				adjacentBuildingCount++;
 				
-			} else if (!this.robotController.senseTerrainTile(adjacentTile).isTraversable()) { // || !canBuildAtLocation(location)) { - uses too many bytecodes
+			} else if (!this.robotController.senseTerrainTile(adjacentTile).isTraversable()) { // || !canBuildAtLocation(location)) { // uses too many bytecodes
 				
 				adjacentUnbuildableLocations++;
 				
@@ -152,7 +165,14 @@ public class Beaver extends BattleRobot {
 			
 		}
 		
-		return adjacentBuildingCount > 0 && adjacentBuildingCount + adjacentUnbuildableLocations < 4;
+		Boolean shouldMove;
+		
+		if (this.invalidBuildLocations < 20)
+			shouldMove = (adjacentBuildingCount > 0 && adjacentBuildingCount + adjacentUnbuildableLocations < 4);
+		else
+			shouldMove = (adjacentBuildingCount + adjacentUnbuildableLocations < 2);
+		
+		return shouldMove;
 		
 	}
 	
@@ -178,6 +198,7 @@ public class Beaver extends BattleRobot {
 		
 		Boolean edgesHaveBuilding = false;
 		Boolean cornersHaveBuilding = false;
+		int adjacentVoidTiles = 0;
 		
 		for (int i = 0; i < 8 && !edgesHaveBuilding; i++) {
 			
@@ -193,6 +214,13 @@ public class Beaver extends BattleRobot {
 				}
 				
 			} else {
+				
+				if (!this.robotController.senseTerrainTile(adjacentTile).isTraversable()) {
+					
+					adjacentVoidTiles++;
+					continue;
+					
+				}
 
 				if (robot == null) continue;
 				if (UnitController.isUnitTypeBuilding(robot.type)) {
@@ -204,7 +232,20 @@ public class Beaver extends BattleRobot {
 			}
 			
 		}
-		return (cornersHaveBuilding && !edgesHaveBuilding);
+		
+		Boolean canBuild;
+		
+		if (this.invalidBuildLocations < 20)
+			canBuild = (cornersHaveBuilding && !edgesHaveBuilding && adjacentVoidTiles < 2);
+		else
+			canBuild = (!edgesHaveBuilding && adjacentVoidTiles < 2);
+		
+		if (!canBuild)
+			this.invalidBuildLocations++;
+		else
+			this.invalidBuildLocations = 0;
+		
+		return canBuild;
 		
 	}
 	
