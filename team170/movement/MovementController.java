@@ -192,10 +192,12 @@ public class MovementController {
         this.actualLastPosition = robotLocation;
         Direction directionToTarget = robotLocation.directionTo(location);
         Direction directionToLastPosition = this.lastPosition != null ? robotLocation.directionTo(this.lastPosition) : null;
+        Direction directionToLastPositionOffset1 = directionToLastPosition != null ? MovementController.directionWithOffset(directionToLastPosition, 1) : null;
+        Direction directionToLastPositionOffset2 = directionToLastPosition != null ? MovementController.directionWithOffset(directionToLastPosition, -1) : null;
         int switchedDirection = 0;
               
         // see if it can move toward it's target
-        if (directionToTarget == directionToLastPosition || !this.moveTo(directionToTarget)) {
+        if (directionToTarget == directionToLastPosition || directionToTarget == directionToLastPositionOffset1 || directionToTarget == directionToLastPositionOffset2 || !this.moveTo(directionToTarget)) {
         	
         	if (this.lastLastPosition != null && robotLocation.distanceSquaredTo(this.lastLastPosition) <= 1 && this.turnsStuckWhilePathfinding == 0) { // if just moved in a triangle
                 
@@ -210,7 +212,7 @@ public class MovementController {
                 MapLocation nextLocation = robotLocation.add(direction);
                 this.robot.robotController.setIndicatorDot(nextLocation, 255, 255, 255);
                
-                if (!direction.equals(directionToLastPosition) || this.turnsStuckWhilePathfinding > 1) {
+                if ((!direction.equals(directionToLastPosition) && !direction.equals(directionToLastPositionOffset1) && !direction.equals(directionToLastPositionOffset2)) || this.turnsStuckWhilePathfinding > 1) {
                        
                     if (this.robot.movementController.moveTo(direction)) {
                           
